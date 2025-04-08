@@ -158,7 +158,12 @@ class XmlDriver extends FileDriver
         }
 
         if (isset($xmlRoot['write-concern'])) {
-            $metadata->setWriteConcern((string) $xmlRoot['write-concern']);
+            $writeConcern = (string) $xmlRoot['write-concern'];
+            if (is_numeric($writeConcern)) {
+                $writeConcern = (int) $writeConcern;
+            }
+
+            $metadata->setWriteConcern($writeConcern);
         }
 
         if (isset($xmlRoot['inheritance-type'])) {

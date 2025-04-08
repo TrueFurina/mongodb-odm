@@ -368,6 +368,36 @@ class BuilderTest extends BaseTestCase
         self::assertEquals($expectedPipeline, $builder->getPipeline());
     }
 
+    public function testBuilderMergeFilterAndDiscriminatorWithMatchStage(): void
+    {
+        $this->dm->getFilterCollection()->enable('testFilter');
+        $filter = $this->dm->getFilterCollection()->getFilter('testFilter');
+        $filter->setParameter('class', GuestServer::class);
+        $filter->setParameter('field', 'filtered');
+        $filter->setParameter('value', true);
+
+        $builder = $this->dm->createAggregationBuilder(GuestServer::class);
+        $builder
+            ->match()
+                ->text('Paul');
+
+        $expectedPipeline = [
+            [
+                '$match' => [
+                    '$and' => [
+                        [
+                            'stype' => 'server_guest',
+                            '$text' => ['$search' => 'Paul'],
+                        ],
+                        ['filtered' => true],
+                    ],
+                ],
+            ],
+        ];
+
+        self::assertEquals($expectedPipeline, $builder->getPipeline());
+    }
+
     public function testBuilderAppliesFilterAndDiscriminatorWithGeoNearStage(): void
     {
         $this->dm->getFilterCollection()->enable('testFilter');
@@ -418,6 +448,20 @@ class BuilderTest extends BaseTestCase
             ->indexStats();
 
         self::assertSame('$indexStats', array_keys($builder->getPipeline()[0])[0]);
+    }
+
+    public function testEmptyMatchStageIsSkipped(): void
+    {
+        $builder = $this->dm
+            ->createAggregationBuilder(BlogPost::class)
+            ->match()->field('foo')->equals('bar')
+            ->match()
+            ->match()->field('baz')->equals('qux');
+
+        self::assertSame([
+            ['$match' => ['foo' => 'bar']],
+            ['$match' => ['baz' => 'qux']],
+        ], $builder->getPipeline());
     }
 
     public function testNonRewindableBuilder(): void

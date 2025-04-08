@@ -159,7 +159,7 @@ class DocumentManager implements ObjectManager
             ],
         );
 
-        $this->classNameResolver = $config->isLazyGhostObjectEnabled()
+        $this->classNameResolver = $this->config->isLazyGhostObjectEnabled()
             ? new CachingClassNameResolver(new LazyGhostProxyClassNameResolver())
             : new CachingClassNameResolver(new ProxyManagerClassNameResolver($this->config));
 
@@ -186,8 +186,8 @@ class DocumentManager implements ObjectManager
 
         $this->unitOfWork        = new UnitOfWork($this, $this->eventManager, $this->hydratorFactory);
         $this->schemaManager     = new SchemaManager($this, $this->metadataFactory);
-        $this->proxyFactory      = $config->isLazyGhostObjectEnabled()
-            ? new LazyGhostProxyFactory($this, $config->getProxyDir(), $config->getProxyNamespace(), $config->getAutoGenerateProxyClasses())
+        $this->proxyFactory      = $this->config->isLazyGhostObjectEnabled()
+            ? new LazyGhostProxyFactory($this, $this->config->getProxyDir(), $this->config->getProxyNamespace(), $this->config->getAutoGenerateProxyClasses())
             : new StaticProxyFactory($this);
         $this->repositoryFactory = $this->config->getRepositoryFactory();
     }
@@ -322,7 +322,7 @@ class DocumentManager implements ObjectManager
         $db                                  = $metadata->getDatabase();
         $db                                  = $db ?: $this->config->getDefaultDB();
         $db                                  = $db ?: 'doctrine';
-        $this->documentDatabases[$className] = $this->client->selectDatabase($db);
+        $this->documentDatabases[$className] = $this->client->getDatabase($db);
 
         return $this->documentDatabases[$className];
     }
@@ -364,7 +364,7 @@ class DocumentManager implements ObjectManager
                 $options['readPreference'] = new ReadPreference($metadata->readPreference, $metadata->readPreferenceTags);
             }
 
-            $this->documentCollections[$className] = $db->selectCollection($collectionName, $options);
+            $this->documentCollections[$className] = $db->getCollection($collectionName, $options);
         }
 
         return $this->documentCollections[$className];

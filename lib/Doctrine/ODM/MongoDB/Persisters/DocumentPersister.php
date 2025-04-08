@@ -61,7 +61,7 @@ use function is_array;
 use function is_object;
 use function is_scalar;
 use function is_string;
-use function spl_object_hash;
+use function spl_object_id;
 use function sprintf;
 use function strpos;
 use function strtolower;
@@ -96,14 +96,14 @@ final class DocumentPersister
     /**
      * Array of queued inserts for the persister to insert.
      *
-     * @var array<string, object>
+     * @var array<int, object>
      */
     private array $queuedInserts = [];
 
     /**
      * Array of queued inserts for the persister to insert.
      *
-     * @var array<string, object>
+     * @var array<int, object>
      */
     private array $queuedUpserts = [];
 
@@ -136,7 +136,7 @@ final class DocumentPersister
         $this->bucket = $dm->getDocumentBucket($class->name);
     }
 
-    /** @return array<string, object> */
+    /** @return array<int, object> */
     public function getInserts(): array
     {
         return $this->queuedInserts;
@@ -144,7 +144,7 @@ final class DocumentPersister
 
     public function isQueuedForInsert(object $document): bool
     {
-        return isset($this->queuedInserts[spl_object_hash($document)]);
+        return isset($this->queuedInserts[spl_object_id($document)]);
     }
 
     /**
@@ -153,10 +153,10 @@ final class DocumentPersister
      */
     public function addInsert(object $document): void
     {
-        $this->queuedInserts[spl_object_hash($document)] = $document;
+        $this->queuedInserts[spl_object_id($document)] = $document;
     }
 
-    /** @return array<string, object> */
+    /** @return array<int, object> */
     public function getUpserts(): array
     {
         return $this->queuedUpserts;
@@ -164,7 +164,7 @@ final class DocumentPersister
 
     public function isQueuedForUpsert(object $document): bool
     {
-        return isset($this->queuedUpserts[spl_object_hash($document)]);
+        return isset($this->queuedUpserts[spl_object_id($document)]);
     }
 
     /**
@@ -173,7 +173,7 @@ final class DocumentPersister
      */
     public function addUpsert(object $document): void
     {
-        $this->queuedUpserts[spl_object_hash($document)] = $document;
+        $this->queuedUpserts[spl_object_id($document)] = $document;
     }
 
     /**
@@ -543,6 +543,8 @@ final class DocumentPersister
 
         assert($this->collection instanceof Collection);
         $baseCursor = $this->collection->find($criteria, $options);
+
+        assert($baseCursor instanceof CursorInterface && $baseCursor instanceof SplIterator);
 
         return $this->wrapCursor($baseCursor);
     }
@@ -1029,9 +1031,6 @@ final class DocumentPersister
     {
         /* If filter criteria exists for this class, prepare it and merge
          * over the existing query.
-         *
-         * @todo Consider recursive merging in case the filter criteria and
-         * prepared query both contain top-level $and/$or operators.
          */
         $filterCriteria = $this->dm->getFilterCollection()->getFilterCriteria($this->class);
         if ($filterCriteria) {

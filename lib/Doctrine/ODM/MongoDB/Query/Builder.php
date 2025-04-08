@@ -880,8 +880,8 @@ class Builder
     /**
      * Specify $lt criteria for the current field.
      *
-     * @see Expr::lte()
-     * @see https://docs.mongodb.com/manual/reference/operator/lte/
+     * @see Expr::lt()
+     * @see https://docs.mongodb.com/manual/reference/operator/lt/
      *
      * @param mixed $value
      */

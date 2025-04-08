@@ -101,7 +101,7 @@ abstract class AbstractMappingDriverTestCase extends BaseTestCase
     #[Depends('testDocumentCollectionNameAndInheritance')]
     public function testDocumentLevelWriteConcern(ClassMetadata $class): ClassMetadata
     {
-        self::assertEquals(1, $class->getWriteConcern());
+        self::assertSame(1, $class->getWriteConcern());
 
         return $class;
     }

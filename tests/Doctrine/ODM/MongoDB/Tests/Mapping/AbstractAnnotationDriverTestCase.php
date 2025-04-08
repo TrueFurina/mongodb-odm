@@ -148,7 +148,7 @@ abstract class AbstractAnnotationDriverTestCase extends AbstractMappingDriverTes
     public function testDocumentAnnotationCanSpecifyWriteConcern(): void
     {
         $cm = $this->dm->getClassMetadata(AnnotationDriverTestWriteConcernMajority::class);
-        self::assertEquals('majority', $cm->writeConcern);
+        self::assertSame('majority', $cm->writeConcern);
 
         $cm = $this->dm->getClassMetadata(AnnotationDriverTestWriteConcernUnacknowledged::class);
         self::assertSame(0, $cm->writeConcern);
