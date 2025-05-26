@@ -29,7 +29,6 @@ use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
 use Doctrine\Persistence\Mapping\MappingException;
 use InvalidArgumentException;
-use Iterator as SplIterator;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 use MongoDB\Driver\CursorInterface;
@@ -333,8 +332,8 @@ final class DocumentPersister
             $data  = ['$set' => ['_id' => $criteria['_id']]];
         }
 
+        assert($this->collection instanceof Collection);
         try {
-            assert($this->collection instanceof Collection);
             $this->collection->updateOne($criteria, $data, $options);
 
             return;
@@ -344,7 +343,6 @@ final class DocumentPersister
             }
         }
 
-        assert($this->collection instanceof Collection);
         $this->collection->updateOne($criteria, ['$set' => new stdClass()], $options);
     }
 
@@ -544,8 +542,6 @@ final class DocumentPersister
         assert($this->collection instanceof Collection);
         $baseCursor = $this->collection->find($criteria, $options);
 
-        assert($baseCursor instanceof CursorInterface && $baseCursor instanceof SplIterator);
-
         return $this->wrapCursor($baseCursor);
     }
 
@@ -592,7 +588,7 @@ final class DocumentPersister
     /**
      * Wraps the supplied base cursor in the corresponding ODM class.
      */
-    private function wrapCursor(SplIterator&CursorInterface $baseCursor): Iterator
+    private function wrapCursor(CursorInterface $baseCursor): Iterator
     {
         return new CachingIterator(new HydratingIterator($baseCursor, $this->dm->getUnitOfWork(), $this->class));
     }
