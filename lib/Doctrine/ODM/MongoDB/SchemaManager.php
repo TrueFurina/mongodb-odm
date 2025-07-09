@@ -47,6 +47,7 @@ final class SchemaManager
 
     private const CODE_SHARDING_ALREADY_INITIALIZED = 23;
     private const CODE_COMMAND_NOT_SUPPORTED        = 115;
+    private const CODE_SEARCH_NOT_ENABLED           = 31082;
 
     private const ALLOWED_MISSING_INDEX_OPTIONS = [
         'background',
@@ -1079,6 +1080,11 @@ final class SchemaManager
 
     private function isSearchIndexCommandException(CommandException $e): bool
     {
+        // MongoDB 8.0+: "Using Atlas Search Database Commands and the $listSearchIndexes aggregation stage requires additional configuration."
+        if ($e->getCode() === self::CODE_SEARCH_NOT_ENABLED) {
+            return true;
+        }
+
         // MongoDB 6.0.7+ and 7.0+: "Search indexes are only available on Atlas"
         if ($e->getCode() === self::CODE_COMMAND_NOT_SUPPORTED && str_contains($e->getMessage(), 'Search index')) {
             return true;
@@ -1090,7 +1096,7 @@ final class SchemaManager
         }
 
         // Older server versions don't support $listSearchIndexes
-        // We don't check for an error code here as the code is not documented and we can't rely on it
+        // We don't check for an error code here as the code is not documented, and we can't rely on it
         return str_contains($e->getMessage(), 'Unrecognized pipeline stage name: \'$listSearchIndexes\'');
     }
 }
