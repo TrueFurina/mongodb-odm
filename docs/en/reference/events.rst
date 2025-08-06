@@ -128,65 +128,65 @@ The DocumentManager and UnitOfWork trigger several events during
 the life-time of their registered documents.
 
 -
-   preRemove - The preRemove event occurs for a given document before
+   ``preRemove`` - The preRemove event occurs for a given document before
    the respective DocumentManager remove operation for that document
    is executed.
 -
-   postRemove - The postRemove event occurs for a document after the
+   ``postRemove`` - The postRemove event occurs for a document after the
    document has been removed. It will be invoked after the database
    delete operations.
 -
-   prePersist - The prePersist event occurs for a given document
+   ``prePersist`` - The prePersist event occurs for a given document
    before the respective DocumentManager persist operation for that
    document is executed.
 -
-   postPersist - The postPersist event occurs for a document after
+   ``postPersist`` - The postPersist event occurs for a document after
    the document has been made persistent. It will be invoked after the
    database insert operations. Generated primary key values are
    available in the postPersist event.
 -
-   preUpdate - The preUpdate event occurs before the database update
+   ``preUpdate`` - The preUpdate event occurs before the database update
    operations to document data.
 -
-   postUpdate - The postUpdate event occurs after the database update
+   ``postUpdate`` - The postUpdate event occurs after the database update
    operations to document data.
 -
-   preLoad - The preLoad event occurs for a document before the
+   ``preLoad`` - The preLoad event occurs for a document before the
    document has been loaded into the current DocumentManager from the
    database or after the refresh operation has been applied to it.
 -
-   postLoad - The postLoad event occurs for a document after the
+   ``postLoad`` - The postLoad event occurs for a document after the
    document has been loaded into the current DocumentManager from the
    database or after the refresh operation has been applied to it.
 -
-   loadClassMetadata - The loadClassMetadata event occurs after the
+   ``loadClassMetadata`` - The loadClassMetadata event occurs after the
    mapping metadata for a class has been loaded from a mapping source
    (attributes/xml).
 -
-   onClassMetadataNotFound - Loading class metadata for a particular
+   ``onClassMetadataNotFound`` - Loading class metadata for a particular
    requested class name failed. Manipulating the given event args instance
    allows providing fallback metadata even when no actual metadata exists
    or could be found. This event is not a lifecycle callback. Support for this
    event was added in MongoDB ODM 1.3.
 -
-   preFlush - The preFlush event occurs before the change-sets of all
+   ``preFlush`` - The preFlush event occurs before the change-sets of all
    managed documents are computed. This both a lifecycle call back and
    and listener.
 -
-   postFlush - The postFlush event occurs after the change-sets of all
+   ``postFlush`` - The postFlush event occurs after the change-sets of all
    managed documents are computed.
 -
-   onFlush - The onFlush event occurs after the change-sets of all
+   ``onFlush`` - The onFlush event occurs after the change-sets of all
    managed documents are computed. This event is not a lifecycle
    callback.
 -
-   onClear - The onClear event occurs after the UnitOfWork has had
+   ``onClear`` - The onClear event occurs after the UnitOfWork has had
    its state cleared.
 -
-   documentNotFound - The documentNotFound event occurs when a proxy object
+   ``documentNotFound`` - The documentNotFound event occurs when a proxy object
    could not be initialized. This event is not a lifecycle callback.
 -
-   postCollectionLoad - The postCollectionLoad event occurs just after
+   ``postCollectionLoad`` - The postCollectionLoad event occurs just after
    collection has been initialized (loaded) and before new elements
    are re-added to it.
 
