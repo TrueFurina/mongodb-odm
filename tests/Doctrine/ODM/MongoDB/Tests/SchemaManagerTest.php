@@ -492,6 +492,25 @@ class SchemaManagerTest extends BaseTestCase
         $this->schemaManager->updateDocumentSearchIndexes(CmsProduct::class);
     }
 
+    public function testUpdateDocumentWhenSearchNotEnabled(): void
+    {
+        // Class has no search indexes, so if the server doesn't support them we assume everything is fine
+        $collectionName = $this->dm->getClassMetadata(CmsProduct::class)->getCollection();
+        $collection     = $this->documentCollections[$collectionName];
+        $collection
+            ->expects($this->once())
+            ->method('listSearchIndexes')
+            ->willThrowException($this->createSearchNotEnabledCommandException());
+        $collection
+            ->expects($this->never())
+            ->method('dropSearchIndex');
+        $collection
+            ->expects($this->never())
+            ->method('updateSearchIndex');
+
+        $this->schemaManager->updateDocumentSearchIndexes(CmsProduct::class);
+    }
+
     public function testUpdateDocumentSearchIndexesNotSupportedForClassWithoutSearchIndexesOnOlderServers(): void
     {
         // Class has no search indexes, so if the server doesn't support them we assume everything is fine
@@ -1373,6 +1392,11 @@ EOT;
     private function createSearchIndexCommandException(): CommandException
     {
         return new CommandException('PlanExecutor error during aggregation :: caused by :: Search index commands are only supported with Atlas.', 115);
+    }
+
+    private function createSearchNotEnabledCommandException(): CommandException
+    {
+        return new CommandException('Using Atlas Search Database Commands and the $listSearchIndexes aggregation stage requires additional configuration.', 31082);
     }
 
     private function createSearchIndexCommandExceptionForOlderServers(): CommandException
