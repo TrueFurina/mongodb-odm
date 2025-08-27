@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Tools\Console\Command\Schema;
 
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Tests\Tools\Console\Command\AbstractCommandTestCase;
 use Doctrine\ODM\MongoDB\Tools\Console\Command\Schema\UpdateCommand;
+use Doctrine\Persistence\Mapping\Driver\ClassNames;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Documents\Ecommerce;
 use Documents\SchemaValidated;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+
+use function class_exists;
 
 class UpdateCommandTest extends AbstractCommandTestCase
 {
@@ -67,7 +72,7 @@ class UpdateCommandTest extends AbstractCommandTestCase
     public function testProcessValidators(): void
     {
         // Only load a subset of documents with legit annotations
-        $annotationDriver = AnnotationDriver::create(__DIR__ . '/../../../../../../../../Documents/Ecommerce');
+        $annotationDriver = $this->createDriver();
         $this->dm->getConfiguration()->setMetadataDriverImpl($annotationDriver);
         $this->commandTester->execute([]);
         $output = $this->commandTester->getDisplay();
@@ -77,10 +82,29 @@ class UpdateCommandTest extends AbstractCommandTestCase
     public function testDisabledValidatorsProcessing(): void
     {
         // Only load a subset of documents with legit annotations
-        $annotationDriver = AnnotationDriver::create(__DIR__ . '/../../../../../../../../Documents/Ecommerce');
+        $annotationDriver = $this->createDriver();
         $this->dm->getConfiguration()->setMetadataDriverImpl($annotationDriver);
         $this->commandTester->execute(['--disable-validators' => true]);
         $output = $this->commandTester->getDisplay();
         self::assertStringNotContainsString('Updated validation for all classes', $output);
+    }
+
+    private function createDriver(): MappingDriver
+    {
+        $paths = [__DIR__ . '/../../../../../../../../Documents/Ecommerce'];
+        // Available in Doctrine Persistence 4.1+
+        if (class_exists(ClassNames::class)) {
+            $paths = new ClassNames([
+                Ecommerce\Basket::class,
+                Ecommerce\ConfigurableProduct::class,
+                Ecommerce\Currency::class,
+                Ecommerce\Money::class,
+                Ecommerce\Option::class,
+                Ecommerce\Order::class,
+                Ecommerce\StockItem::class,
+            ]);
+        }
+
+        return AttributeDriver::create($paths);
     }
 }

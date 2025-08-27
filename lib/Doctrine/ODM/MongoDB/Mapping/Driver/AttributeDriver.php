@@ -14,6 +14,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\TimeSeries;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\Persistence\Mapping\ClassMetadata as PersistenceClassMetadata;
+use Doctrine\Persistence\Mapping\Driver\ClassLocator;
 use Doctrine\Persistence\Mapping\Driver\ColocatedMappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use MongoDB\BSON\Document;
@@ -32,7 +33,7 @@ use function is_array;
 use function trigger_deprecation;
 
 /**
- * The AtttributeDriver reads the mapping metadata from attributes.
+ * The AttributeDriver reads the mapping metadata from attributes.
  */
 class AttributeDriver implements MappingDriver
 {
@@ -45,7 +46,7 @@ class AttributeDriver implements MappingDriver
      */
     protected $reader;
 
-    /** @param string|string[]|null $paths */
+    /** @param string|string[]|ClassLocator|null $paths */
     public function __construct($paths = null, ?Reader $reader = null)
     {
         if ($reader !== null) {
@@ -59,7 +60,11 @@ class AttributeDriver implements MappingDriver
 
         $this->reader = $reader ?? new AttributeReader();
 
-        $this->addPaths((array) $paths);
+        if ($paths instanceof ClassLocator) {
+            $this->classLocator = $paths;
+        } else {
+            $this->addPaths((array) $paths);
+        }
     }
 
     public function isTransient($className): bool
@@ -416,7 +421,7 @@ class AttributeDriver implements MappingDriver
     /**
      * Factory method for the Attribute Driver
      *
-     * @param string[]|string $paths
+     * @param string|string[]|ClassLocator $paths
      *
      * @return AttributeDriver
      */

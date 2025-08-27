@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\Persistence\Mapping\Driver\FileClassLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 use function call_user_func;
+use function class_exists;
 use function restore_error_handler;
 use function set_error_handler;
 use function sprintf;
@@ -20,11 +21,13 @@ use const E_USER_DEPRECATED;
 
 class AnnotationDriverTest extends AbstractAnnotationDriverTestCase
 {
-    protected static function loadDriver(): MappingDriver
+    protected static function loadDriver(array $paths = []): MappingDriver
     {
-        $reader = new AnnotationReader();
+        if (class_exists(FileClassLocator::class)) {
+            $paths = FileClassLocator::createFromDirectories($paths);
+        }
 
-        return new AnnotationDriver($reader);
+        return AnnotationDriver::create($paths);
     }
 
     public function testIndexesClassAnnotationEmitsDeprecationMessage(): void
