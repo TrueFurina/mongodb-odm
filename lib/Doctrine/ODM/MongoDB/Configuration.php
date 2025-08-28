@@ -24,7 +24,10 @@ use Doctrine\ODM\MongoDB\Repository\RepositoryFactory;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\ObjectRepository;
 use InvalidArgumentException;
+use Jean85\PrettyVersions;
 use LogicException;
+use MongoDB\Client;
+use MongoDB\Driver\Manager;
 use MongoDB\Driver\WriteConcern;
 use ProxyManager\Configuration as ProxyManagerConfiguration;
 use ProxyManager\Factory\LazyLoadingGhostFactory;
@@ -32,10 +35,15 @@ use ProxyManager\GeneratorStrategy\EvaluatingGeneratorStrategy;
 use ProxyManager\GeneratorStrategy\FileWriterGeneratorStrategy;
 use Psr\Cache\CacheItemPoolInterface;
 use ReflectionClass;
+use stdClass;
+use Throwable;
 
+use function array_diff_key;
+use function array_intersect_key;
 use function array_key_exists;
 use function class_exists;
 use function interface_exists;
+use function is_string;
 use function trigger_deprecation;
 use function trim;
 
@@ -50,6 +58,7 @@ use function trim;
  *     $dm = DocumentManager::create(new Connection(), $config);
  *
  * @phpstan-import-type CommitOptions from UnitOfWork
+ * @phpstan-type KmsProvider array{type: string, ...}
  */
 class Configuration
 {
@@ -121,7 +130,10 @@ class Configuration
      *      persistentCollectionNamespace?: string,
      *      proxyDir?: string,
      *      proxyNamespace?: string,
-     *      repositoryFactory?: RepositoryFactory
+     *      repositoryFactory?: RepositoryFactory,
+     *      kmsProvider?: KmsProvider,
+     *      defaultMasterKey?: array<string, mixed>|null,
+     *      autoEncryption?: array<string, mixed>,
      * }
      */
     private array $attributes = [];
@@ -134,6 +146,50 @@ class Configuration
     private bool $useTransactionalFlush = false;
 
     private bool $useLazyGhostObject = false;
+
+    private static string $version;
+
+    /**
+     * Provides the driver options to be used when creating the MongoDB client.
+     *
+     * @return array<string, mixed>
+     */
+    public function getDriverOptions(): array
+    {
+        $driverOptions = [
+            'driver' => [
+                'name' => 'doctrine-odm',
+                'version' => self::getVersion(),
+            ],
+        ];
+
+        if (isset($this->attributes['kmsProvider'])) {
+            $driverOptions['autoEncryption'] = $this->getAutoEncryptionOptions();
+        }
+
+        return $driverOptions;
+    }
+
+    /**
+     * Get options to create a ClientEncryption instance.
+     *
+     * @see https://www.php.net/manual/en/mongodb-driver-clientencryption.construct.php
+     *
+     * @return array{keyVaultClient?: Client|Manager, keyVaultNamespace: string, kmsProviders: array<string, mixed>, tlsOptions?: array<string, mixed>}
+     */
+    public function getClientEncryptionOptions(): array
+    {
+        if (! isset($this->attributes['kmsProvider'])) {
+            throw ConfigurationException::clientEncryptionOptionsNotSet();
+        }
+
+        return array_intersect_key($this->getAutoEncryptionOptions(), [
+            'keyVaultClient' => 1,
+            'keyVaultNamespace' => 1,
+            'kmsProviders' => 1,
+            'tlsOptions' => 1,
+        ]);
+    }
 
     /**
      * Adds a namespace under a certain alias.
@@ -650,6 +706,107 @@ class Configuration
     public function isLazyGhostObjectEnabled(): bool
     {
         return $this->useLazyGhostObject;
+    }
+
+    /**
+     * Set the KMS provider to use for auto-encryption. The name of the KMS provider
+     * must be specified in the 'type' key of the array.
+     *
+     * @see https://www.php.net/manual/en/mongodb-driver-clientencryption.construct.php
+     *
+     * @param KmsProvider $kmsProvider
+     */
+    public function setKmsProvider(array $kmsProvider): void
+    {
+        if (! isset($kmsProvider['type'])) {
+            throw ConfigurationException::kmsProviderTypeRequired();
+        }
+
+        if (! is_string($kmsProvider['type'])) {
+            throw ConfigurationException::kmsProviderTypeMustBeString();
+        }
+
+        $this->attributes['kmsProvider'] = $kmsProvider;
+    }
+
+    /**
+     * Set the default master key to use when creating encrypted collections.
+     *
+     * @param array<string, mixed>|null $masterKey
+     */
+    public function setDefaultMasterKey(?array $masterKey): void
+    {
+        $this->attributes['defaultMasterKey'] = $masterKey;
+    }
+
+    /**
+     * Set the options for auto-encryption.
+     *
+     * @see https://www.php.net/manual/en/mongodb-driver-manager.construct.php#mongodb-driver-manager.construct-autoencryption
+     *
+     * @param array{ keyVaultClient?: Client|Manager, keyVaultNamespace?: string, tlsOptions?: array<string, mixed>, schemaMap?: array<string, mixed>, bypassAutoEncryption?: bool, bypassQueryAnalysis?: bool, encryptedFieldsMap?: array<string,mixed>, extraOptions?: array<string, mixed>} $options
+     */
+    public function setAutoEncryption(array $options): void
+    {
+        if (isset($options['kmsProviders'])) {
+            throw ConfigurationException::kmsProvidersOptionMustUseSetter();
+        }
+
+        $this->attributes['autoEncryption'] = $options;
+    }
+
+    /**
+     * Get the default KMS provider name used when creating encrypted collections.
+     */
+    public function getDefaultKmsProvider(): ?string
+    {
+        return $this->attributes['kmsProvider']['type'] ?? null;
+    }
+
+    /**
+     * Get the default master key used when creating encrypted collections.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getDefaultMasterKey(): ?array
+    {
+        if (! isset($this->attributes['kmsProvider']) || $this->attributes['kmsProvider']['type'] === 'local') {
+            return null;
+        }
+
+        return $this->attributes['defaultMasterKey'] ?? throw ConfigurationException::masterKeyRequired($this->attributes['kmsProvider']['type']);
+    }
+
+    private static function getVersion(): string
+    {
+        if (! isset(self::$version)) {
+            try {
+                self::$version = PrettyVersions::getVersion('doctrine/mongodb-odm')->getPrettyVersion();
+            } catch (Throwable) {
+                return self::$version = 'unknown';
+            }
+        }
+
+        return self::$version;
+    }
+
+    /** @return array<string, mixed> */
+    private function getAutoEncryptionOptions(): array
+    {
+        $kmsProviderName = $this->attributes['kmsProvider']['type'];
+        $kmsProviderOpts = array_diff_key($this->attributes['kmsProvider'], ['type' => 0]);
+        // To use "Automatic Credentials", the provider options must be an empty document.
+        // Fix the empty array to an empty stdClass object, as the driver expects it.
+        if ($kmsProviderOpts === []) {
+            $kmsProviderOpts = new stdClass();
+        }
+
+        return [
+            // Each kmsProvider must be an object, it can be empty
+            'kmsProviders' => [$kmsProviderName => $kmsProviderOpts],
+            'keyVaultNamespace' => $this->getDefaultDB() . '.datakeys',
+            ...$this->attributes['autoEncryption'] ?? [],
+        ];
     }
 }
 

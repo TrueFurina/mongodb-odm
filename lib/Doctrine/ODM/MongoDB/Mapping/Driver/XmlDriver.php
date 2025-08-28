@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Mapping\Driver;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations\EncryptQuery;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\TimeSeries;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\MappingException;
@@ -45,6 +46,7 @@ use function trim;
  * XmlDriver is a metadata driver that enables mapping through XML files.
  *
  * @phpstan-import-type FieldMappingConfig from ClassMetadata
+ * @phpstan-import-type EncryptConfig from ClassMetadata
  * @template-extends FileDriver<SimpleXMLElement>
  */
 class XmlDriver extends FileDriver
@@ -98,6 +100,9 @@ class XmlDriver extends FileDriver
             $metadata->isMappedSuperclass = true;
         } elseif ($xmlRoot->getName() === 'embedded-document') {
             $metadata->isEmbeddedDocument = true;
+            if (isset($xmlRoot->encrypt)) {
+                $metadata->isEncrypted = true;
+            }
         } elseif ($xmlRoot->getName() === 'query-result-document') {
             $metadata->isQueryResultDocument = true;
         } elseif ($xmlRoot->getName() === 'view') {
@@ -307,6 +312,10 @@ class XmlDriver extends FileDriver
                     $mapping['lock'] = ((string) $attributes['lock'] === 'true');
                 }
 
+                if (isset($field->encrypt)) {
+                    $mapping['encrypt'] = $this->addEncryptionMapping($field->encrypt, $mapping['type']);
+                }
+
                 $this->addFieldMapping($metadata, $mapping);
             }
         }
@@ -447,6 +456,10 @@ class XmlDriver extends FileDriver
 
         if (isset($embed->{'default-discriminator-value'})) {
             $mapping['defaultDiscriminatorValue'] = (string) $embed->{'default-discriminator-value'}['value'];
+        }
+
+        if (isset($embed->encrypt)) {
+            $mapping['encrypt'] = $this->addEncryptionMapping($embed->encrypt, $mapping['type']);
         }
 
         if (isset($attributes['not-saved'])) {
@@ -918,6 +931,21 @@ class XmlDriver extends FileDriver
 
         $xmlRoot->metadata->addAttribute('field', 'metadata');
         $this->addEmbedMapping($class, $xmlRoot->metadata, ClassMetadata::ONE);
+    }
+
+    /** @psalm-return EncryptConfig */
+    private function addEncryptionMapping(SimpleXMLElement $encrypt, string $type): array
+    {
+        $encryptMapping = [];
+        foreach ($encrypt->attributes() as $key => $value) {
+            $encryptMapping[$key] = match ($key) {
+                'queryType' => EncryptQuery::from((string) $value),
+                'min', 'max' => (string) $value,
+                'sparsity', 'precision', 'trimFactor', 'contention' => (int) $value,
+            };
+        }
+
+        return $encryptMapping;
     }
 }
 
