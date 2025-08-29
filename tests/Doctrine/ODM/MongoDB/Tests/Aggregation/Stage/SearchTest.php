@@ -1313,4 +1313,86 @@ class SearchTest extends BaseTestCase
             $searchStage->getExpression(),
         );
     }
+
+    #[DataProvider('provideAutocompleteBuilders')]
+    public function testSearchOperatorsWithSearchBefore(array $expectedOperator, Closure $createOperator): void
+    {
+        $baseExpected = [
+            'index' => 'my_search_index',
+            'highlight' => (object) [
+                'path' => 'content',
+                'maxCharsToExamine' => 2,
+                'maxNumPassages' => 3,
+            ],
+            'count' => (object) [
+                'type' => 'lowerBound',
+                'threshold' => 1000,
+            ],
+            'returnStoredSource' => true,
+            'searchBefore' => 'marker',
+        ];
+
+        $searchStage = new Search($this->getTestAggregationBuilder());
+        $searchStage
+            ->index('my_search_index')
+            ->searchBefore('marker');
+
+        $result = $createOperator($searchStage);
+
+        self::logicalOr(
+            new IsInstanceOf(AbstractSearchOperator::class),
+            new IsInstanceOf(Search::class),
+        );
+
+        $result
+            ->highlight('content', 2, 3)
+            ->countDocuments('lowerBound', 1000)
+            ->returnStoredSource();
+
+        self::assertEquals(
+            ['$search' => (object) array_merge($baseExpected, $expectedOperator)],
+            $searchStage->getExpression(),
+        );
+    }
+
+    #[DataProvider('provideAutocompleteBuilders')]
+    public function testSearchOperatorsWithSearchAfter(array $expectedOperator, Closure $createOperator): void
+    {
+        $baseExpected = [
+            'index' => 'my_search_index',
+            'highlight' => (object) [
+                'path' => 'content',
+                'maxCharsToExamine' => 2,
+                'maxNumPassages' => 3,
+            ],
+            'count' => (object) [
+                'type' => 'lowerBound',
+                'threshold' => 1000,
+            ],
+            'returnStoredSource' => true,
+            'searchAfter' => 'marker',
+        ];
+
+        $searchStage = new Search($this->getTestAggregationBuilder());
+        $searchStage
+            ->index('my_search_index')
+            ->searchAfter('marker');
+
+        $result = $createOperator($searchStage);
+
+        self::logicalOr(
+            new IsInstanceOf(AbstractSearchOperator::class),
+            new IsInstanceOf(Search::class),
+        );
+
+        $result
+            ->highlight('content', 2, 3)
+            ->countDocuments('lowerBound', 1000)
+            ->returnStoredSource();
+
+        self::assertEquals(
+            ['$search' => (object) array_merge($baseExpected, $expectedOperator)],
+            $searchStage->getExpression(),
+        );
+    }
 }
