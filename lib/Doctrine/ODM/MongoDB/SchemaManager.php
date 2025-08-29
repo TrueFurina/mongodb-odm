@@ -7,6 +7,7 @@ namespace Doctrine\ODM\MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataFactoryInterface;
 use Doctrine\ODM\MongoDB\Repository\ViewRepository;
+use Doctrine\ODM\MongoDB\Utility\EncryptedFieldsMapGenerator;
 use InvalidArgumentException;
 use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Exception\RuntimeException;
@@ -47,6 +48,7 @@ final class SchemaManager
 
     private const CODE_SHARDING_ALREADY_INITIALIZED = 23;
     private const CODE_COMMAND_NOT_SUPPORTED        = 115;
+    private const CODE_SEARCH_NOT_ENABLED           = 31082;
 
     private const ALLOWED_MISSING_INDEX_OPTIONS = [
         'background',
@@ -643,10 +645,29 @@ final class SchemaManager
             }
         }
 
-        $this->dm->getDocumentDatabase($documentName)->createCollection(
-            $class->getCollection(),
-            $this->getWriteOptions($maxTimeMs, $writeConcern, $options),
-        );
+        // Encryption is enabled only if the KMS provider is set and at least one field is encrypted
+        if ($this->dm->getConfiguration()->getDefaultKmsProvider()) {
+            $encryptedFields = (new EncryptedFieldsMapGenerator($this->dm->getMetadataFactory()))->getEncryptedFieldsForClass($class->name);
+
+            if ($encryptedFields) {
+                $options['encryptedFields'] = $encryptedFields;
+            }
+        }
+
+        if (isset($options['encryptedFields'])) {
+            $this->dm->getDocumentDatabase($documentName)->createEncryptedCollection(
+                $class->getCollection(),
+                $this->dm->getClientEncryption(),
+                $this->dm->getConfiguration()->getDefaultKmsProvider(),
+                $this->dm->getConfiguration()->getDefaultMasterKey(),
+                $this->getWriteOptions($maxTimeMs, $writeConcern, $options),
+            );
+        } else {
+            $this->dm->getDocumentDatabase($documentName)->createCollection(
+                $class->getCollection(),
+                $this->getWriteOptions($maxTimeMs, $writeConcern, $options),
+            );
+        }
     }
 
     /**
@@ -1079,6 +1100,11 @@ final class SchemaManager
 
     private function isSearchIndexCommandException(CommandException $e): bool
     {
+        // MongoDB 8.0+: "Using Atlas Search Database Commands and the $listSearchIndexes aggregation stage requires additional configuration."
+        if ($e->getCode() === self::CODE_SEARCH_NOT_ENABLED) {
+            return true;
+        }
+
         // MongoDB 6.0.7+ and 7.0+: "Search indexes are only available on Atlas"
         if ($e->getCode() === self::CODE_COMMAND_NOT_SUPPORTED && str_contains($e->getMessage(), 'Search index')) {
             return true;
@@ -1090,7 +1116,7 @@ final class SchemaManager
         }
 
         // Older server versions don't support $listSearchIndexes
-        // We don't check for an error code here as the code is not documented and we can't rely on it
+        // We don't check for an error code here as the code is not documented, and we can't rely on it
         return str_contains($e->getMessage(), 'Unrecognized pipeline stage name: \'$listSearchIndexes\'');
     }
 }

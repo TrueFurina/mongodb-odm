@@ -29,12 +29,11 @@ use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
 use Doctrine\Persistence\Mapping\MappingException;
 use InvalidArgumentException;
-use Iterator as SplIterator;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 use MongoDB\Driver\CursorInterface;
+use MongoDB\Driver\Exception\BulkWriteException;
 use MongoDB\Driver\Exception\Exception as DriverException;
-use MongoDB\Driver\Exception\WriteException;
 use MongoDB\Driver\Session;
 use MongoDB\Driver\WriteConcern;
 use MongoDB\GridFS\Bucket;
@@ -266,7 +265,7 @@ final class DocumentPersister
                 $this->executeUpsert($document, $options);
                 $this->handleCollections($document, $options);
                 unset($this->queuedUpserts[$oid]);
-            } catch (WriteException $e) {
+            } catch (BulkWriteException $e) {
                 unset($this->queuedUpserts[$oid]);
 
                 throw $e;
@@ -333,18 +332,17 @@ final class DocumentPersister
             $data  = ['$set' => ['_id' => $criteria['_id']]];
         }
 
+        assert($this->collection instanceof Collection);
         try {
-            assert($this->collection instanceof Collection);
             $this->collection->updateOne($criteria, $data, $options);
 
             return;
-        } catch (WriteException $e) {
+        } catch (BulkWriteException $e) {
             if (empty($retry) || strpos($e->getMessage(), 'Mod on _id not allowed') === false) {
                 throw $e;
             }
         }
 
-        assert($this->collection instanceof Collection);
         $this->collection->updateOne($criteria, ['$set' => new stdClass()], $options);
     }
 
@@ -544,8 +542,6 @@ final class DocumentPersister
         assert($this->collection instanceof Collection);
         $baseCursor = $this->collection->find($criteria, $options);
 
-        assert($baseCursor instanceof CursorInterface && $baseCursor instanceof SplIterator);
-
         return $this->wrapCursor($baseCursor);
     }
 
@@ -592,7 +588,7 @@ final class DocumentPersister
     /**
      * Wraps the supplied base cursor in the corresponding ODM class.
      */
-    private function wrapCursor(SplIterator&CursorInterface $baseCursor): Iterator
+    private function wrapCursor(CursorInterface $baseCursor): Iterator
     {
         return new CachingIterator(new HydratingIterator($baseCursor, $this->dm->getUnitOfWork(), $this->class));
     }

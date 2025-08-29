@@ -13,6 +13,7 @@ use Doctrine\Instantiator\Instantiator;
 use Doctrine\Instantiator\InstantiatorInterface;
 use Doctrine\ODM\MongoDB\Id\IdGenerator;
 use Doctrine\ODM\MongoDB\LockException;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\EncryptQuery;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\TimeSeries;
 use Doctrine\ODM\MongoDB\Proxy\InternalProxy;
 use Doctrine\ODM\MongoDB\Types\Incrementable;
@@ -25,6 +26,9 @@ use Doctrine\Persistence\Mapping\RuntimeReflectionService;
 use Doctrine\Persistence\Reflection\EnumReflectionProperty;
 use InvalidArgumentException;
 use LogicException;
+use MongoDB\BSON\Decimal128;
+use MongoDB\BSON\Int64;
+use MongoDB\BSON\UTCDateTime;
 use ProxyManager\Proxy\GhostObjectInterface;
 use ReflectionClass;
 use ReflectionEnum;
@@ -67,6 +71,17 @@ use function trigger_deprecation;
  *    get the whole class name, namespace inclusive, prepended to every property in
  *    the serialized representation).
  *
+ * The EncryptConfig type is identical to the {@see Encrypt} attribute.
+ *
+ * @phpstan-type EncryptConfig array{
+ *     queryType?: ?EncryptQuery,
+ *     min?: float|int|Decimal128|Int64|UTCDateTime|null,
+ *     max?: float|int|Decimal128|Int64|UTCDateTime|null,
+ *     sparsity?: int<1, 4>,
+ *     precision?: positive-int,
+ *     trimFactor?: positive-int,
+ *     contention?: positive-int,
+ * }
  * @phpstan-type FieldMappingConfig array{
  *      type?: string,
  *      fieldName?: string,
@@ -107,6 +122,7 @@ use function trigger_deprecation;
  *      order?: int|string,
  *      background?: bool,
  *      enumType?: class-string<BackedEnum>,
+ *      encrypt?: EncryptConfig,
  * }
  * @phpstan-type FieldMapping array{
  *      type: string,
@@ -153,6 +169,7 @@ use function trigger_deprecation;
  *      alsoLoadFields?: list<string>,
  *      enumType?: class-string<BackedEnum>,
  *      storeEmptyArray?: bool,
+ *      encrypt?: EncryptConfig,
  * }
  * @phpstan-type AssociationFieldMapping array{
  *      type?: string,
@@ -800,6 +817,11 @@ use function trigger_deprecation;
      * @var bool
      */
     public $isReadOnly;
+
+    /**
+     * READ-ONLY: A flag for whether or not this document has encrypted fields.
+     */
+    public bool $isEncrypted = false;
 
     /** READ ONLY: stores metadata about the time series collection */
     public ?TimeSeries $timeSeriesOptions = null;
@@ -2176,6 +2198,15 @@ use function trigger_deprecation;
         return $this->isView;
     }
 
+    public function isDocument(): bool
+    {
+        return ! $this->isView
+            && ! $this->isEmbeddedDocument
+            && ! $this->isFile
+            && ! $this->isQueryResultDocument
+            && ! $this->isMappedSuperclass;
+    }
+
     /** @param class-string $rootClass */
     public function markViewOf(string $rootClass): void
     {
@@ -2353,6 +2384,16 @@ use function trigger_deprecation;
 
         if (! isset($mapping['nullable'])) {
             $mapping['nullable'] = false;
+        }
+
+        if (isset($mapping['encrypt']['queryType'])) {
+            // The encrypted range query options min and max must be converted to the database type
+            $type = Type::getType($mapping['type']);
+            foreach (['min', 'max'] as $option) {
+                if (isset($mapping['encrypt'][$option])) {
+                    $mapping['encrypt'][$option] = $type->convertToDatabaseValue($mapping['encrypt'][$option]);
+                }
+            }
         }
 
         if (

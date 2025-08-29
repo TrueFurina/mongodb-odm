@@ -217,7 +217,7 @@ Optional arguments:
 
     class User
     {
-        /** @var Collection<BookTag|SongTag> */
+        /** @var Collection<int, BookTag|SongTag> */
         #[EmbedMany(
             strategy:'set',
             discriminatorField:'type',
@@ -335,6 +335,94 @@ relationship.
 Unlike normal documents, embedded documents cannot specify their own database or
 collection. That said, a single embedded document class may be used with
 multiple document classes, and even other embedded documents!
+
+.. _encrypt_attribute:
+
+#[Encrypt]
+----------
+
+The ``#[Encrypt]`` attribute is used to define an encrypted field mapping for a
+document property. It allows you to configure fields for automatic and queryable
+encryption in MongoDB.
+
+Optional arguments:
+
+- ``queryType`` - Specifies the query type for the field. Possible values:
+  - ``null`` (default) - Field is not queryable.
+  - ``EncryptQuery::Equality`` - Enables equality queries.
+  - ``EncryptQuery::Range`` - Enables range queries.
+- ``min``, ``max`` - Specify minimum and maximum (inclusive) queryable values
+  for a field when possible, as smaller bounds improve query efficiency. If
+  querying values outside of these bounds, MongoDB returns an error.
+- ``sparsity``, ``precision``, ``trimFactor``, ``contention`` - For advanced
+  users only. The default values for these options are suitable for the majority
+  of use cases, and should only be modified if your use case requires it.
+
+.. note::
+
+    Queryable encryption is only supported in MongoDB version 7.0 and later.
+
+Example:
+
+.. code-block:: php
+
+    <?php
+
+    use Doctrine\ODM\MongoDB\Mapping\Annotations\Encrypt;
+    use Doctrine\ODM\MongoDB\Mapping\Annotations\EncryptQuery;
+
+    #[Document]
+    class Client
+    {
+        #[Field]
+        #[Encrypt(queryType: EncryptQuery::Equality)]
+        public string $name;
+    }
+
+The ``#[Encrypt]`` attribute can be added to a class with `#[EmbeddedDocument]`_.
+This will encrypt the entire embedded document, in the field that contains it.
+Fields within an encrypted embedded document cannot be individually encrypted.
+Queryable encryption is not supported for embedded documents, so the ``queryType``
+argument is not applicable. Encrypted embedded documents are stored as a binary
+value in the parent document.
+
+.. code-block:: php
+
+    <?php
+
+    use Doctrine\ODM\MongoDB\Mapping\Annotations\Encrypt;
+
+    #[Encrypt]
+    #[EmbeddedDocument]
+    class CreditCard
+    {
+        #[Field]
+        public string $number;
+
+        #[Field]
+        public string $expiryDate;
+    }
+
+    #[Document]
+    class User
+    {
+        #[EmbedOne(targetDocument: CreditCard::class)]
+        public CreditCard $creditCard;
+    }
+
+For more details, refer to the MongoDB documentation on
+`Queryable Encryption <https://www.mongodb.com/docs/manual/core/queryable-encryption/fundamentals/encrypt-and-query/>`_.
+
+
+.. note::
+
+    The encrypted collection must be created with the `Schema Manager`_ before
+    before inserting documents.
+
+.. note::
+
+    Due to the way the encrypted fields map is generated, the queryable encryption
+    is not compatible with ``SINGLE_COLLECTION`` inheritance.
 
 #[Field]
 --------
@@ -987,7 +1075,7 @@ Optional arguments:
 
     class User
     {
-        /** @var Collection<Item> */
+        /** @var Collection<int, Item> */
         #[ReferenceMany(
             strategy: 'set',
             targetDocument: Item::class,
@@ -1399,5 +1487,6 @@ root class specified in the view mapping.
 .. _DBRef: https://docs.mongodb.com/manual/reference/database-references/#dbrefs
 .. _geoNear command: https://docs.mongodb.com/manual/reference/command/geoNear/
 .. _MongoDB\BSON\ObjectId: https://www.php.net/class.mongodb-bson-objectid
+.. _Schema Manager: ../reference/migrating-schemas
 .. |FQCN| raw:: html
   <abbr title="Fully-Qualified Class Name">FQCN</abbr>

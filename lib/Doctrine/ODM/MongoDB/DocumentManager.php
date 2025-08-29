@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB;
 
-use Composer\InstalledVersions;
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Hydrator\HydratorFactory;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -29,6 +28,7 @@ use InvalidArgumentException;
 use MongoDB\Client;
 use MongoDB\Collection;
 use MongoDB\Database;
+use MongoDB\Driver\ClientEncryption;
 use MongoDB\Driver\ReadPreference;
 use MongoDB\GridFS\Bucket;
 use ProxyManager\Proxy\GhostObjectInterface;
@@ -63,6 +63,8 @@ class DocumentManager implements ObjectManager
      * The Doctrine MongoDB connection instance.
      */
     private Client $client;
+
+    private ClientEncryption $clientEncryption;
 
     /**
      * The used Configuration.
@@ -138,8 +140,6 @@ class DocumentManager implements ObjectManager
     /** @var ProxyClassNameResolver&ClassNameResolver  */
     private ProxyClassNameResolver $classNameResolver;
 
-    private static ?string $version = null;
-
     /**
      * Creates a new Document that operates on the given Mongo connection
      * and uses the given Configuration.
@@ -151,12 +151,7 @@ class DocumentManager implements ObjectManager
         $this->client       = $client ?: new Client(
             'mongodb://127.0.0.1',
             [],
-            [
-                'driver' => [
-                    'name' => 'doctrine-odm',
-                    'version' => self::getVersion(),
-                ],
-            ],
+            $this->config->getDriverOptions(),
         );
 
         $this->classNameResolver = $this->config->isLazyGhostObjectEnabled()
@@ -223,6 +218,22 @@ class DocumentManager implements ObjectManager
     public function getClient(): Client
     {
         return $this->client;
+    }
+
+    /** @internal */
+    public function getClientEncryption(): ClientEncryption
+    {
+        if (isset($this->clientEncryption)) {
+            return $this->clientEncryption;
+        }
+
+        $options = $this->config->getClientEncryptionOptions();
+
+        if (! $options) {
+            throw new RuntimeException('Auto-encryption is not enabled.');
+        }
+
+        return $this->clientEncryption = $this->client->createClientEncryption($options);
     }
 
     /** Gets the metadata factory used to gather the metadata of classes. */
@@ -922,14 +933,5 @@ class DocumentManager implements ObjectManager
         }
 
         return $mapping['targetDocument'];
-    }
-
-    private static function getVersion(): string
-    {
-        try {
-            return self::$version ??= InstalledVersions::getPrettyVersion('doctrine/mongodb-odm') ?? 'unknown';
-        } catch (Throwable) {
-            return 'error';
-        }
     }
 }

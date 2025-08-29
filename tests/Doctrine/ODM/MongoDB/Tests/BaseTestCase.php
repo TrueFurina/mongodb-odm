@@ -10,8 +10,10 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Proxy\InternalProxy;
 use Doctrine\ODM\MongoDB\Tests\Query\Filter\Filter;
 use Doctrine\ODM\MongoDB\UnitOfWork;
+use Doctrine\Persistence\Mapping\Driver\FileClassLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use MongoDB\Client;
+use MongoDB\Driver\Command;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Server;
 use MongoDB\Model\DatabaseInfo;
@@ -20,6 +22,7 @@ use ProxyManager\Proxy\LazyLoadingInterface;
 
 use function array_key_exists;
 use function array_map;
+use function class_exists;
 use function count;
 use function explode;
 use function getenv;
@@ -124,7 +127,14 @@ abstract class BaseTestCase extends TestCase
 
     protected static function createMetadataDriverImpl(): MappingDriver
     {
-        return AttributeDriver::create(__DIR__ . '/../../../../Documents');
+        $paths = [__DIR__ . '/../../../../Documents'];
+
+        // Available in Doctrine Persistence 4.1+
+        if (class_exists(FileClassLocator::class)) {
+            $paths = FileClassLocator::createFromDirectories($paths);
+        }
+
+        return AttributeDriver::create($paths);
     }
 
     protected static function createTestDocumentManager(): DocumentManager
@@ -190,6 +200,24 @@ abstract class BaseTestCase extends TestCase
         }
 
         $this->markTestSkipped('Test does not apply on sharded clusters');
+    }
+
+    protected function skipTestIfQueryableEncryptionNotSupported(): void
+    {
+        if ($this->getPrimaryServer()->getType() === Server::TYPE_STANDALONE) {
+            $this->markTestSkipped('Queryable Encryption test requires a replica set or sharded cluster');
+        }
+
+        $buildInfo = $this->getPrimaryServer()->executeCommand(
+            DOCTRINE_MONGODB_DATABASE,
+            new Command(['buildInfo' => 1]),
+        )->toArray()[0];
+
+        if (! in_array('enterprise', $buildInfo->modules ?? [])) {
+            $this->markTestSkipped('Queryable Encryption test requires MongoDB Atlas or Enterprise');
+        }
+
+        $this->requireVersion($buildInfo->version, '7.0', '<', 'Queryable Encryption test requires MongoDB 7.0 or higher');
     }
 
     protected function requireVersion(string $installedVersion, string $requiredVersion, ?string $operator, string $message): void

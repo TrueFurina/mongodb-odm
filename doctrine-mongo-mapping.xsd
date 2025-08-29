@@ -16,9 +16,9 @@
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="document" type="odm:document" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="embedded-document" type="odm:document" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="mapped-superclass" type="odm:document" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="query-result-document" type="odm:document" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="embedded-document" type="odm:embedded-document" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="mapped-superclass" type="odm:mapped-superclass" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="query-result-document" type="odm:query-result-document" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="view" type="odm:view" minOccurs="0" maxOccurs="unbounded" />
         <xs:element name="gridfs-file" type="odm:gridfs-file" minOccurs="0" maxOccurs="unbounded" />
       </xs:choice>
@@ -26,15 +26,71 @@
   </xs:element>
 
   <xs:complexType name="embedded-document">
-    <xs:attribute name="name" type="xs:NMTOKEN" />
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="id" type="odm:id" minOccurs="0" />
+      <xs:element name="field" type="odm:field" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-one" type="odm:embed-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-many" type="odm:embed-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="encrypt" type="odm:encrypt-field" minOccurs="0" />
+      <xs:element name="reference-one" type="odm:reference-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="reference-many" type="odm:reference-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="discriminator-field" type="odm:discriminator-field" minOccurs="0" />
+      <xs:element name="discriminator-map" type="odm:discriminator-map" minOccurs="0" />
+      <xs:element name="default-discriminator-value" type="odm:default-discriminator-value" minOccurs="0" />
+      <xs:element name="lifecycle-callbacks" type="odm:lifecycle-callbacks" minOccurs="0" />
+      <xs:element name="also-load-methods" type="odm:also-load-methods" minOccurs="0" />
+      <xs:element name="indexes" type="odm:indexes" minOccurs="0" />
+    </xs:choice>
+
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="inheritance-type" type="odm:inheritance-type" />
   </xs:complexType>
 
   <xs:complexType name="mapped-superclass">
-    <xs:attribute name="name" type="xs:NMTOKEN" />
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="id" type="odm:id" minOccurs="0" />
+      <xs:element name="field" type="odm:field" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-one" type="odm:embed-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-many" type="odm:embed-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="reference-one" type="odm:reference-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="reference-many" type="odm:reference-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="discriminator-field" type="odm:discriminator-field" minOccurs="0" />
+      <xs:element name="discriminator-map" type="odm:discriminator-map" minOccurs="0" />
+      <xs:element name="default-discriminator-value" type="odm:default-discriminator-value" minOccurs="0" />
+      <xs:element name="lifecycle-callbacks" type="odm:lifecycle-callbacks" minOccurs="0" />
+      <xs:element name="also-load-methods" type="odm:also-load-methods" minOccurs="0" />
+      <xs:element name="indexes" type="odm:indexes" minOccurs="0" />
+    </xs:choice>
+
+    <xs:attribute name="db" type="xs:NMTOKEN" />
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="write-concern" type="xs:string" />
+    <xs:attribute name="collection" type="xs:NMTOKEN" />
+    <xs:attribute name="capped-collection" type="xs:boolean" />
+    <xs:attribute name="capped-collection-size" type="xs:integer" />
+    <xs:attribute name="capped-collection-max" type="xs:integer" />
+    <xs:attribute name="repository-class" type="xs:string" />
+    <xs:attribute name="inheritance-type" type="odm:inheritance-type" />
+    <xs:attribute name="change-tracking-policy" type="odm:change-tracking-policy" />
+    <xs:attribute name="read-only" type="xs:boolean" />
   </xs:complexType>
 
   <xs:complexType name="query-result-document">
-    <xs:attribute name="name" type="xs:NMTOKEN" />
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="id" type="odm:id" minOccurs="0" />
+      <xs:element name="field" type="odm:field" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-one" type="odm:embed-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="embed-many" type="odm:embed-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="reference-one" type="odm:reference-one" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="reference-many" type="odm:reference-many" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="discriminator-field" type="odm:discriminator-field" minOccurs="0" />
+      <xs:element name="discriminator-map" type="odm:discriminator-map" minOccurs="0" />
+      <xs:element name="default-discriminator-value" type="odm:default-discriminator-value" minOccurs="0" />
+      <xs:element name="lifecycle-callbacks" type="odm:lifecycle-callbacks" minOccurs="0" />
+      <xs:element name="also-load-methods" type="odm:also-load-methods" minOccurs="0" />
+    </xs:choice>
+
+    <xs:attribute name="name" type="xs:string" />
   </xs:complexType>
 
   <xs:complexType name="view">
@@ -128,7 +184,31 @@
     <xs:attribute name="mode" type="odm:read-preference-values" />
   </xs:complexType>
 
+  <xs:complexType name="encrypt-field">
+    <xs:attribute name="queryType">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="equality" />
+          <xs:enumeration value="range" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="min" type="xs:string" />
+    <xs:attribute name="max" type="xs:string" />
+    <xs:attribute name="sparsity" type="xs:integer" />
+    <xs:attribute name="precision" type="xs:integer" />
+    <xs:attribute name="trimFactor" type="xs:integer" />
+    <xs:attribute name="contention" type="xs:integer" />
+  </xs:complexType>
+
+  <xs:complexType name="encrypt-embedded-document">
+  </xs:complexType>
+
   <xs:complexType name="field">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="encrypt" type="odm:encrypt-field" minOccurs="0" />
+    </xs:choice>
+
     <xs:attribute name="name" type="xs:NMTOKEN" />
     <xs:attribute name="type" type="xs:NMTOKEN" />
     <xs:attribute name="strategy" type="odm:storage-strategy" default="set" />
@@ -199,6 +279,7 @@
       <xs:element name="discriminator-field" type="odm:discriminator-field" minOccurs="0" />
       <xs:element name="discriminator-map" type="odm:discriminator-map" minOccurs="0" />
       <xs:element name="default-discriminator-value" type="odm:default-discriminator-value" minOccurs="0" />
+      <xs:element name="encrypt" type="odm:encrypt-field" minOccurs="0" />
     </xs:choice>
 
     <xs:attribute name="target-document" type="xs:string" />
@@ -214,6 +295,7 @@
       <xs:element name="discriminator-field" type="odm:discriminator-field" minOccurs="0" />
       <xs:element name="discriminator-map" type="odm:discriminator-map" minOccurs="0" />
       <xs:element name="default-discriminator-value" type="odm:default-discriminator-value" minOccurs="0" />
+      <xs:element name="encrypt" type="odm:encrypt-field" minOccurs="0" />
     </xs:choice>
 
     <xs:attribute name="target-document" type="xs:string" />
@@ -480,7 +562,7 @@
       <xs:element name="field" type="odm:search-index-field" minOccurs="0" maxOccurs="unbounded" />
       <!-- Note: custom analyzers are intentionally unsupported in XML -->
       <xs:element name="synonym" type="odm:search-index-synonym" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="stored-source" type="odm:search-index-stored-source" minOccurs="0" maxOccurs="1" />
+      <xs:element name="stored-source" type="odm:search-index-stored-source" minOccurs="0" />
     </xs:choice>
 
     <xs:attribute name="name" type="xs:string" />
