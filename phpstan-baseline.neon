@@ -883,6 +883,12 @@ parameters:
 			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadataFactory.php
 
 		-
+			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactory\:\:generateAutoIdGenerator\(\) has parameter \$class with generic class Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadataFactory.php
+
+		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactory\:\:initializeReflection\(\) has parameter \$class with generic class Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
@@ -2105,6 +2111,18 @@ parameters:
 			identifier: property.onlyRead
 			count: 1
 			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/ResolveTargetDocumentListenerTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with arguments MongoDB\\BSON\\Binary, null and ''Binary UUIDs are…'' will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/Doctrine/ODM/MongoDB/Tests/Types/BinaryUuidTypeTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with arguments Symfony\\Component\\Uid\\UuidV4, null and ''Uuid objects are…'' will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/Doctrine/ODM/MongoDB/Tests/Types/BinaryUuidTypeTest.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Tests\\ArrayTest\:\:\$id is unused\.$#'

@@ -34,6 +34,9 @@ use ReflectionClass;
 use ReflectionEnum;
 use ReflectionNamedType;
 use ReflectionProperty;
+use Symfony\Component\Uid\UuidV1;
+use Symfony\Component\Uid\UuidV4;
+use Symfony\Component\Uid\UuidV7;
 
 use function array_column;
 use function array_filter;
@@ -300,6 +303,8 @@ use function trigger_deprecation;
 
     /**
      * UUID means Doctrine will generate a uuid for us.
+     *
+     * @deprecated without replacement. Use a custom generator or switch to binary UUIDs.
      */
     public const GENERATOR_TYPE_UUID = 3;
 
@@ -940,6 +945,16 @@ use function trigger_deprecation;
     public function getIdentifier(): array
     {
         return [$this->identifier];
+    }
+
+    /**
+     * Gets the mapping of the identifier field
+     *
+     * @phpstan-return FieldMapping
+     */
+    public function getIdentifierMapping(): array
+    {
+        return $this->fieldMappings[$this->identifier];
     }
 
     /**
@@ -2391,22 +2406,18 @@ use function trigger_deprecation;
             }
 
             $this->generatorOptions = $mapping['options'] ?? [];
-            switch ($this->generatorType) {
-                case self::GENERATOR_TYPE_AUTO:
-                    $mapping['type'] = 'id';
-                    break;
-                default:
-                    if (! empty($this->generatorOptions['type'])) {
-                        $mapping['type'] = (string) $this->generatorOptions['type'];
-                    } elseif (empty($mapping['type'])) {
-                        $mapping['type'] = $this->generatorType === self::GENERATOR_TYPE_INCREMENT ? Type::INT : Type::CUSTOMID;
-                    }
+            if ($this->generatorType !== self::GENERATOR_TYPE_AUTO) {
+                if (! empty($this->generatorOptions['type'])) {
+                    $mapping['type'] = (string) $this->generatorOptions['type'];
+                } elseif (empty($mapping['type'])) {
+                    $mapping['type'] = $this->generatorType === self::GENERATOR_TYPE_INCREMENT ? Type::INT : Type::CUSTOMID;
+                }
+            } elseif ($mapping['type'] !== Type::UUID) {
+                $mapping['type'] = Type::ID;
             }
 
             unset($this->generatorOptions['type']);
-        }
-
-        if (! isset($mapping['type'])) {
+        } elseif (! isset($mapping['type'])) {
             // Default to string
             $mapping['type'] = Type::STRING;
         }
@@ -2798,6 +2809,11 @@ use function trigger_deprecation;
         }
 
         switch ($type->getName()) {
+            case UuidV1::class:
+            case UuidV4::class:
+            case UuidV7::class:
+                $mapping['type'] = Type::UUID;
+                break;
             case DateTime::class:
                 $mapping['type'] = Type::DATE;
                 break;
