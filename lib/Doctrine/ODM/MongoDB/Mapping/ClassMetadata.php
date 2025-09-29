@@ -254,15 +254,16 @@ use function trigger_deprecation;
  * @phpstan-type SearchIndexDefinition array{
  *      mappings: array{
  *          dynamic?: bool,
- *          fields?: array,
+ *          fields?: array<string, array<string, mixed>>,
  *      },
  *      analyzer?: string,
  *      searchAnalyzer?: string,
- *      analyzers?: array,
+ *      analyzers?: list<array<string, mixed>>,
  *      storedSource?: SearchIndexStoredSource,
  *      synonyms?: list<SearchIndexSynonym>,
  * }
  * @phpstan-type SearchIndexMapping array{
+ *      type: 'search'|'vectorSearch',
  *      name: string,
  *      definition: SearchIndexDefinition
  * }
