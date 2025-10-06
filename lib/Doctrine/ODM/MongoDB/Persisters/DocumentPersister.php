@@ -62,6 +62,7 @@ use function is_scalar;
 use function is_string;
 use function spl_object_id;
 use function sprintf;
+use function str_contains;
 use function strpos;
 use function strtolower;
 use function trigger_deprecation;
@@ -1041,7 +1042,7 @@ final class DocumentPersister
      *
      * PHP field names and types will be converted to those used by MongoDB.
      *
-     * @param array<string, mixed> $query
+     * @param array<string|int, mixed> $query
      *
      * @return array<string, mixed>
      */
@@ -1049,26 +1050,29 @@ final class DocumentPersister
     {
         $preparedQuery = [];
 
-        foreach ($query as $key => $value) {
-            $key = (string) $key;
+        foreach ($query as $field => $value) {
+            $field = (string) $field;
 
-            // Recursively prepare logical query clauses
-            if (in_array($key, ['$and', '$or', '$nor'], true) && is_array($value)) {
-                foreach ($value as $k2 => $v2) {
-                    $preparedQuery[$key][$k2] = $this->prepareQueryOrNewObj($v2, $isNewObj);
-                }
+            // Recursively prepare logical query clauses, treating each value as a separate query element
+            if (in_array($field, ['$and', '$or', '$nor'], true) && is_array($value)) {
+                $preparedQuery[$field] = array_map(
+                    fn ($v) => $this->prepareQueryOrNewObj($v, $isNewObj),
+                    $value,
+                );
 
                 continue;
             }
 
-            if (isset($key[0]) && $key[0] === '$' && is_array($value)) {
-                $preparedQuery[$key] = $this->prepareQueryOrNewObj($value, $isNewObj);
+            // Recursively prepare nested operators, treating the value as a single query element
+            if (isset($field[0]) && $field[0] === '$' && is_array($value)) {
+                $preparedQuery[$field] = $this->prepareQueryOrNewObj($value, $isNewObj);
+
                 continue;
             }
 
-            $preparedQueryElements = $this->prepareQueryElement($key, $value, null, true, $isNewObj);
+            // Prepare a single query element. This may produce multiple queries (e.g. for references)
+            $preparedQueryElements = $this->prepareQueryElement($field, $value, null, true, $isNewObj);
             foreach ($preparedQueryElements as [$preparedKey, $preparedValue]) {
-                $preparedValue               = $this->convertToDatabaseValue($key, $preparedValue);
                 $preparedQuery[$preparedKey] = $preparedValue;
             }
         }
@@ -1083,7 +1087,7 @@ final class DocumentPersister
      *
      * @return mixed
      */
-    private function convertToDatabaseValue(string $fieldName, $value)
+    private function convertToDatabaseValue(string $fieldName, $value, ?ClassMetadata $class = null)
     {
         if (is_array($value)) {
             foreach ($value as $k => $v) {
@@ -1091,13 +1095,13 @@ final class DocumentPersister
                     continue;
                 }
 
-                $value[$k] = $this->convertToDatabaseValue($fieldName, $v);
+                $value[$k] = $this->convertToDatabaseValue($fieldName, $v, $class);
             }
 
             return $value;
         }
 
-        if (! $this->class->hasField($fieldName)) {
+        if (! $class || ! $class->hasField($fieldName)) {
             if ($value instanceof BackedEnum) {
                 $value = $value->value;
             }
@@ -1105,7 +1109,7 @@ final class DocumentPersister
             return Type::convertPHPToDatabaseValue($value);
         }
 
-        $mapping  = $this->class->fieldMappings[$fieldName];
+        $mapping  = $class->fieldMappings[$fieldName];
         $typeName = $mapping['type'];
 
         if (! empty($mapping['reference']) || ! empty($mapping['embedded'])) {
@@ -1132,6 +1136,22 @@ final class DocumentPersister
         return $value;
     }
 
+    private function prepareQueryReference(mixed $value, ClassMetadata $class): mixed
+    {
+        if (
+            // Scalar values are prepared immediately
+            ! is_array($value)
+            // Objects without operators can be prepared immediately
+            || ! $this->hasQueryOperators($value)
+            // Objects with DBRef fields can be prepared immediately
+            || $this->hasDBRefFields($value)
+        ) {
+            return $class->getDatabaseIdentifierValue($value);
+        }
+
+        return $this->prepareQueryExpression($value, $class);
+    }
+
     /**
      * Prepares a query value and converts the PHP value to the database value
      * if it is an identifier.
@@ -1141,18 +1161,24 @@ final class DocumentPersister
      *
      * @param mixed $value
      *
-     * @return array<array{string, mixed}>
+     * @return array<array{string, mixed}> Returns an array of tuples containing the prepared field name and value
      */
-    private function prepareQueryElement(string $fieldName, $value = null, ?ClassMetadata $class = null, bool $prepareValue = true, bool $inNewObj = false): array
+    private function prepareQueryElement(string $originalFieldName, $value = null, ?ClassMetadata $class = null, bool $prepareValue = true, bool $inNewObj = false, string $fieldNamePrefix = ''): array
     {
-        $class ??= $this->class;
+        $class   ??= $this->class;
+        $fieldName = $fieldNamePrefix . $originalFieldName;
 
-        // @todo Consider inlining calls to ClassMetadata methods
+        // Process identifier fields
+        if (($class->hasField($originalFieldName) && $class->isIdentifier($originalFieldName)) || $originalFieldName === '_id') {
+            $fieldName = $fieldNamePrefix . '_id';
+
+            return [[$fieldName, $prepareValue ? $this->prepareQueryReference($value, $class) : $value]];
+        }
 
         // Process all non-identifier fields by translating field names
-        if ($class->hasField($fieldName) && ! $class->isIdentifier($fieldName)) {
-            $mapping   = $class->fieldMappings[$fieldName];
-            $fieldName = $mapping['name'];
+        if ($class->hasField($originalFieldName)) {
+            $mapping   = $class->fieldMappings[$originalFieldName];
+            $fieldName = $fieldNamePrefix . $mapping['name'];
 
             if (! $prepareValue) {
                 return [[$fieldName, $value]];
@@ -1176,7 +1202,7 @@ final class DocumentPersister
 
             // No further preparation unless we're dealing with a simple reference
             if (empty($mapping['reference']) || $mapping['storeAs'] !== ClassMetadata::REFERENCE_STORE_AS_ID || empty((array) $value)) {
-                return [[$fieldName, $value]];
+                return [[$fieldName, $this->convertToDatabaseValue($originalFieldName, $value, $class)]];
             }
 
             // Additional preparation for one or more simple reference values
@@ -1194,29 +1220,9 @@ final class DocumentPersister
             return [[$fieldName, $this->prepareQueryExpression($value, $targetClass)]];
         }
 
-        // Process identifier fields
-        if (($class->hasField($fieldName) && $class->isIdentifier($fieldName)) || $fieldName === '_id') {
-            $fieldName = '_id';
-
-            if (! $prepareValue) {
-                return [[$fieldName, $value]];
-            }
-
-            if (! is_array($value)) {
-                return [[$fieldName, $class->getDatabaseIdentifierValue($value)]];
-            }
-
-            // Objects without operators or with DBRef fields can be converted immediately
-            if (! $this->hasQueryOperators($value) || $this->hasDBRefFields($value)) {
-                return [[$fieldName, $class->getDatabaseIdentifierValue($value)]];
-            }
-
-            return [[$fieldName, $this->prepareQueryExpression($value, $class)]];
-        }
-
         // No processing for unmapped, non-identifier, non-dotted field names
-        if (strpos($fieldName, '.') === false) {
-            return [[$fieldName, $value]];
+        if (! str_contains($originalFieldName, '.')) {
+            return [[$fieldName, $prepareValue ? $this->convertToDatabaseValue($originalFieldName, $value, $class) : $value]];
         }
 
         /* Process "fieldName.objectProperty" queries (on arrays or objects).
@@ -1225,121 +1231,111 @@ final class DocumentPersister
          * significant: "fieldName.objectProperty" with an optional index or key
          * for collections stored as either BSON arrays or objects.
          */
-        $e = explode('.', $fieldName, 4);
+        $fieldNameParts = explode('.', $originalFieldName, 4);
+        $partCount      = count($fieldNameParts);
+        assert($partCount >= 2);
 
         // No further processing for unmapped fields
-        if (! isset($class->fieldMappings[$e[0]])) {
-            return [[$fieldName, $value]];
+        if (! $class->hasField($fieldNameParts[0])) {
+            return [[$fieldName, $prepareValue ? $this->convertToDatabaseValue($fieldNameParts[0], $value, $class) : $value]];
         }
 
-        $mapping = $class->fieldMappings[$e[0]];
-        $e[0]    = $mapping['name'];
+        $mapping   = $class->fieldMappings[$fieldNameParts[0]];
+        $fieldName = $fieldNamePrefix . $mapping['name'] . '.' . implode('.', array_slice($fieldNameParts, 1));
 
         // Hash and raw fields will not be prepared beyond the field name
         if ($mapping['type'] === Type::HASH || $mapping['type'] === Type::RAW) {
-            $fieldName = implode('.', $e);
-
             return [[$fieldName, $value]];
         }
 
-        if (
-            $mapping['type'] === ClassMetadata::MANY && CollectionHelper::isHash($mapping['strategy'])
-                && isset($e[2])
-        ) {
-            $objectProperty       = $e[2];
-            $objectPropertyPrefix = $e[1] . '.';
-            $nextObjectProperty   = implode('.', array_slice($e, 3));
-        } elseif ($e[1] !== '$') {
-            $fieldName            = $e[0] . '.' . $e[1];
-            $objectProperty       = $e[1];
-            $objectPropertyPrefix = '';
-            $nextObjectProperty   = implode('.', array_slice($e, 2));
-        } elseif (isset($e[2])) {
-            $fieldName            = $e[0] . '.' . $e[1] . '.' . $e[2];
-            $objectProperty       = $e[2];
-            $objectPropertyPrefix = $e[1] . '.';
-            $nextObjectProperty   = implode('.', array_slice($e, 3));
+        if (isset($mapping['targetDocument'])) {
+            // For associations with a targetDocument (i.e. embedded or reference), get the class metadata for the target document
+            $targetClass = $this->dm->getClassMetadata($mapping['targetDocument']);
+        } elseif (is_object($value) && ! $this->dm->getMetadataFactory()->isTransient($value::class)) {
+            // For associations without a targetDocument, try to infer the class metadata from the object
+            $targetClass = $this->dm->getClassMetadata($value::class);
         } else {
-            $fieldName = $e[0] . '.' . $e[1];
-
-            return [[$fieldName, $value]];
+            // Without a target document, no further processing is possible
+            return [[$fieldName, $prepareValue ? $this->convertToDatabaseValue($fieldNameParts[0], $value) : $value]];
         }
 
-        // No further processing for fields without a targetDocument mapping
-        if (! isset($mapping['targetDocument'])) {
-            if ($nextObjectProperty) {
-                $fieldName .= '.' . $nextObjectProperty;
-            }
-
-            return [[$fieldName, $value]];
-        }
-
-        $targetClass = $this->dm->getClassMetadata($mapping['targetDocument']);
-
-        // No further processing for unmapped targetDocument fields
-        if (! $targetClass->hasField($objectProperty)) {
-            if ($nextObjectProperty) {
-                $fieldName .= '.' . $nextObjectProperty;
-            }
-
-            return [[$fieldName, $value]];
-        }
-
-        $targetMapping      = $targetClass->getFieldMapping($objectProperty);
-        $objectPropertyIsId = $targetClass->isIdentifier($objectProperty);
-
-        // Prepare DBRef identifiers or the mapped field's property path
-        $fieldName = $objectPropertyIsId && ! empty($mapping['reference']) && $mapping['storeAs'] !== ClassMetadata::REFERENCE_STORE_AS_ID
-            ? ClassMetadata::getReferenceFieldName($mapping['storeAs'], $e[0])
-            : $e[0] . '.' . $objectPropertyPrefix . $targetMapping['name'];
-
-        // Process targetDocument identifier fields
-        if ($objectPropertyIsId) {
-            if (! $prepareValue) {
-                return [[$fieldName, $value]];
-            }
-
-            if (! is_array($value)) {
-                return [[$fieldName, $targetClass->getDatabaseIdentifierValue($value)]];
-            }
-
-            // Objects without operators or with DBRef fields can be converted immediately
-            if (! $this->hasQueryOperators($value) || $this->hasDBRefFields($value)) {
-                return [[$fieldName, $targetClass->getDatabaseIdentifierValue($value)]];
-            }
-
-            return [[$fieldName, $this->prepareQueryExpression($value, $targetClass)]];
-        }
-
-        /* The property path may include a third field segment, excluding the
-         * collection item pointer. If present, this next object property must
-         * be processed recursively.
-         */
-        if ($nextObjectProperty) {
-            // Respect the targetDocument's class metadata when recursing
-            $nextTargetClass = isset($targetMapping['targetDocument'])
-                ? $this->dm->getClassMetadata($targetMapping['targetDocument'])
-                : null;
-
-            if (empty($targetMapping['reference'])) {
-                $fieldNames = $this->prepareQueryElement($nextObjectProperty, $value, $nextTargetClass, $prepareValue);
+        // Don't recurse for references in queries. Instead, prepare them directly
+        if (! $inNewObj && ! empty($mapping['reference'])) {
+            // First part is the name of the reference
+            // Second part is either a positional operator, index/key, or the name of a field
+            // Third part (if any) is the name of a field
+            // That means, we can implode all field parts except the first as the next field name
+            if ($fieldNameParts[1] === '$') {
+                assert($partCount >= 3);
+                $objectProperty  = $fieldNameParts[2];
+                $referencePrefix = $fieldNamePrefix . $mapping['name'] . '.$';
             } else {
-                // No recursive processing for references as most probably somebody is querying DBRef or alike
-                if ($nextObjectProperty[0] !== '$' && in_array($targetMapping['storeAs'], [ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB, ClassMetadata::REFERENCE_STORE_AS_DB_REF])) {
-                    $nextObjectProperty = '$' . $nextObjectProperty;
+                $objectProperty  = $fieldNameParts[1];
+                $referencePrefix = $fieldNamePrefix . $mapping['name'];
+            }
+
+            if ($targetClass->hasField($objectProperty) && $targetClass->isIdentifier($objectProperty)) {
+                $fieldName = ClassMetadata::getReferenceFieldName($mapping['storeAs'], $referencePrefix);
+
+                return [[$fieldName, $prepareValue ? $this->prepareQueryReference($value, $targetClass) : $value]];
+            }
+
+            return [[$fieldName, $prepareValue ? $this->convertToDatabaseValue($objectProperty, $value, $targetClass) : $value]];
+        }
+
+        /*
+         * 1 element: impossible (because of the dot)
+         * 2 elements: fieldName.objectProperty, fieldName.<index>, or fieldName.$. For EmbedMany and ReferenceMany, treat the second element as index if $inNewObj is true and convert the value. Otherwise, recurse.
+         * 3+ elements: fieldname.foo.bar, fieldName.<index>.foo, or fieldName.$.foo. For EmbedMany and ReferenceMany, treat the second element as index, and recurse into the third element. Otherwise, recurse with the second element as field name.
+         */
+        if ($mapping['type'] === ClassMetadata::MANY) {
+            if ($inNewObj || CollectionHelper::isHash($mapping['strategy'])) {
+                // When there are only two segments in a hash or when serialising a new object, we seem to be replacing an entire element. Don't recurse, just convert the value.
+                if ($partCount === 2) {
+                    // In order to prepare the embedded document value, we need to recurse with the original field name, then append the second segment
+                    $prepared = $this->prepareQueryElement(
+                        $mapping['name'],
+                        $value,
+                        $targetClass,
+                        $prepareValue,
+                        $inNewObj,
+                        $fieldNamePrefix,
+                    );
+
+                    $preparedFieldName = $prepared[0][0];
+                    $preparedValue     = $prepared[0][1];
+
+                    return [[$preparedFieldName . '.' . $fieldNameParts[1], $preparedValue]];
                 }
 
-                $fieldNames = [[$nextObjectProperty, $value]];
+                // When there are more than two segments, treat the second segment (index/key/positional operator) as part of the field name and recurse into the rest
+                $newPrefix    = $fieldNamePrefix . $mapping['name'] . '.' . $fieldNameParts[1] . '.';
+                $newFieldName = implode('.', array_slice($fieldNameParts, 2));
+            } else {
+                // When serializing a query, the second segment is a positional operator ($), a numeric index for collections, or anything else for a hash.
+                $newPrefix    = $fieldNamePrefix . $mapping['name'] . '.';
+                $newFieldName = implode('.', array_slice($fieldNameParts, 1));
             }
 
-            return array_map(static function ($preparedTuple) use ($fieldName) {
-                [$key, $value] = $preparedTuple;
-
-                return [$fieldName . '.' . $key, $value];
-            }, $fieldNames);
+            return $this->prepareQueryElement(
+                $newFieldName,
+                $value,
+                $targetClass,
+                $prepareValue,
+                $inNewObj,
+                $newPrefix,
+            );
         }
 
-        return [[$fieldName, $value]];
+        // For everything else, recurse with the first segment as field name and the target document class
+        return $this->prepareQueryElement(
+            implode('.', array_slice($fieldNameParts, 1)),
+            $value,
+            $targetClass,
+            $prepareValue,
+            $inNewObj,
+            $fieldNamePrefix . $mapping['name'] . '.',
+        );
     }
 
     /**
