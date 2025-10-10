@@ -808,6 +808,24 @@ class Configuration
             ...$this->attributes['autoEncryption'] ?? [],
         ];
     }
+
+    /**
+     * Pipelines using a search index that does not exist or is not queryable
+     * will return zero documents. By enabling this feature, an additional query
+     * is performed when the pipeline doesn't return any results to check if the
+     * search index exists. If the index does not exist, an exception is thrown.
+     * This feature is enabled by default.
+     * This applies to $search, $searchMeta and $vectorSearch pipelines.
+     */
+    public function setAssertSearchIndexExistsForEmptyResult(bool $enabled): void
+    {
+        $this->attributes['assertSearchIndexExistsForEmptyResult'] = $enabled;
+    }
+
+    public function assertSearchIndexExistsForEmptyResult(): bool
+    {
+        return $this->attributes['assertSearchIndexExistsForEmptyResult'] ?? true;
+    }
 }
 
 interface_exists(MappingDriver::class);

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Functional;
 
+use Doctrine\ODM\MongoDB\Aggregation\Stage;
+use Doctrine\ODM\MongoDB\SchemaException;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
 use Documents\CmsArticle;
 use Documents\CmsUser;
@@ -115,5 +117,52 @@ class AtlasSearchTest extends BaseTestCase
             ->getAggregation()->execute()->toArray();
 
         $this->assertNotEmpty($results, 'Count search should return results');
+    }
+
+    public function testIndexNotCreated(): void
+    {
+        $aggregation = $this->dm->createAggregationBuilder(CmsArticle::class)
+            ->search()
+                ->index('search_articles')
+                ->text()
+                ->query('Atlas Search')
+                ->path('text')
+            ->getAggregation();
+
+        $this->expectException(SchemaException::class);
+        $this->expectExceptionMessageMatches('#^The search index "search_articles" of the collection "[^."]+\.CmsArticle" is not found\.$#');
+
+        $aggregation->execute();
+    }
+
+    public function testIndexNotCreatedWithoutException(): void
+    {
+        $this->dm->getConfiguration()->setAssertSearchIndexExistsForEmptyResult(false);
+
+        $results = $this->dm->createAggregationBuilder(CmsArticle::class)
+            ->search()
+                ->index('search_articles')
+                ->text()
+                ->query('Atlas Search')
+                ->path('text')
+            ->getAggregation()->execute();
+
+        $this->assertCount(0, $results->toArray());
+    }
+
+    public function testIndexNotCreatedWithCustomStage(): void
+    {
+        $aggregation = ($builder = $this->dm->createAggregationBuilder(CmsArticle::class))
+            ->addStage(new class ($builder) extends Stage {
+                public function getExpression(): array
+                {
+                    return ['$search' => ['text' => ['query' => 'Atlas Search', 'path' => 'text']]];
+                }
+            })->getAggregation();
+
+        $this->expectException(SchemaException::class);
+        $this->expectExceptionMessageMatches('#^The search index "default" of the collection "[^."]+\.CmsArticle" is not found\.$#');
+
+        $aggregation->execute();
     }
 }
