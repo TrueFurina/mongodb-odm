@@ -570,7 +570,7 @@ class Builder
      */
     public function search(): Stage\Search
     {
-        $stage = new Stage\Search($this);
+        $stage = new Stage\Search($this, $this->getDocumentPersister());
 
         return $this->addStage($stage);
     }
@@ -648,6 +648,19 @@ class Builder
     public function sortByCount(string $expression): Stage\SortByCount
     {
         $stage = new Stage\SortByCount($this, $expression, $this->dm, $this->class);
+
+        return $this->addStage($stage);
+    }
+
+    /**
+     * The $vectorSearch stage performs a vector similarity search on the specified
+     * field which must be covered by an Atlas Vector Search index.
+     *
+     * @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#mongodb-pipeline-pipe.-vectorSearch
+     */
+    public function vectorSearch(): Stage\VectorSearch
+    {
+        $stage = new Stage\VectorSearch($this, $this->getDocumentPersister());
 
         return $this->addStage($stage);
     }

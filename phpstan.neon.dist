@@ -26,12 +26,33 @@ parameters:
       - identifier: staticMethod.alreadyNarrowedType
         path: tests/Doctrine/
 
-      - message: '#with generic class Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata does not specify its types: T$#'
+      - message: '#generic class Doctrine\\ODM\\MongoDB\\(Mapping\\ClassMetadata|Persisters\\DocumentPersister) (but )?does not specify its types\: T$#'
         identifier: missingType.generics
 
       - message: '#^(Constant|Used constant) DOCTRINE_MONGODB_DATABASE not found\.$#'
         identifier: constant.notFound
         path: tests/
+
+      # Unused properties from test document classes
+      - message: '#^Property (DoctrineGlobal_|Documents\\|Doctrine\\ODM\\MongoDB\\Tests\\)[^:]+(?<!Test)::\$[a-zA-Z0-9_]+ is unused\.$#'
+        identifier: property.unused
+        path: tests/
+
+      - message: '#^Property (DoctrineGlobal_|Documents\\|Doctrine\\ODM\\MongoDB\\Tests\\)[^:]+(?<!Test)::\$[a-zA-Z0-9_]+ is never written, only read\.$#'
+        identifier: property.onlyRead
+        path: tests/
+
+      - message: '#^Property (DoctrineGlobal_|Documents\\|Doctrine\\ODM\\MongoDB\\Tests\\)[^:]+(?<!Test)::\$[a-zA-Z0-9_]+ is never read, only written\.$#'
+        identifier: property.onlyWritten
+        path: tests/
+
+      - message: '#^Property (DoctrineGlobal_|Documents\\|Doctrine\\ODM\\MongoDB\\Tests\\)[^:]+(?<!Test)::\$[a-zA-Z0-9_]+ \(.*\) is never assigned .* so it can be removed from the property type\.$#'
+        identifier: property.unusedType
+        path: tests/
+
+      # Requires ext-mongodb 2.2+
+      - message: '#MongoDB\\BSON\\VectorType#'
+      - message: '#MongoDB\\BSON\\Binary\:\:(TYPE_VECTOR|getVectorType|toArray|fromVector)#'
 
   # To be removed when reaching phpstan level 6
   checkMissingVarTagTypehint: true

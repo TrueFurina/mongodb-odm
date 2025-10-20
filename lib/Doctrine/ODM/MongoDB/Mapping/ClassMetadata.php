@@ -34,7 +34,11 @@ use ReflectionClass;
 use ReflectionEnum;
 use ReflectionNamedType;
 use ReflectionProperty;
+use Symfony\Component\Uid\UuidV1;
+use Symfony\Component\Uid\UuidV4;
+use Symfony\Component\Uid\UuidV7;
 
+use function array_column;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -250,17 +254,29 @@ use function trigger_deprecation;
  * @phpstan-type SearchIndexDefinition array{
  *      mappings: array{
  *          dynamic?: bool,
- *          fields?: array,
+ *          fields?: array<string, array<string, mixed>>,
  *      },
  *      analyzer?: string,
  *      searchAnalyzer?: string,
- *      analyzers?: array,
+ *      analyzers?: list<array<string, mixed>>,
  *      storedSource?: SearchIndexStoredSource,
  *      synonyms?: list<SearchIndexSynonym>,
  * }
  * @phpstan-type SearchIndexMapping array{
+ *      type: "search"|"vectorSearch",
  *      name: string,
  *      definition: SearchIndexDefinition
+ * }
+ * @phpstan-type VectorSearchIndexField array{
+ *     type: "vector"|"filter",
+ *     path: string,
+ *     numDimensions?: int,
+ *     similarity?: self::VECTOR_SIMILARITY_*,
+ *     quantization?: self::VECTOR_QUANTIZATION_*,
+ *     hnswOptions?: array{maxEdges?: int, numEdgeCandidates?: int}
+ * }
+ * @phpstan-type VectorSearchIndexDefinition array{
+ *     fields: list<VectorSearchIndexField>
  * }
  * @phpstan-type ShardKeys array<string, mixed>
  * @phpstan-type ShardOptions array<string, mixed>
@@ -288,6 +304,8 @@ use function trigger_deprecation;
 
     /**
      * UUID means Doctrine will generate a uuid for us.
+     *
+     * @deprecated without replacement. Use a custom generator or switch to binary UUIDs.
      */
     public const GENERATOR_TYPE_UUID = 3;
 
@@ -458,6 +476,13 @@ use function trigger_deprecation;
      * @see https://www.mongodb.com/docs/manual/reference/command/createSearchIndexes/
      */
     public const DEFAULT_SEARCH_INDEX_NAME = 'default';
+
+    public const VECTOR_SIMILARITY_EUCLIDEAN   = 'euclidean';
+    public const VECTOR_SIMILARITY_COSINE      = 'cosine';
+    public const VECTOR_SIMILARITY_DOT_PRODUCT = 'dotProduct';
+    public const VECTOR_QUANTIZATION_NONE      = 'none';
+    public const VECTOR_QUANTIZATION_SCALAR    = 'scalar';
+    public const VECTOR_QUANTIZATION_BINARY    = 'binary';
 
     private const ALLOWED_GRIDFS_FIELDS = ['_id', 'chunkSize', 'filename', 'length', 'metadata', 'uploadDate'];
 
@@ -924,6 +949,16 @@ use function trigger_deprecation;
     }
 
     /**
+     * Gets the mapping of the identifier field
+     *
+     * @phpstan-return FieldMapping
+     */
+    public function getIdentifierMapping(): array
+    {
+        return $this->fieldMappings[$this->identifier];
+    }
+
+    /**
      * Since MongoDB only allows exactly one identifier field
      * this will always return an array with only one value
      *
@@ -1243,19 +1278,29 @@ use function trigger_deprecation;
     /**
      * Add a search index for this Document.
      *
-     * @phpstan-param SearchIndexDefinition $definition
+     * @phpstan-param SearchIndexDefinition|VectorSearchIndexDefinition $definition
+     * @phpstan-param "search"|"vectorSearch" $type
      */
-    public function addSearchIndex(array $definition, ?string $name = null): void
+    public function addSearchIndex(array $definition, ?string $name = null, string $type = 'search'): void
     {
         $name ??= self::DEFAULT_SEARCH_INDEX_NAME;
 
-        if (empty($definition['mappings']['dynamic']) && empty($definition['mappings']['fields'])) {
+        if ($type !== 'search' && $type !== 'vectorSearch') {
+            throw new InvalidArgumentException(sprintf('Search index type must be either "search" or "vectorSearch", "%s" given.', $type));
+        }
+
+        if ($type === 'search' && empty($definition['mappings']['dynamic']) && empty($definition['mappings']['fields'])) {
             throw MappingException::emptySearchIndexDefinition($this->name, $name);
+        }
+
+        if ($type === 'vectorSearch' && ! in_array('vector', array_column($definition['fields'] ?? [], 'type'), true)) {
+            throw MappingException::emptyVectorSearchIndexDefinition($this->name, $name);
         }
 
         $this->searchIndexes[] = [
             'definition' => $definition,
             'name' => $name,
+            'type' => $type,
         ];
     }
 
@@ -1794,8 +1839,7 @@ use function trigger_deprecation;
      */
     public function isSingleValuedReference(string $fieldName): bool
     {
-        return isset($this->fieldMappings[$fieldName]['association']) &&
-            $this->fieldMappings[$fieldName]['association'] === self::REFERENCE_ONE;
+        return ($this->fieldMappings[$fieldName]['association'] ?? null) === self::REFERENCE_ONE;
     }
 
     /**
@@ -1804,8 +1848,7 @@ use function trigger_deprecation;
      */
     public function isCollectionValuedReference(string $fieldName): bool
     {
-        return isset($this->fieldMappings[$fieldName]['association']) &&
-            $this->fieldMappings[$fieldName]['association'] === self::REFERENCE_MANY;
+        return ($this->fieldMappings[$fieldName]['association'] ?? null) === self::REFERENCE_MANY;
     }
 
     /**
@@ -1814,8 +1857,7 @@ use function trigger_deprecation;
      */
     public function isSingleValuedEmbed(string $fieldName): bool
     {
-        return isset($this->fieldMappings[$fieldName]['association']) &&
-            $this->fieldMappings[$fieldName]['association'] === self::EMBED_ONE;
+        return ($this->fieldMappings[$fieldName]['association'] ?? null) === self::EMBED_ONE;
     }
 
     /**
@@ -1824,8 +1866,7 @@ use function trigger_deprecation;
      */
     public function isCollectionValuedEmbed(string $fieldName): bool
     {
-        return isset($this->fieldMappings[$fieldName]['association']) &&
-            $this->fieldMappings[$fieldName]['association'] === self::EMBED_MANY;
+        return ($this->fieldMappings[$fieldName]['association'] ?? null) === self::EMBED_MANY;
     }
 
     /**
@@ -2234,8 +2275,7 @@ use function trigger_deprecation;
     /** @param string $fieldName */
     public function getTypeOfField($fieldName): ?string
     {
-        return isset($this->fieldMappings[$fieldName]) ?
-            $this->fieldMappings[$fieldName]['type'] : null;
+        return $this->fieldMappings[$fieldName]['type'] ?? null;
     }
 
     /**
@@ -2362,22 +2402,18 @@ use function trigger_deprecation;
             }
 
             $this->generatorOptions = $mapping['options'] ?? [];
-            switch ($this->generatorType) {
-                case self::GENERATOR_TYPE_AUTO:
-                    $mapping['type'] = 'id';
-                    break;
-                default:
-                    if (! empty($this->generatorOptions['type'])) {
-                        $mapping['type'] = (string) $this->generatorOptions['type'];
-                    } elseif (empty($mapping['type'])) {
-                        $mapping['type'] = $this->generatorType === self::GENERATOR_TYPE_INCREMENT ? Type::INT : Type::CUSTOMID;
-                    }
+            if ($this->generatorType !== self::GENERATOR_TYPE_AUTO) {
+                if (! empty($this->generatorOptions['type'])) {
+                    $mapping['type'] = (string) $this->generatorOptions['type'];
+                } elseif (empty($mapping['type'])) {
+                    $mapping['type'] = $this->generatorType === self::GENERATOR_TYPE_INCREMENT ? Type::INT : Type::CUSTOMID;
+                }
+            } elseif ($mapping['type'] !== Type::UUID) {
+                $mapping['type'] = Type::ID;
             }
 
             unset($this->generatorOptions['type']);
-        }
-
-        if (! isset($mapping['type'])) {
+        } elseif (! isset($mapping['type'])) {
             // Default to string
             $mapping['type'] = Type::STRING;
         }
@@ -2769,6 +2805,11 @@ use function trigger_deprecation;
         }
 
         switch ($type->getName()) {
+            case UuidV1::class:
+            case UuidV4::class:
+            case UuidV7::class:
+                $mapping['type'] = Type::UUID;
+                break;
             case DateTime::class:
                 $mapping['type'] = Type::DATE;
                 break;

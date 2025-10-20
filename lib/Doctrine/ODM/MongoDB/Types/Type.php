@@ -9,6 +9,7 @@ use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\ODM\MongoDB\Types;
 use InvalidArgumentException;
 use MongoDB\BSON\ObjectId;
+use Symfony\Component\Uid\Uuid;
 
 use function end;
 use function explode;
@@ -45,6 +46,10 @@ abstract class Type
     public const OBJECTID           = 'object_id';
     public const RAW                = 'raw';
     public const DECIMAL128         = 'decimal128';
+    public const UUID               = 'uuid';
+    public const VECTOR_FLOAT32     = 'vector_float32';
+    public const VECTOR_INT8        = 'vector_int8';
+    public const VECTOR_PACKED_BIT  = 'vector_packed_bit';
 
     /** @deprecated const was deprecated in doctrine/mongodb-odm 2.1 and will be removed in 3.0. Use Type::INT instead */
     public const INTID = 'int_id';
@@ -86,6 +91,10 @@ abstract class Type
         self::OBJECTID => Types\ObjectIdType::class,
         self::RAW => Types\RawType::class,
         self::DECIMAL128 => Types\Decimal128Type::class,
+        self::UUID => Types\BinaryUuidType::class,
+        self::VECTOR_FLOAT32 => Types\VectorFloat32Type::class,
+        self::VECTOR_INT8 => Types\VectorInt8Type::class,
+        self::VECTOR_PACKED_BIT => Types\VectorPackedBitType::class,
     ];
 
     /** Prevent instantiation and force use of the factory method. */
@@ -119,11 +128,19 @@ abstract class Type
         return $value;
     }
 
+    /**
+     * Get the PHP code equivalent to {@see convertToDatabaseValue()}, used in code generator.
+     * Use variables $value for input and $return for output.
+     */
     public function closureToMongo(): string
     {
         return '$return = $value;';
     }
 
+    /**
+     * Get the PHP code equivalent to {@see convertToPHPValue()}, used in code generator.
+     * Use variables $value for input and $return for output.
+     */
     public function closureToPHP(): string
     {
         return '$return = $value;';
@@ -167,11 +184,15 @@ abstract class Type
     {
         if (is_object($variable)) {
             if ($variable instanceof DateTimeInterface) {
-                return self::getType('date');
+                return self::getType(self::DATE);
             }
 
             if ($variable instanceof ObjectId) {
-                return self::getType('id');
+                return self::getType(self::ID);
+            }
+
+            if ($variable instanceof Uuid) {
+                return self::getType(self::UUID);
             }
         } else {
             $type = gettype($variable);

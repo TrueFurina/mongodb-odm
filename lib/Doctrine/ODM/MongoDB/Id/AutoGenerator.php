@@ -9,6 +9,8 @@ use MongoDB\BSON\ObjectId;
 
 /**
  * AutoGenerator generates a native ObjectId
+ *
+ * @deprecated use ObjectIdGenerator instead
  */
 final class AutoGenerator extends AbstractIdGenerator
 {

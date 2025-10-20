@@ -20,6 +20,7 @@ use Doctrine\ODM\MongoDB\Aggregation\Stage\Search\Compound\CompoundedRange;
 use Doctrine\ODM\MongoDB\Aggregation\Stage\Search\Compound\CompoundedRegex;
 use Doctrine\ODM\MongoDB\Aggregation\Stage\Search\Compound\CompoundedText;
 use Doctrine\ODM\MongoDB\Aggregation\Stage\Search\Compound\CompoundedWildcard;
+use Doctrine\ODM\MongoDB\Persisters\DocumentPersister;
 use GeoJson\Geometry\LineString;
 use GeoJson\Geometry\MultiPolygon;
 use GeoJson\Geometry\Point;
@@ -30,6 +31,8 @@ use MongoDB\BSON\UTCDateTime;
 /** @internal */
 trait SupportsCompoundableOperatorsTrait
 {
+    abstract protected function getDocumentPersister(): DocumentPersister;
+
     abstract protected function getSearchStage(): Search;
 
     abstract protected function getCompoundStage(): Compound;
@@ -45,104 +48,80 @@ trait SupportsCompoundableOperatorsTrait
      */
     abstract protected function addOperator(SearchOperator $operator): SearchOperator;
 
-    /** return Autocomplete&CompoundSearchOperatorInterface */
-    public function autocomplete(string $path = '', string ...$query): Autocomplete
+    public function autocomplete(string $path = '', string ...$query): Autocomplete&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedAutocomplete($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $path, ...$query));
+        return $this->addOperator(new CompoundedAutocomplete($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $path, ...$query));
     }
 
-    /** @return EmbeddedDocument&CompoundSearchOperatorInterface */
-    public function embeddedDocument(string $path = ''): EmbeddedDocument
+    public function embeddedDocument(string $path = ''): EmbeddedDocument&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedEmbeddedDocument($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $path));
+        return $this->addOperator(new CompoundedEmbeddedDocument($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $path));
     }
 
-    /**
-     * @param string|int|float|ObjectId|UTCDateTime|null $value
-     *
-     * @return Equals&CompoundSearchOperatorInterface
-     */
-    public function equals(string $path = '', $value = null): Equals
+    /** @param string|int|float|ObjectId|UTCDateTime|null $value */
+    public function equals(string $path = '', $value = null): Equals&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedEquals($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $path, $value));
+        return $this->addOperator(new CompoundedEquals($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $path, $value));
     }
 
-    /** @return Exists&CompoundSearchOperatorInterface */
-    public function exists(string $path): Exists
+    public function exists(string $path): Exists&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedExists($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $path));
+        return $this->addOperator(new CompoundedExists($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $path));
     }
 
-    /**
-     * @param LineString|Point|Polygon|MultiPolygon|array|null $geometry
-     *
-     * @return GeoShape&CompoundSearchOperatorInterface
-     */
-    public function geoShape($geometry = null, string $relation = '', string ...$path): GeoShape
+    /** @param LineString|Point|Polygon|MultiPolygon|array<string, mixed>|null $geometry */
+    public function geoShape($geometry = null, string $relation = '', string ...$path): GeoShape&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedGeoShape($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $geometry, $relation, ...$path));
+        return $this->addOperator(new CompoundedGeoShape($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $geometry, $relation, ...$path));
     }
 
-    /** @return GeoWithin&CompoundSearchOperatorInterface */
-    public function geoWithin(string ...$path): GeoWithin
+    public function geoWithin(string ...$path): GeoWithin&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedGeoWithin($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), ...$path));
+        return $this->addOperator(new CompoundedGeoWithin($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), ...$path));
+    }
+
+    /** @param array<string, mixed>|object $documents */
+    public function moreLikeThis(...$documents): MoreLikeThis&CompoundSearchOperatorInterface
+    {
+        return $this->addOperator(new CompoundedMoreLikeThis($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), ...$documents));
     }
 
     /**
-     * @param array<string, mixed>|object $documents
-     *
-     * @return MoreLikeThis&CompoundSearchOperatorInterface
+     * @param int|float|UTCDateTime|array<string, mixed>|Point|null $origin
+     * @param int|float|null                                        $pivot
      */
-    public function moreLikeThis(...$documents): MoreLikeThis
+    public function near($origin = null, $pivot = null, string ...$path): Near&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedMoreLikeThis($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), ...$documents));
+        return $this->addOperator(new CompoundedNear($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $origin, $pivot, ...$path));
     }
 
-    /**
-     * @param int|float|UTCDateTime|array|Point|null $origin
-     * @param int|float|null                         $pivot
-     *
-     * @return Near&CompoundSearchOperatorInterface
-     */
-    public function near($origin = null, $pivot = null, string ...$path): Near
+    public function phrase(): Phrase&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedNear($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $origin, $pivot, ...$path));
+        return $this->addOperator(new CompoundedPhrase($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister()));
     }
 
-    /** @return Phrase&CompoundSearchOperatorInterface */
-    public function phrase(): Phrase
+    public function queryString(string $query = '', string $defaultPath = ''): QueryString&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedPhrase($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage()));
+        return $this->addOperator(new CompoundedQueryString($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister(), $query, $defaultPath));
     }
 
-    /** @return QueryString&CompoundSearchOperatorInterface */
-    public function queryString(string $query = '', string $defaultPath = ''): QueryString
+    public function range(): Range&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedQueryString($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $query, $defaultPath));
+        return $this->addOperator(new CompoundedRange($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister()));
     }
 
-    /** @return Range&CompoundSearchOperatorInterface */
-    public function range(): Range
+    public function regex(): Regex&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedRange($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage()));
+        return $this->addOperator(new CompoundedRegex($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister()));
     }
 
-    /** @return Regex&CompoundSearchOperatorInterface */
-    public function regex(): Regex
+    public function text(): Text&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedRegex($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage()));
+        return $this->addOperator(new CompoundedText($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister()));
     }
 
-    /** @return Text&CompoundSearchOperatorInterface */
-    public function text(): Text
+    public function wildcard(): Wildcard&CompoundSearchOperatorInterface
     {
-        return $this->addOperator(new CompoundedText($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage()));
-    }
-
-    /** @return Wildcard&CompoundSearchOperatorInterface */
-    public function wildcard(): Wildcard
-    {
-        return $this->addOperator(new CompoundedWildcard($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage()));
+        return $this->addOperator(new CompoundedWildcard($this->getCompoundStage(), $this->getAddOperatorClosure(), $this->getSearchStage(), $this->getDocumentPersister()));
     }
 }

@@ -583,7 +583,7 @@ final class UnitOfWork implements PropertyChangedListener
     /**
      * Gets the changeset for a document.
      *
-     * @return array array('property' => array(0 => mixed, 1 => mixed))
+     * @return array{property: array{0: mixed, 1: mixed}}
      * @phpstan-return array<string, ChangeSet>
      */
     public function getDocumentChangeSet(object $document): array
@@ -1139,7 +1139,7 @@ final class UnitOfWork implements PropertyChangedListener
                 ));
             }
 
-            if ($class->generatorType === ClassMetadata::GENERATOR_TYPE_AUTO && $idValue !== null && ! preg_match('#^[0-9a-f]{24}$#', (string) $idValue)) {
+            if ($class->getIdentifierMapping()['type'] === Type::ID && $idValue !== null && $class->generatorType === ClassMetadata::GENERATOR_TYPE_AUTO && ! preg_match('#^[0-9a-f]{24}$#', (string) $idValue)) {
                 throw new InvalidArgumentException(sprintf(
                     '%s uses AUTO identifier generation strategy but provided identifier is not a valid ObjectId.',
                     $document::class,

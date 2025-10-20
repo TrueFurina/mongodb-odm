@@ -31,6 +31,7 @@ Doctrine MongoDB ODM provides integration for the following aggregation pipeline
 - `$skip <https://docs.mongodb.com/manual/reference/operator/aggregation/skip/>`_
 - `$sort <https://docs.mongodb.com/manual/reference/operator/aggregation/project/>`_
 - `$sortByCount <https://docs.mongodb.com/manual/reference/operator/aggregation/sortByCount/>`_
+- `$vectorSearch <https://docs.mongodb.com/manual/reference/operator/aggregation/vectorSearch/>`_
 - `$unionWith <https://docs.mongodb.com/manual/reference/operator/aggregation/unionWith/>`_
 - `$unset <https://docs.mongodb.com/manual/reference/operator/aggregation/unset/>`_
 - `$unwind <https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/>`_
@@ -42,6 +43,10 @@ Doctrine MongoDB ODM provides integration for the following aggregation pipeline
     was added in Doctrine MongoDB ODM 2.6. Please consult the MongoDB
     documentation to ensure that the pipeline stage is available in the MongoDB
     version you are using.
+
+.. note::
+
+    Support for ``$vectorSearch`` was added in Doctrine MongoDB ODM 2.13.
 
 $addFields
 ----------
@@ -689,6 +694,11 @@ number of available operators, please refer to the
 `MongoDB documentation <https://www.mongodb.com/docs/atlas/atlas-search/query-syntax/#-search>`_
 for a reference of all available operators.
 
+.. note::
+   A `Search index <https://www.mongodb.com/docs/atlas/atlas-search/>`_
+   is required for this stage. See the :doc:`#[SearchIndex] attribute <../reference/attributes-reference#search_index>`
+   for details on how to define it.
+
 .. code-block:: php
 
     <?php
@@ -700,6 +710,27 @@ for a reference of all available operators.
                 ->query('MongoDB', 'ODM', 'Aggregation')
                 ->fields('title', 'content')
     ;
+
+To combine multiple search operators, use the `compound operator <https://www.mongodb.com/docs/atlas/atlas-search/compound/>`_:
+
+.. code-block:: php
+
+    <?php
+
+    $builder = $dm->createAggregationBuilder(\Documents\Fruits::class);
+    $builder
+        ->compound()
+            ->must()
+                ->text()->query('varieties')->path('description')
+            ->should(minimumShouldMatch: 1)
+                ->text()->query('Fuji')->path('description')
+                ->text()->query('Golden Delicious')->path('description')
+    ;
+
+This aggregation will return `Fruits` documents from whose `description` field
+contains the word "varieties" (must), and should also contain either "Fuji" or
+"Golden Delicious" in the `description` field (at least one due to
+`minimumShouldMatch: 1`).
 
 $set
 ----
@@ -783,6 +814,41 @@ The example above is equivalent to the following pipeline:
             ->field('count')
             ->sum(1)
         ->sort(['count' => -1])
+    ;
+
+$vectorSearch
+-------------
+
+The ``$vectorSearch`` stage performs a vector similarity search on the specified
+field or fields which must be covered by an Atlas Vector Search index.
+``$vectorSearch`` must be the first stage in the aggregation pipeline.
+
+.. note::
+   A `Vector Search index <https://www.mongodb.com/docs/atlas/atlas-vector-search/>`_
+   is required for this stage. See the :doc:`#[VectorSearchIndex] attribute <../reference/attributes-reference#vector_search_index>`
+   for details on how to define it.
+
+.. code-block:: php
+
+    <?php
+
+    $builder = $dm->createAggregationBuilder(\Documents\Products::class);
+    $builder
+        ->vectorSearch()
+            ->index('vectorIndexName')
+            ->path('vectorField')
+            ->filter(
+                $builder->matchExpr()
+                    ->field('status')
+                    ->notEqual('discontinued')
+            )
+            ->queryVector([0.1, 0.2, 0.3, 0.4, 0.5])
+            ->numCandidates($limit * 20)
+            ->limit($limit)
+        ->project()
+            ->field('_id')->expression(0)
+            ->field('product')->expression('$$ROOT')
+            ->field('score')->meta('vectorSearchScore');
     ;
 
 $unionWith

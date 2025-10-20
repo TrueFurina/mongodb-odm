@@ -297,6 +297,11 @@ final class MappingException extends BaseMappingException
         return new self(sprintf('%s search index "%s" must be dynamic or specify a field mapping', $className, $indexName));
     }
 
+    public static function emptyVectorSearchIndexDefinition(string $className, string $indexName): self
+    {
+        return new self(sprintf('%s vector search index "%s" must have a vector field', $className, $indexName));
+    }
+
     public static function timeSeriesFieldNotFound(string $className, string $fieldName, string $field): self
     {
         return new self(sprintf(
@@ -312,6 +317,24 @@ final class MappingException extends BaseMappingException
         return new self(sprintf(
             'The root document class "%s" cannot be encrypted. Only fields and embedded documents can be encrypted.',
             $className,
+        ));
+    }
+
+    public static function unsupportedTypeForAutoGenerator(string $className, string $type): self
+    {
+        return new self(sprintf(
+            'The type "%s" can not be used for auto ID generation in class "%s".',
+            $type,
+            $className,
+        ));
+    }
+
+    public static function autoIdGeneratorNeedsType(string $className, string $identifierFieldName): self
+    {
+        return new self(sprintf(
+            'The auto ID generator for class "%s" requires the identifier field "%s" to have a type.',
+            $className,
+            $identifierFieldName,
         ));
     }
 }

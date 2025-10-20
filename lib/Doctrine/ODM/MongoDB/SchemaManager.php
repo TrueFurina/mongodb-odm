@@ -20,12 +20,14 @@ use function array_diff;
 use function array_diff_key;
 use function array_filter;
 use function array_keys;
+use function array_map;
 use function array_merge;
 use function array_search;
 use function array_unique;
 use function array_values;
 use function assert;
 use function count;
+use function hrtime;
 use function implode;
 use function in_array;
 use function is_array;
@@ -35,10 +37,12 @@ use function iterator_to_array;
 use function ksort;
 use function sprintf;
 use function str_contains;
+use function usleep;
 
 /**
  * @phpstan-import-type IndexMapping from ClassMetadata
  * @phpstan-import-type IndexOptions from ClassMetadata
+ * @phpstan-import-type SearchIndexMapping from ClassMetadata
  */
 final class SchemaManager
 {
@@ -232,11 +236,7 @@ final class SchemaManager
         return $indexes;
     }
 
-    /**
-     * @param ClassMetadata<object> $class
-     *
-     * @phpstan-return IndexMapping[]
-     */
+    /** @phpstan-return IndexMapping[] */
     private function prepareIndexes(ClassMetadata $class): array
     {
         $persister  = $this->dm->getUnitOfWork()->getDocumentPersister($class->name);
@@ -341,6 +341,65 @@ final class SchemaManager
     }
 
     /**
+     * Wait until all search indexes are queryable for the given document classes.
+     *
+     * @param list<class-string>|null $classNames List of class names to check, or null to check all mapped classes
+     * @param positive-int            $maxTimeMs  Maximum time to wait in milliseconds (default: 10,000 ms)
+     * @param positive-int            $waitTimeMs Time to wait between checks in milliseconds (default: 100 ms)
+     */
+    public function waitForSearchIndexes(?array $classNames = null, int $maxTimeMs = 10_000, int $waitTimeMs = 100): void
+    {
+        if ($maxTimeMs < 1) {
+            throw new InvalidArgumentException('$maxTimeMs must be a positive number of milliseconds.');
+        }
+
+        if ($waitTimeMs < 1) {
+            throw new InvalidArgumentException('$waitTimeMs must be a positive number of milliseconds.');
+        }
+
+        $classes = $classNames === null ? $this->metadataFactory->getAllMetadata() : array_map($this->metadataFactory->getMetadataFor(...), $classNames);
+
+        /** @var array<class-string, string[]> $indexesToCheck Search indexes for each class */
+        $indexesToCheck = [];
+        foreach ($classes as $class) {
+            if (! $class->hasSearchIndexes()) {
+                continue;
+            }
+
+            $indexesToCheck[$class->getName()] = array_column($class->getSearchIndexes(), 'name');
+        }
+
+        $start = hrtime(true);
+        while ($indexesToCheck) {
+            if (hrtime(true) > $start + $maxTimeMs * 1_000_000) {
+                throw new MongoDBException(sprintf('Timed out waiting for search indexes to become queryable after %d ms. Search indexes are not ready for the following class(es): %s', $maxTimeMs, implode(', ', array_keys($indexesToCheck))));
+            }
+
+            foreach ($indexesToCheck as $className => $indexNames) {
+                $collection = $this->dm->getDocumentCollection($className);
+
+                /** @var array<string, bool> $indexStatus Queryable status for each index name */
+                $indexStatus = array_column(iterator_to_array($collection->listSearchIndexes([
+                    'filter' => ['name' => ['$in' => array_keys($indexNames)]],
+                    'typeMap' => ['root' => 'array'],
+                ])), 'queryable', 'name');
+
+                // Check that all indexes exist
+                $missingIndexes = array_diff_key($indexNames, array_keys($indexStatus));
+                if ($missingIndexes) {
+                    throw SchemaException::missingSearchIndex($className, $missingIndexes);
+                }
+
+                // Remove the indexes that are ready from the list of indexes to check
+                $indexesToCheck[$className] = array_keys(array_filter($indexStatus, static fn ($queryable) => ! $queryable));
+            }
+
+            // Remove empty arrays and wait before checking again
+            ($indexesToCheck = array_filter($indexesToCheck)) && usleep($waitTimeMs * 1_000);
+        }
+    }
+
+    /**
      * Create search indexes for the given document class.
      *
      * @param class-string $documentName
@@ -355,7 +414,7 @@ final class SchemaManager
             throw new InvalidArgumentException('Cannot create search indexes for mapped super classes, embedded documents, query result documents, or views.');
         }
 
-        $searchIndexes = $class->getSearchIndexes();
+        $searchIndexes = $this->prepareSearchIndexes($class);
 
         if (empty($searchIndexes)) {
             return;
@@ -367,11 +426,11 @@ final class SchemaManager
 
         /* createSearchIndexes builds indexes asynchronously but still reports
          * the names of created indexes. Report an error if any defined names
-         * were not actually created. */
+         * were not created. */
         $unprocessedNames = array_diff($definedNames, $createdNames);
 
         if (! empty($unprocessedNames)) {
-            throw new InvalidArgumentException(sprintf('The following search indexes for %s were not created: %s', $class->name, implode(', ', $unprocessedNames)));
+            throw SchemaException::missingSearchIndex($class->name, $unprocessedNames);
         }
     }
 
@@ -410,7 +469,7 @@ final class SchemaManager
             throw new InvalidArgumentException('Cannot update search indexes for mapped super classes, embedded documents, query result documents, or views.');
         }
 
-        $searchIndexes = $class->getSearchIndexes();
+        $searchIndexes = $this->prepareSearchIndexes($class);
         $collection    = $this->dm->getDocumentCollection($class->name);
 
         $definedNames = array_column($searchIndexes, 'name');
@@ -484,6 +543,59 @@ final class SchemaManager
         foreach ($searchIndexes as $searchIndex) {
             $collection->dropSearchIndex($searchIndex['name']);
         }
+    }
+
+    /**
+     * @param ClassMetadata<object> $class
+     *
+     * @phpstan-return list<SearchIndexMapping>
+     */
+    private function prepareSearchIndexes(ClassMetadata $class): array
+    {
+        $persister  = $this->dm->getUnitOfWork()->getDocumentPersister($class->name);
+        $indexes    = $class->getSearchIndexes();
+        $newIndexes = [];
+
+        foreach ($indexes as $index) {
+            $definition = $index['definition'];
+            if (is_array($definition['fields'] ?? null)) {
+                // Vector Search Index, field names in 'path' parameter
+                $fields = [];
+                foreach ($definition['fields'] as $field) {
+                    $key = $persister->prepareFieldName($field['path']);
+                    if ($class->hasField($key)) {
+                        $field['path'] = $class->getFieldMapping($key)['name'];
+                    } else {
+                        $field['path'] = $key;
+                    }
+
+                    $fields[] = $field;
+                }
+
+                $definition['fields'] = $fields;
+            } elseif (is_array($definition['mappings']['fields'] ?? null)) {
+                // Search Index with fields mappings, field names as keys
+                $fields = [];
+                foreach ($definition['mappings']['fields'] as $name => $field) {
+                    $key = $persister->prepareFieldName($name);
+                    if ($class->hasField($key)) {
+                        $fields[$class->getFieldMapping($key)['name']] = $field;
+                    } else {
+                        $fields[$key] = $field;
+                    }
+                }
+
+                $definition['mappings']['fields'] = $fields;
+            }
+
+            $newIndexes[] = [
+                'type' => $index['type'],
+                'name' => $index['name'],
+                'definition' => $definition,
+            ];
+        }
+
+        return $newIndexes;
     }
 
     /**
@@ -1026,14 +1138,12 @@ final class SchemaManager
         );
     }
 
-    /** @param ClassMetadata<object> $class */
     private function ensureGridFSIndexes(ClassMetadata $class, ?int $maxTimeMs = null, ?WriteConcern $writeConcern = null, bool $background = false): void
     {
         $this->ensureChunksIndex($class, $maxTimeMs, $writeConcern, $background);
         $this->ensureFilesIndex($class, $maxTimeMs, $writeConcern, $background);
     }
 
-    /** @param ClassMetadata<object> $class */
     private function ensureChunksIndex(ClassMetadata $class, ?int $maxTimeMs = null, ?WriteConcern $writeConcern = null, bool $background = false): void
     {
         $chunksCollection = $this->dm->getDocumentBucket($class->getName())->getChunksCollection();
@@ -1049,7 +1159,6 @@ final class SchemaManager
         );
     }
 
-    /** @param ClassMetadata<object> $class */
     private function ensureFilesIndex(ClassMetadata $class, ?int $maxTimeMs = null, ?WriteConcern $writeConcern = null, bool $background = false): void
     {
         $filesCollection = $this->dm->getDocumentCollection($class->getName());

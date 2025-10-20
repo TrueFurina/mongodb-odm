@@ -210,6 +210,12 @@ class XmlDriver extends FileDriver
             }
         }
 
+        if (isset($xmlRoot->{'vector-search-indexes'})) {
+            foreach ($xmlRoot->{'vector-search-indexes'}->{'vector-search-index'} as $searchIndex) {
+                $this->addVectorSearchIndex($metadata, $searchIndex);
+            }
+        }
+
         if (isset($xmlRoot->{'shard-key'})) {
             $this->setShardKey($metadata, $xmlRoot->{'shard-key'}[0]);
         }
@@ -380,10 +386,7 @@ class XmlDriver extends FileDriver
 
     // phpcs:enable SlevomatCodingStandard.ControlStructures.EarlyExit.EarlyExitNotUsed
 
-    /**
-     * @param ClassMetadata<object> $class
-     * @phpstan-param FieldMappingConfig $mapping
-     */
+    /** @phpstan-param FieldMappingConfig $mapping */
     private function addFieldMapping(ClassMetadata $class, array $mapping): void
     {
         if (isset($mapping['name'])) {
@@ -423,7 +426,6 @@ class XmlDriver extends FileDriver
         $class->addIndex($keys, $options);
     }
 
-    /** @param ClassMetadata<object> $class */
     private function addEmbedMapping(ClassMetadata $class, SimpleXMLElement $embed, string $type): void
     {
         $attributes      = $embed->attributes();
@@ -473,7 +475,6 @@ class XmlDriver extends FileDriver
         $this->addFieldMapping($class, $mapping);
     }
 
-    /** @param ClassMetadata<object> $class */
     private function addReferenceMapping(ClassMetadata $class, ?SimpleXMLElement $reference, string $type): void
     {
         $cascade = array_keys((array) $reference->cascade);
@@ -555,7 +556,6 @@ class XmlDriver extends FileDriver
         $this->addFieldMapping($class, $mapping);
     }
 
-    /** @param ClassMetadata<object> $class */
     private function addIndex(ClassMetadata $class, SimpleXMLElement $xmlIndex): void
     {
         $attributes = $xmlIndex->attributes();
@@ -618,7 +618,6 @@ class XmlDriver extends FileDriver
         $class->addIndex($keys, $options);
     }
 
-    /** @param ClassMetadata<object> $class */
     private function addSearchIndex(ClassMetadata $class, SimpleXMLElement $searchIndex): void
     {
         $definition = [];
@@ -748,6 +747,44 @@ class XmlDriver extends FileDriver
         return $fieldDefinition;
     }
 
+    private function addVectorSearchIndex(ClassMetadata $class, SimpleXMLElement $searchIndex): void
+    {
+        $definition = ['fields' => []];
+
+        foreach ($searchIndex->{'vector-field'} as $vectorField) {
+            $field = [
+                'type' => 'vector',
+                'path' => (string) $vectorField['path'],
+                'numDimensions' => (int) $vectorField['numDimensions'],
+                'similarity' => (string) $vectorField['similarity'],
+            ];
+            if (isset($vectorField['quantization'])) {
+                $field['quantization'] = (string) $vectorField['quantization'];
+            }
+
+            if (isset($vectorField['hnswMaxEdges'])) {
+                $field['hnswOptions']['maxEdges'] = (int) $vectorField['hnswMaxEdges'];
+            }
+
+            if (isset($vectorField['hnswNumEdgeCandidates'])) {
+                $field['hnswOptions']['numEdgeCandidates'] = (int) $vectorField['hnswNumEdgeCandidates'];
+            }
+
+            $definition['fields'][] = $field;
+        }
+
+        foreach ($searchIndex->{'filter-field'} as $filterField) {
+            $definition['fields'][] = [
+                'type' => 'filter',
+                'path' => (string) $filterField['path'],
+            ];
+        }
+
+        $name = isset($searchIndex['name']) ? (string) $searchIndex['name'] : null;
+
+        $class->addSearchIndex($definition, $name, 'vectorSearch');
+    }
+
     /** @return array<string, array<string, mixed>|scalar|null> */
     private function getPartialFilterExpression(SimpleXMLElement $fields): array
     {
@@ -807,7 +844,6 @@ class XmlDriver extends FileDriver
         return preg_match('/^[-]?\d+$/', $value) ? (int) $value : (float) $value;
     }
 
-    /** @param ClassMetadata<object> $class */
     private function setShardKey(ClassMetadata $class, SimpleXMLElement $xmlShardkey): void
     {
         $attributes = $xmlShardkey->attributes();
@@ -906,7 +942,6 @@ class XmlDriver extends FileDriver
         return implode("\n", array_map(static fn (LibXMLError $error): string => sprintf('Line %d:%d: %s', $error->line, $error->column, $error->message), $xmlErrors));
     }
 
-    /** @param ClassMetadata<object> $class */
     private function addGridFSMappings(ClassMetadata $class, SimpleXMLElement $xmlRoot): void
     {
         if (! $class->isFile) {
