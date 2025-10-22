@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 use function assert;
+use function class_exists;
 
 abstract class AbstractAnnotationDriverTestCase extends AbstractMappingDriverTestCase
 {
@@ -91,6 +92,7 @@ abstract class AbstractAnnotationDriverTestCase extends AbstractMappingDriverTes
 
     public function testGetAllClassNamesReturnsAlreadyLoadedClassesIfAppropriate(): void
     {
+        self::assertTrue(class_exists(CmsUser::class), 'Pre-load the class');
         $annotationDriver = $this->loadDriverForCMSDocuments();
         $classes          = $annotationDriver->getAllClassNames();
 

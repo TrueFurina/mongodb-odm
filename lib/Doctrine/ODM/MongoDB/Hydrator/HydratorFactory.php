@@ -33,6 +33,7 @@ use function substr;
 use function uniqid;
 
 use const DIRECTORY_SEPARATOR;
+use const PHP_VERSION_ID;
 
 /**
  * The HydratorFactory class is responsible for instantiating a correct hydrator
@@ -187,7 +188,7 @@ EOF
         if (array_key_exists('%1$s', $data) && ($data['%1$s'] !== null || ($this->class->fieldMappings['%2$s']['nullable'] ?? false))) {
             $value = $data['%1$s'];
             %3$s
-            $this->class->reflFields['%2$s']->setValue($document, $return === null ? null : clone $return);
+            $this->class->propertyAccessors['%2$s']->setValue($document, $return === null ? null : clone $return);
             $hydratedData['%2$s'] = $return;
         }
 
@@ -210,7 +211,7 @@ EOF
             } else {
                 \$return = null;
             }
-            \$this->class->reflFields['%2\$s']->setValue(\$document, \$return);
+            \$this->class->propertyAccessors['%2\$s']->setValue(\$document, \$return);
             \$hydratedData['%2\$s'] = \$return;
         }
 
@@ -239,7 +240,7 @@ EOF
                 $return = $this->dm->getReference($className, $id);
             }
 
-            $this->class->reflFields['%2$s']->setValue($document, $return);
+            $this->class->propertyAccessors['%2$s']->setValue($document, $return);
             $hydratedData['%2$s'] = $return;
         }
 
@@ -256,7 +257,7 @@ EOF
 
         $className = $this->class->fieldMappings['%2$s']['targetDocument'];
         $return = $this->dm->getRepository($className)->%3$s($document);
-        $this->class->reflFields['%2$s']->setValue($document, $return);
+        $this->class->propertyAccessors['%2$s']->setValue($document, $return);
         $hydratedData['%2$s'] = $return;
 
 EOF
@@ -280,7 +281,7 @@ EOF
         );
         $sort = $this->class->fieldMappings['%2$s']['sort'] ?? [];
         $return = $this->dm->getUnitOfWork()->getDocumentPersister($className)->load($criteria, null, [], 0, $sort);
-        $this->class->reflFields['%2$s']->setValue($document, $return);
+        $this->class->propertyAccessors['%2$s']->setValue($document, $return);
         $hydratedData['%2$s'] = $return;
 
 EOF
@@ -307,7 +308,7 @@ EOF
         if ($mongoData) {
             $return->setMongoData($mongoData);
         }
-        $this->class->reflFields['%2$s']->setValue($document, $return);
+        $this->class->propertyAccessors['%2$s']->setValue($document, $return);
         $hydratedData['%2$s'] = $return;
 
 EOF
@@ -345,7 +346,7 @@ EOF
                 }
             }
 
-            $this->class->reflFields['%2$s']->setValue($document, $return);
+            $this->class->propertyAccessors['%2$s']->setValue($document, $return);
             $hydratedData['%2$s'] = $return;
         }
 
@@ -448,6 +449,10 @@ EOF
                     }
                 }
             }
+        }
+
+        if (PHP_VERSION_ID >= 80400) {
+            $metadata->reflClass->markLazyObjectAsInitialized($document);
         }
 
         if ($document instanceof InternalProxy) {

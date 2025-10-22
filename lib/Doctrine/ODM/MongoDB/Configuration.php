@@ -47,6 +47,8 @@ use function is_string;
 use function trigger_deprecation;
 use function trim;
 
+use const PHP_VERSION_ID;
+
 /**
  * Configuration class for the DocumentManager. When setting up your DocumentManager
  * you can optionally specify an instance of this class as the second argument.
@@ -145,7 +147,8 @@ class Configuration
 
     private bool $useTransactionalFlush = false;
 
-    private bool $useLazyGhostObject = false;
+    private bool $lazyGhostObject  = false;
+    private bool $nativeLazyObject = false;
 
     private static string $version;
 
@@ -688,24 +691,47 @@ class Configuration
      */
     public function setUseLazyGhostObject(bool $flag): void
     {
+        if ($this->nativeLazyObject) {
+            throw new LogicException('Cannot enable or disable LazyGhostObject when native lazy objects are enabled.');
+        }
+
         if ($flag === false) {
             if (! class_exists(ProxyManagerConfiguration::class)) {
                 throw new LogicException('Package "friendsofphp/proxy-manager-lts" is required to disable LazyGhostObject.');
             }
 
-            trigger_deprecation(
-                'doctrine/mongodb-odm',
-                '2.10',
-                'Using "friendsofphp/proxy-manager-lts" is deprecated. Use "symfony/var-exporter" LazyGhostObjects instead.',
-            );
+            trigger_deprecation('doctrine/mongodb-odm', '2.10', 'Using "friendsofphp/proxy-manager-lts" is deprecated. Use "symfony/var-exporter" LazyGhostObjects instead.');
         }
 
-        $this->useLazyGhostObject = $flag;
+        if ($flag === true && PHP_VERSION_ID >= 80400) {
+            trigger_deprecation('doctrine/mongodb-odm', '2.14', 'Using "symfony/var-exporter" lazy ghost objects is deprecated and will be impossible in Doctrine MongoDB ODM 3.0.');
+        }
+
+        $this->lazyGhostObject = $flag;
     }
 
     public function isLazyGhostObjectEnabled(): bool
     {
-        return $this->useLazyGhostObject;
+        return $this->lazyGhostObject;
+    }
+
+    public function setUseNativeLazyObject(bool $nativeLazyObject): void
+    {
+        if (PHP_VERSION_ID < 80400 && $nativeLazyObject) {
+            throw new LogicException('Native lazy objects require PHP 8.4 or higher.');
+        }
+
+        $this->nativeLazyObject = $nativeLazyObject;
+        $this->lazyGhostObject  = ! $nativeLazyObject || $this->lazyGhostObject;
+    }
+
+    public function isNativeLazyObjectEnabled(): bool
+    {
+        if (PHP_VERSION_ID >= 80400 && ! $this->nativeLazyObject) {
+            trigger_deprecation('doctrine/mongodb-odm', '2.14', 'Not using native lazy objects is deprecated and will be impossible in Doctrine MongoDB ODM 3.0.');
+        }
+
+        return $this->nativeLazyObject;
     }
 
     /**
