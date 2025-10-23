@@ -74,7 +74,7 @@ class ConfigurationTest extends TestCase
     public function testDefaultPersistentCollectionGenerator(): void
     {
         $c = new Configuration();
-        $c->setPersistentCollectionDir(__DIR__ . '/../../../../PersistentCollections');
+        $c->setPersistentCollectionDir(__DIR__ . '/../PersistentCollections');
         $c->setPersistentCollectionNamespace('PersistentCollections');
         $generator = $c->getPersistentCollectionGenerator();
         self::assertInstanceOf(PersistentCollectionGenerator::class, $generator);

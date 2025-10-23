@@ -91,7 +91,7 @@ class UpdateCommandTest extends AbstractCommandTestCase
 
     private function createDriver(): MappingDriver
     {
-        $paths = [__DIR__ . '/../../../../../../../../Documents/Ecommerce'];
+        $paths = [__DIR__ . '/../../../../../Documents/Ecommerce'];
         // Available in Doctrine Persistence 4.1+
         if (class_exists(ClassNames::class)) {
             $paths = new ClassNames([

@@ -97,11 +97,11 @@ abstract class BaseTestCase extends TestCase
     {
         $config = new Configuration();
 
-        $config->setProxyDir(__DIR__ . '/../../../../Proxies');
+        $config->setProxyDir(__DIR__ . '/../Proxies');
         $config->setProxyNamespace('Proxies');
-        $config->setHydratorDir(__DIR__ . '/../../../../Hydrators');
+        $config->setHydratorDir(__DIR__ . '/../Hydrators');
         $config->setHydratorNamespace('Hydrators');
-        $config->setPersistentCollectionDir(__DIR__ . '/../../../../PersistentCollections');
+        $config->setPersistentCollectionDir(__DIR__ . '/../PersistentCollections');
         $config->setPersistentCollectionNamespace('PersistentCollections');
         $config->setDefaultDB(DOCTRINE_MONGODB_DATABASE);
         $config->setMetadataDriverImpl(static::createMetadataDriverImpl());
@@ -149,7 +149,7 @@ abstract class BaseTestCase extends TestCase
 
     protected static function createMetadataDriverImpl(): MappingDriver
     {
-        $paths = [__DIR__ . '/../../../../Documents'];
+        $paths = [__DIR__ . '/../Documents'];
 
         // Available in Doctrine Persistence 4.1+
         if (class_exists(FileClassLocator::class)) {

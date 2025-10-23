@@ -63,17 +63,17 @@
         "ext-bcmath": "Decimal128 type support"
     },
     "autoload": {
-        "psr-4": { "Doctrine\\ODM\\MongoDB\\": "lib/Doctrine/ODM/MongoDB" }
+        "psr-4": { "Doctrine\\ODM\\MongoDB\\": "src" }
     },
     "autoload-dev": {
         "psr-4": {
             "Doctrine\\ODM\\MongoDB\\Benchmark\\": "benchmark",
-            "Doctrine\\ODM\\MongoDB\\Tests\\": "tests/Doctrine/ODM/MongoDB/Tests",
+            "Doctrine\\ODM\\MongoDB\\Tests\\": "tests/Tests",
             "Documentation\\": "tests/Documentation",
             "Documents\\": "tests/Documents",
             "Documents84\\": "tests/Documents84",
             "Stubs\\": "tests/Stubs",
-            "TestDocuments\\" :"tests/Doctrine/ODM/MongoDB/Tests/Mapping/Driver/fixtures"
+            "TestDocuments\\" :"tests/Tests/Mapping/Driver/fixtures"
         }
     },
     "config": {

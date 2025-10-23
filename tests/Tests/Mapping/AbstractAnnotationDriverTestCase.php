@@ -226,7 +226,7 @@ abstract class AbstractAnnotationDriverTestCase extends AbstractMappingDriverTes
 
     protected function loadDriverForCMSDocuments(): MappingDriver
     {
-        $annotationDriver = static::loadDriver([__DIR__ . '/../../../../../Documents']);
+        $annotationDriver = static::loadDriver([__DIR__ . '/../../Documents']);
         assert($annotationDriver instanceof AnnotationDriver || $annotationDriver instanceof AttributeDriver);
 
         return $annotationDriver;
