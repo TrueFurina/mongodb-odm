@@ -9,7 +9,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 #[ODM\Document]
 class ForumAvatar
 {
-    /** @var string|null */
     #[ODM\Id]
-    public $id;
+    public ?string $id;
+
+    #[ODM\Field]
+    public ?string $url = null;
 }
