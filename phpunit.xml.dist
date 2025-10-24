@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        backupGlobals="false"
-        backupStaticProperties="false"
-        colors="false"
-        failOnRisky="true"
-        stopOnFailure="false"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
         bootstrap="tests/bootstrap.php"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
         cacheDirectory=".phpunit.cache"
+        failOnRisky="true"
 >
     <testsuites>
         <testsuite name="Doctrine ODM MongoDB Test Suite">
-            <directory>./tests/Doctrine/</directory>
+            <directory>./tests/Tests/</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory suffix=".php">./lib/Doctrine/ODM/MongoDB</directory>
+            <directory>./src</directory>
         </include>
     </source>
     <groups>
@@ -30,5 +26,6 @@
         <const name="DOCTRINE_MONGODB_SERVER" value="mongodb://localhost:27017" />
         <const name="DOCTRINE_MONGODB_DATABASE" value="doctrine_odm_tests" />
         <env name="USE_LAZY_GHOST_OBJECT" value="1"/>
+        <env name="USE_NATIVE_LAZY_OBJECT" value="0"/>
     </php>
 </phpunit>

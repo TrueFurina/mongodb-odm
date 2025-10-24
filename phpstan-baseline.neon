@@ -4,1237 +4,1237 @@ parameters:
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Aggregation\:\:execute\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Aggregation.php
+			path: src/Aggregation/Aggregation.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Aggregation\:\:getIterator\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Aggregation.php
+			path: src/Aggregation/Aggregation.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Aggregation\:\:prepareIterator\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Aggregation.php
+			path: src/Aggregation/Aggregation.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Builder\:\:execute\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Builder.php
+			path: src/Aggregation/Builder.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$applyFilters$#'
 			identifier: parameter.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Builder.php
+			path: src/Aggregation/Builder.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\:\:execute\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage.php
+			path: src/Aggregation/Stage.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:avg\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:max\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:mergeObjects\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:min\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:stdDevPop\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:stdDevSamp\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Bucket\\AbstractOutput\:\:sum\(\) has parameter \$expressions with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Bucket/AbstractOutput.php
+			path: src/Aggregation/Stage/Bucket/AbstractOutput.php
 
 		-
 			message: '#^Class Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Fill has type alias FillStageExpression with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Fill.php
+			path: src/Aggregation/Stage/Fill.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\GraphLookup\:\:\$from \(string\|null\) is never assigned null so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/GraphLookup.php
+			path: src/Aggregation/Stage/GraphLookup.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\GraphLookup\:\:\$startWith \(array\<mixed\>\|Doctrine\\ODM\\MongoDB\\Aggregation\\Expr\|string\|null\) is never assigned null so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/GraphLookup.php
+			path: src/Aggregation/Stage/GraphLookup.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/GraphLookup.php
+			path: src/Aggregation/Stage/GraphLookup.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Lookup.php
+			path: src/Aggregation/Stage/Lookup.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Merge\:\:\$whenMatched \(''fail''\|''keepExisting''\|''merge''\|''replace''\|Doctrine\\ODM\\MongoDB\\Aggregation\\Builder\|Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\|list\<array\<string, mixed\>\>\|null\) is never assigned Doctrine\\ODM\\MongoDB\\Aggregation\\Stage so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Merge.php
+			path: src/Aggregation/Stage/Merge.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Merge.php
+			path: src/Aggregation/Stage/Merge.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Out.php
+			path: src/Aggregation/Stage/Out.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedAutocomplete\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedAutocomplete.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedAutocomplete.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedEmbeddedDocument\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedEmbeddedDocument.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedEmbeddedDocument.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedEquals\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedEquals.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedEquals.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedExists\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedExists.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedExists.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedGeoShape\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedGeoShape.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedGeoShape.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedGeoWithin\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedGeoWithin.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedGeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedMoreLikeThis\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedMoreLikeThis.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedMoreLikeThis.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedNear\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedNear.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedNear.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedPhrase\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedPhrase.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedPhrase.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedQueryString\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedQueryString.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedQueryString.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedRange\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedRange.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedRange.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedRegex\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedRegex.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedRegex.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedText\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedText.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedText.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Compound\\CompoundedWildcard\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Compound/CompoundedWildcard.php
+			path: src/Aggregation/Stage/Search/Compound/CompoundedWildcard.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoShape\:\:__construct\(\) has parameter \$geometry with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoShape.php
+			path: src/Aggregation/Stage/Search/GeoShape.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoShape\:\:geometry\(\) has parameter \$geometry with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoShape.php
+			path: src/Aggregation/Stage/Search/GeoShape.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoShape\:\:\$geometry type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoShape.php
+			path: src/Aggregation/Stage/Search/GeoShape.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:box\(\) has parameter \$bottomLeft with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:box\(\) has parameter \$topRight with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:circle\(\) has parameter \$center with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:convertGeometry\(\) has parameter \$geometry with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:convertGeometry\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:geometry\(\) has parameter \$geometry with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:\$geometry type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\GeoWithin\:\:\$relation is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/GeoWithin.php
+			path: src/Aggregation/Stage/Search/GeoWithin.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Near\:\:__construct\(\) has parameter \$origin with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Near.php
+			path: src/Aggregation/Stage/Search/Near.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Near\:\:origin\(\) has parameter \$origin with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Near.php
+			path: src/Aggregation/Stage/Search/Near.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Near\:\:\$origin type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Near.php
+			path: src/Aggregation/Stage/Search/Near.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Search\\Range\:\:\$includeUpperBound is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/Search/Range.php
+			path: src/Aggregation/Stage/Search/Range.php
 
 		-
 			message: '#^Class Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\UnionWith has type alias PipelineParamType with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/UnionWith.php
+			path: src/Aggregation/Stage/UnionWith.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\UnionWith\:\:pipeline\(\) has parameter \$pipeline with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/UnionWith.php
+			path: src/Aggregation/Stage/UnionWith.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\UnionWith\:\:\$pipeline \(array\|Doctrine\\ODM\\MongoDB\\Aggregation\\Builder\|Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\|null\) is never assigned Doctrine\\ODM\\MongoDB\\Aggregation\\Stage so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/UnionWith.php
+			path: src/Aggregation/Stage/UnionWith.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\UnionWith\:\:\$pipeline type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/UnionWith.php
+			path: src/Aggregation/Stage/UnionWith.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/UnionWith.php
+			path: src/Aggregation/Stage/UnionWith.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\VectorSearch\:\:\$filter type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Aggregation/Stage/VectorSearch.php
+			path: src/Aggregation/Stage/VectorSearch.php
 
 		-
 			message: '#^Return type \(Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\) of method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getMetadataFactory\(\) should be compatible with return type \(Doctrine\\Persistence\\Mapping\\ClassMetadataFactory\<Doctrine\\Persistence\\Mapping\\ClassMetadata\<object\>\>\) of method Doctrine\\Persistence\\ObjectManager\:\:getMetadataFactory\(\)$#'
 			identifier: method.childReturnType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/DocumentManager.php
+			path: src/DocumentManager.php
 
 		-
 			message: '#^Unsafe usage of new static\(\)\.$#'
 			identifier: new.static
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/DocumentManager.php
+			path: src/DocumentManager.php
 
 		-
 			message: '#^Method Doctrine\\Persistence\\Event\\OnClearEventArgs\<Doctrine\\ODM\\MongoDB\\DocumentManager\>\:\:__construct\(\) invoked with 2 parameters, 1 required\.$#'
 			identifier: arguments.count
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Event/OnClearEventArgs.php
+			path: src/Event/OnClearEventArgs.php
 
 		-
 			message: '#^Parameter \#1 \$initializer of method ProxyManager\\Proxy\\GhostObjectInterface\<object\>\:\:setProxyInitializer\(\) expects \(Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<object\>\=, string\=, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool\)\|null, Closure\(ProxyManager\\Proxy\\GhostObjectInterface, string, array, mixed, array\)\: true given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Hydrator/HydratorFactory.php
+			path: src/Hydrator/HydratorFactory.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Hydrator\\HydratorFactory\:\:\$hydratorNamespace \(string\|null\) is never assigned null so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Hydrator/HydratorFactory.php
+			path: src/Hydrator/HydratorFactory.php
 
 		-
 			message: '#^Interface Doctrine\\ODM\\MongoDB\\Iterator\\IterableResult extends generic interface IteratorAggregate but does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Iterator/IterableResult.php
+			path: src/Iterator/IterableResult.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Iterator\\IterableResult\:\:getIterator\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Iterator/IterableResult.php
+			path: src/Iterator/IterableResult.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\SearchIndex\:\:__construct\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Annotations/SearchIndex.php
+			path: src/Mapping/Annotations/SearchIndex.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:addInheritedAssociationMapping\(\) has Doctrine\\ODM\\MongoDB\\Mapping\\MappingException in PHPDoc @throws tag but it''s not thrown\.$#'
 			identifier: throws.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:getBucketName\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:mapField\(\) should return array\{type\: string, fieldName\: string, name\: string, isCascadeRemove\: bool, isCascadePersist\: bool, isCascadeRefresh\: bool, isCascadeMerge\: bool, isCascadeDetach\: bool, \.\.\.\} but returns array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\}\.$#'
 			identifier: return.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Parameter \#1 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\<T of object\>\:\:checkDuplicateMapping\(\) expects array\{type\: string, fieldName\: string, name\: string, isCascadeRemove\: bool, isCascadePersist\: bool, isCascadeRefresh\: bool, isCascadeMerge\: bool, isCascadeDetach\: bool, \.\.\.\}, array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Parameter \#1 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\<T of object\>\:\:setVersionMapping\(\) expects array\{type\: string, fieldName\: string, name\: string, isCascadeRemove\: bool, isCascadePersist\: bool, isCascadeRefresh\: bool, isCascadeMerge\: bool, isCascadeDetach\: bool, \.\.\.\}, array\{type\: string, fieldName\: string, name\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Parameter \#1 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\<T of object\>\:\:typeRequirementsAreMet\(\) expects array\{type\: string, fieldName\: string, name\: string, isCascadeRemove\: bool, isCascadePersist\: bool, isCascadeRefresh\: bool, isCascadeMerge\: bool, isCascadeDetach\: bool, \.\.\.\}, array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:\$rootClass \(class\-string\|null\) is never assigned null so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Template type T is declared as covariant, but occurs in invariant position in property Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:\$name\.$#'
 			identifier: generics.variance
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Template type T is declared as covariant, but occurs in invariant position in property Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:\$reflClass\.$#'
 			identifier: generics.variance
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Template type T is declared as covariant, but occurs in invariant position in return type of method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:getReflectionClass\(\)\.$#'
 			identifier: generics.variance
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/ClassMetadata.php
+			path: src/Mapping/ClassMetadata.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\AttributeDriver\:\:getClassAttributes\(\) has parameter \$class with generic class ReflectionClass but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/AttributeDriver.php
+			path: src/Mapping/Driver/AttributeDriver.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\AttributeReader\:\:getClassAttributes\(\) has parameter \$class with generic class ReflectionClass but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/AttributeReader.php
+			path: src/Mapping/Driver/AttributeReader.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/XmlDriver.php
+			path: src/Mapping/Driver/XmlDriver.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver\:\:getSearchIndexFieldDefinition\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/XmlDriver.php
+			path: src/Mapping/Driver/XmlDriver.php
 
 		-
 			message: '#^Parameter \#2 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver\:\:addFieldMapping\(\) expects array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\}, array\<string, array\<''contention''\|''max''\|''min''\|''precision''\|''queryType''\|''sparsity''\|''trimFactor''\|int\<0, max\>, Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\EncryptQuery\|float\|int\|MongoDB\\BSON\\Decimal128\|MongoDB\\BSON\\Int64\|MongoDB\\BSON\\UTCDateTime\|string\|null\>\|bool\|string\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/XmlDriver.php
+			path: src/Mapping/Driver/XmlDriver.php
 
 		-
 			message: '#^Parameter \#2 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver\:\:addFieldMapping\(\) expects array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\}, non\-empty\-array\<string, array\<string, string\>\|string\|true\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/XmlDriver.php
+			path: src/Mapping/Driver/XmlDriver.php
 
 		-
 			message: '#^Parameter \#2 \$options of method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\<object\>\:\:addIndex\(\) expects array\{background\?\: bool, bits\?\: int, default_language\?\: string, expireAfterSeconds\?\: int, language_override\?\: string, min\?\: float, max\?\: float, name\?\: string, \.\.\.\}, array\<string, non\-empty\-array\<string, array\<int\<0, max\>\|string, mixed\>\|bool\|float\|int\|string\|null\>\|bool\|float\|int\|string\|null\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/Driver/XmlDriver.php
+			path: src/Mapping/Driver/XmlDriver.php
 
 		-
 			message: '#^Parameter \#1 \$initializer of method ProxyManager\\Proxy\\GhostObjectInterface\<object\>\:\:setProxyInitializer\(\) expects \(Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<object\>\=, string\=, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool\)\|null, \(Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<object\>\=, string, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool\)\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/PropertyAccessors/ObjectCastPropertyAccessor.php
+			path: src/Mapping/PropertyAccessors/ObjectCastPropertyAccessor.php
 
 		-
 			message: '#^Parameter \#1 \$initializer of method ProxyManager\\Proxy\\GhostObjectInterface\<object\>\:\:setProxyInitializer\(\) expects \(Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<object\>\=, string\=, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool\)\|null, \(Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<object\>\=, string, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool\)\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Mapping/PropertyAccessors/RawValuePropertyAccessor.php
+			path: src/Mapping/PropertyAccessors/RawValuePropertyAccessor.php
 
 		-
 			message: '#^Call to function is_object\(\) with Doctrine\\Common\\Collections\\Collection will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Doctrine\\Common\\Collections\\Collection and ''findFirst'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Call to function method_exists\(\) with Doctrine\\Common\\Collections\\Collection and ''reduce'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:add\(\) with return type void returns true but should not return anything\.$#'
 			identifier: return.void
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^PHPDoc tag @var for property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$hints with type Doctrine\\ODM\\MongoDB\\PersistentCollection\\Hints is incompatible with native type array\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^PHPDoc tag @var for property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$mapping with type Doctrine\\ODM\\MongoDB\\PersistentCollection\\FieldMapping\|null is not subtype of native type array\|null\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$hints has unknown class Doctrine\\ODM\\MongoDB\\PersistentCollection\\Hints as its type\.$#'
 			identifier: class.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$hints type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$mapping has unknown class Doctrine\\ODM\\MongoDB\\PersistentCollection\\FieldMapping as its type\.$#'
 			identifier: class.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\PersistentCollection\:\:\$mapping type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection.php
+			path: src/PersistentCollection.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\PersistentCollection\\AbstractPersistentCollectionFactory\:\:createCollectionClass\(\) return type with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection/AbstractPersistentCollectionFactory.php
+			path: src/PersistentCollection/AbstractPersistentCollectionFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\PersistentCollection\\DefaultPersistentCollectionFactory\:\:createCollectionClass\(\) return type with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/PersistentCollection/DefaultPersistentCollectionFactory.php
+			path: src/PersistentCollection/DefaultPersistentCollectionFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:delete\(\) has parameter \$collections with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:deleteElements\(\) has parameter \$collections with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:getPathAndParent\(\) has parameter \$coll with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:getValuePrepareCallback\(\) has parameter \$coll with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:insertElements\(\) has parameter \$collections with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:setCollections\(\) has parameter \$collections with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:update\(\) has parameter \$collections with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^PHPDoc tag @var for variable \$addToSetColls contains generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^PHPDoc tag @var for variable \$pushAllColls contains generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^PHPDoc tag @var for variable \$setColls contains generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/CollectionPersister.php
+			path: src/Persisters/CollectionPersister.php
 
 		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:createReferenceManyInverseSideQuery\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:createReferenceManyWithRepositoryMethodCursor\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:createReferenceManyWithRepositoryMethodCursor\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:isInTransaction\(\) has parameter \$options with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadAll\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadCollection\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadEmbedManyCollection\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadReferenceManyCollectionInverseSide\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadReferenceManyCollectionOwningSide\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:loadReferenceManyWithRepositoryMethod\(\) has parameter \$collection with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface but does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\DocumentPersister\:\:wrapCursor\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Parameter \#1 \$array \(non\-empty\-list\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/DocumentPersister.php
+			path: src/Persisters/DocumentPersister.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\PersistenceBuilder\:\:preparePersistentCollection\(\) has parameter \$mapping with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/PersistenceBuilder.php
+			path: src/Persisters/PersistenceBuilder.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Persisters\\PersistenceBuilder\:\:preparePersistentCollection\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface does not specify its types\: TKey, T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Persisters/PersistenceBuilder.php
+			path: src/Persisters/PersistenceBuilder.php
 
 		-
 			message: '#^Call to an undefined static method Doctrine\\ODM\\MongoDB\\Proxy\\Factory\\LazyGhostProxyFactory\:\:createLazyGhost\(\)\.$#'
 			identifier: staticMethod.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/LazyGhostProxyFactory.php
+			path: src/Proxy/Factory/LazyGhostProxyFactory.php
 
 		-
 			message: '#^Call to function is_scalar\(\) with int\<min, \-1\>\|int\<5, max\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/LazyGhostProxyFactory.php
+			path: src/Proxy/Factory/LazyGhostProxyFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Proxy\\Factory\\LazyGhostProxyFactory\:\:createLazyInitializer\(\) has Doctrine\\ODM\\MongoDB\\DocumentNotFoundException in PHPDoc @throws tag but it''s not thrown\.$#'
 			identifier: throws.unusedType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/LazyGhostProxyFactory.php
+			path: src/Proxy/Factory/LazyGhostProxyFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Proxy\\Factory\\LazyGhostProxyFactory\:\:createLazyInitializer\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Proxy\\InternalProxy does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/LazyGhostProxyFactory.php
+			path: src/Proxy/Factory/LazyGhostProxyFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Proxy\\Factory\\LazyGhostProxyFactory\:\:getProxy\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Proxy\\InternalProxy does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/LazyGhostProxyFactory.php
+			path: src/Proxy/Factory/LazyGhostProxyFactory.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Proxy\\Factory\\StaticProxyFactory\:\:createInitializer\(\) should return Closure\(ProxyManager\\Proxy\\GhostObjectInterface\<TDocument\>&TDocument\=, string\=, array\<string, mixed\>\=, Closure\|null\=, array\<string, mixed\>\=\)\: bool but returns Closure\(ProxyManager\\Proxy\\GhostObjectInterface, string, array, mixed, array\)\: true\.$#'
 			identifier: return.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Proxy/Factory/StaticProxyFactory.php
+			path: src/Proxy/Factory/StaticProxyFactory.php
 
 		-
 			message: '#^Unsafe call to private method Doctrine\\ODM\\MongoDB\\Query\\Expr\:\:convertExpression\(\) through static\:\:\.$#'
 			identifier: staticClassAccess.privateMethod
 			count: 3
-			path: lib/Doctrine/ODM/MongoDB/Query/Expr.php
+			path: src/Query/Expr.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Query\\Query\:\:getIterator\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Query/Query.php
+			path: src/Query/Query.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Query\\Query\:\:makeIterator\(\) return type with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Query/Query.php
+			path: src/Query/Query.php
 
 		-
 			message: '#^Property Doctrine\\ODM\\MongoDB\\Query\\Query\:\:\$iterator with generic interface Doctrine\\ODM\\MongoDB\\Iterator\\Iterator does not specify its types\: TValue$#'
 			identifier: missingType.generics
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Query/Query.php
+			path: src/Query/Query.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between array\<string, mixed\>\|bool\|int\|MongoDB\\Driver\\ReadPreference\|string and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Query/Query.php
+			path: src/Query/Query.php
 
 		-
 			message: '#^Parameter &\$groupedIds by\-ref type of method Doctrine\\ODM\\MongoDB\\Query\\ReferencePrimer\:\:addManyReferences\(\) expects array\<class\-string, array\<string, mixed\>\>, array\<string, array\<string, mixed\>\> given\.$#'
 			identifier: parameterByRef.type
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Query/ReferencePrimer.php
+			path: src/Query/ReferencePrimer.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/ClearCache/MetadataCommand.php
+			path: src/Tools/Console/Command/ClearCache/MetadataCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/GenerateHydratorsCommand.php
+			path: src/Tools/Console/Command/GenerateHydratorsCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/GeneratePersistentCollectionsCommand.php
+			path: src/Tools/Console/Command/GeneratePersistentCollectionsCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/GenerateProxiesCommand.php
+			path: src/Tools/Console/Command/GenerateProxiesCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/QueryCommand.php
+			path: src/Tools/Console/Command/QueryCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/Schema/AbstractCommand.php
+			path: src/Tools/Console/Command/Schema/AbstractCommand.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/Schema/CreateCommand.php
+			path: src/Tools/Console/Command/Schema/CreateCommand.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/Schema/DropCommand.php
+			path: src/Tools/Console/Command/Schema/DropCommand.php
 
 		-
 			message: '#^Call to an undefined method Symfony\\Component\\Console\\Helper\\HelperInterface\:\:getDocumentManager\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Tools/Console/Command/Schema/ValidateCommand.php
+			path: src/Tools/Console/Command/Schema/ValidateCommand.php
 
 		-
 			message: '#^Unreachable statement \- code above always terminates\.$#'
 			identifier: deadCode.unreachable
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Types/DateImmutableType.php
+			path: src/Types/DateImmutableType.php
 
 		-
 			message: '#^Unsafe call to private method Doctrine\\ODM\\MongoDB\\Types\\DateType\:\:craftDateTime\(\) through static\:\:\.$#'
 			identifier: staticClassAccess.privateMethod
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/Types/DateType.php
+			path: src/Types/DateType.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\UnitOfWork\:\:getTransactionOptions\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/UnitOfWork.php
+			path: src/UnitOfWork.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\UnitOfWork\:\:stripTransactionOptions\(\) has parameter \$options with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/UnitOfWork.php
+			path: src/UnitOfWork.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\UnitOfWork\:\:stripTransactionOptions\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/UnitOfWork.php
+			path: src/UnitOfWork.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\UnitOfWork\:\:withTransaction\(\) has parameter \$transactionOptions with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/UnitOfWork.php
+			path: src/UnitOfWork.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: lib/Doctrine/ODM/MongoDB/UnitOfWork.php
+			path: src/UnitOfWork.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:getClassMetadata\(\)$#'
 			identifier: argument.templateType
 			count: 3
-			path: lib/Doctrine/ODM/MongoDB/Utility/LifecycleEventManager.php
+			path: src/Utility/LifecycleEventManager.php
 
 		-
 			message: '#^Parameter \#1 \$builder of method Doctrine\\ODM\\MongoDB\\Aggregation\\Stage\\Facet\:\:pipeline\(\) expects Doctrine\\ODM\\MongoDB\\Aggregation\\Builder\|Doctrine\\ODM\\MongoDB\\Aggregation\\Stage, stdClass given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/FacetTest.php
+			path: tests/Tests/Aggregation/Stage/FacetTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\ProjectTest\:\:testAccumulatorsWithMultipleArguments\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/ProjectTest.php
+			path: tests/Tests/Aggregation/Stage/ProjectTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\ProjectTest\:\:testAccumulatorsWithMultipleArguments\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/ProjectTest.php
+			path: tests/Tests/Aggregation/Stage/ProjectTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchCompoundOperators\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchEmbeddedDocumentOperators\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchOperators\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchOperatorsWithSearchAfter\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchOperatorsWithSearchBefore\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SearchTest\:\:testSearchOperatorsWithSort\(\) has parameter \$expectedOperator with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SearchTest.php
+			path: tests/Tests/Aggregation/Stage/SearchTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SetWindowFieldsTest\:\:testOperators\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SetWindowFieldsTest.php
+			path: tests/Tests/Aggregation/Stage/SetWindowFieldsTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Aggregation\\Stage\\SetWindowFieldsTest\:\:testOperators\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Aggregation/Stage/SetWindowFieldsTest.php
+			path: tests/Tests/Aggregation/Stage/SetWindowFieldsTest.php
 
 		-
 			message: '#^Constant DOCTRINE_MONGODB_SERVER not found\.$#'
 			identifier: constant.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/BaseTestCase.php
+			path: tests/Tests/BaseTestCase.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\BaseTestCase\:\:assertArraySubset\(\) has parameter \$array with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/BaseTestCase.php
+			path: tests/Tests/BaseTestCase.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\BaseTestCase\:\:assertArraySubset\(\) has parameter \$subset with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/BaseTestCase.php
+			path: tests/Tests/BaseTestCase.php
 
 		-
 			message: '#^Used constant DOCTRINE_MONGODB_SERVER not found\.$#'
 			identifier: constant.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/BaseTestCase.php
+			path: tests/Tests/BaseTestCase.php
 
 		-
 			message: '#^Parameter \#2 \$referenceMapping of method Doctrine\\ODM\\MongoDB\\DocumentManager\:\:createReference\(\) expects array\{type\: string, fieldName\: string, name\: string, isCascadeRemove\: bool, isCascadePersist\: bool, isCascadeRefresh\: bool, isCascadeMerge\: bool, isCascadeDetach\: bool, \.\.\.\}, array\{storeAs\: ''dbRef''\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/DocumentManagerTest.php
+			path: tests/Tests/DocumentManagerTest.php
 
 		-
 			message: '#^Parameter \#2 \$projects of class Documents\\Developer constructor expects Doctrine\\Common\\Collections\\Collection\<int, Documents\\Project\>\|null, Doctrine\\Common\\Collections\\ArrayCollection\<int, Documents\\SubProject\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/DocumentRepositoryTest.php
+			path: tests/Tests/DocumentRepositoryTest.php
 
 		-
 			message: '#^Parameter \#2 \$collections of method Doctrine\\ODM\\MongoDB\\Persisters\\CollectionPersister\:\:delete\(\) expects array\<Doctrine\\ODM\\MongoDB\\PersistentCollection\\PersistentCollectionInterface\>, array\<int, array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\CollectionPersisterCategory\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\CollectionPersisterCategory\>\> given\.$#'
 			identifier: argument.type
 			count: 3
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/CollectionPersisterTest.php
+			path: tests/Tests/Functional/CollectionPersisterTest.php
 
 		-
 			message: '#^PHPDoc type Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\> of property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocumentWithDiscriminator\:\:\$embeddedChildren is not covariant with PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\> of overridden property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocument\:\:\$embeddedChildren\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/DiscriminatorsDefaultValueTest.php
+			path: tests/Tests/Functional/DiscriminatorsDefaultValueTest.php
 
 		-
 			message: '#^PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\> of property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocumentWithDiscriminator\:\:\$referencedChildren is not covariant with PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\> of overridden property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocument\:\:\$referencedChildren\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/DiscriminatorsDefaultValueTest.php
+			path: tests/Tests/Functional/DiscriminatorsDefaultValueTest.php
 
 		-
 			message: '#^PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\> of property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocumentWithoutDiscriminator\:\:\$embeddedChildren is not covariant with PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\> of overridden property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocument\:\:\$embeddedChildren\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/DiscriminatorsDefaultValueTest.php
+			path: tests/Tests/Functional/DiscriminatorsDefaultValueTest.php
 
 		-
 			message: '#^PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocumentWithDiscriminator\> of property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocumentWithoutDiscriminator\:\:\$referencedChildren is not covariant with PHPDoc type array\<Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\>\|Doctrine\\Common\\Collections\\Collection\<int, Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ChildDocument\> of overridden property Doctrine\\ODM\\MongoDB\\Tests\\Functional\\ParentDocument\:\:\$referencedChildren\.$#'
 			identifier: property.phpDocType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/DiscriminatorsDefaultValueTest.php
+			path: tests/Tests/Functional/DiscriminatorsDefaultValueTest.php
 
 		-
 			message: '#^Expression "\$groups\[0\]" on a separate line does not do anything\.$#'
 			identifier: expr.resultUnused
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/FunctionalTest.php
+			path: tests/Tests/Functional/FunctionalTest.php
 
 		-
 			message: '#^Access to an undefined property MongoDB\\Model\\BSONDocument\:\:\$patientId\.$#'
 			identifier: property.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/QueryableEncryptionTest.php
+			path: tests/Tests/Functional/QueryableEncryptionTest.php
 
 		-
 			message: '#^Access to an undefined property MongoDB\\Model\\BSONDocument\:\:\$patientName\.$#'
 			identifier: property.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/QueryableEncryptionTest.php
+			path: tests/Tests/Functional/QueryableEncryptionTest.php
 
 		-
 			message: '#^Access to an undefined property MongoDB\\Model\\BSONDocument\:\:\$patientRecord\.$#'
 			identifier: property.notFound
 			count: 6
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/QueryableEncryptionTest.php
+			path: tests/Tests/Functional/QueryableEncryptionTest.php
 
 		-
 			message: '#^Parameter \$discriminatorMap of attribute class Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\ReferenceOne constructor expects array\<string, class\-string\>\|null, array\<string, string\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/TargetDocumentTest.php
+			path: tests/Tests/Functional/TargetDocumentTest.php
 
 		-
 			message: '#^Parameter \$targetDocument of attribute class Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\ReferenceOne constructor expects class\-string\|null, string given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Functional/TargetDocumentTest.php
+			path: tests/Tests/Functional/TargetDocumentTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Mapping\\ClassMetadataTest\:\:testEmptyVectorSearchIndexDefinition\(\) has parameter \$definition with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Mapping/ClassMetadataTest.php
+			path: tests/Tests/Mapping/ClassMetadataTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Mapping\\ClassMetadataTest\:\:testSearchIndexDefinition\(\) has parameter \$definition with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Mapping/ClassMetadataTest.php
+			path: tests/Tests/Mapping/ClassMetadataTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Query\\BuilderTest\:\:testExclude\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Query/BuilderTest.php
+			path: tests/Tests/Query/BuilderTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Query\\BuilderTest\:\:testSelect\(\) has parameter \$expected with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Query/BuilderTest.php
+			path: tests/Tests/Query/BuilderTest.php
 
 		-
 			message: '#^Parameter \#1 \$primer of method Doctrine\\ODM\\MongoDB\\Query\\Builder\:\:prime\(\) expects bool\|\(callable\(\)\: mixed\), 1 given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Query/BuilderTest.php
+			path: tests/Tests/Query/BuilderTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\QueryTest\:\:createCursorMock\(\) return type has no value type specified in iterable type Traversable\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/QueryTest.php
+			path: tests/Tests/QueryTest.php
 
 		-
 			message: '#^Parameter \#4 \$query of class Doctrine\\ODM\\MongoDB\\Query\\Query constructor expects array\{distinct\?\: string, hint\?\: array\<string, \-1\|1\>\|string, limit\?\: int, maxTimeMS\?\: int, multiple\?\: bool, new\?\: bool, newObj\?\: array\<string, mixed\>, query\?\: array\<string, mixed\>, \.\.\.\}, array\{type\: \-1\} given\.$#'
 			identifier: argument.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/QueryTest.php
+			path: tests/Tests/QueryTest.php
 
 		-
 			message: '#^Instantiated class MongoDB\\Model\\CollectionInfoCommandIterator not found\.$#'
 			identifier: class.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Instantiated class MongoDB\\Model\\IndexInfoIteratorIterator not found\.$#'
 			identifier: class.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\SchemaManagerTest\:\:createCollectionIterator\(\) has parameter \$collections with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\SchemaManagerTest\:\:createCollectionIterator\(\) should return Iterator but returns MongoDB\\Model\\CollectionInfoCommandIterator\.$#'
 			identifier: return.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\SchemaManagerTest\:\:createIndexIterator\(\) has parameter \$indexes with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\SchemaManagerTest\:\:createIndexIterator\(\) should return Iterator but returns MongoDB\\Model\\IndexInfoIteratorIterator\.$#'
 			identifier: return.type
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/SchemaManagerTest.php
+			path: tests/Tests/SchemaManagerTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:doLoadMetadata\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:getDriver\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:initializeReflection\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:isEntity\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:newClassMetadataInstance\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to an undefined method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactoryInterface\:\:wakeupReflection\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:__construct\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:__construct\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:doLoadMetadata\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:doLoadMetadata\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:doLoadMetadata\(\) has parameter \$parent with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:doLoadMetadata\(\) has parameter \$parent with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:getAllMetadata\(\) return type with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:getAllMetadata\(\) return type with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:initializeReflection\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:initializeReflection\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:isEntity\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:isEntity\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
-			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:wakeupReflection\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
+			message: '#^Method Doctrine\\Persistence\\Mapping\\AbstractClassMetadataFactory@anonymous/tests/Tests/Tools/EncryptedFieldsMapGeneratorTest\.php\:212\:\:wakeupReflection\(\) has parameter \$class with generic interface Doctrine\\Persistence\\Mapping\\ClassMetadata but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
+			path: tests/Tests/Tools/EncryptedFieldsMapGeneratorTest.php
 
 		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with arguments MongoDB\\BSON\\Binary, null and ''Binary UUIDs are…'' will always evaluate to false\.$#'
 			identifier: staticMethod.impossibleType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Types/BinaryUuidTypeTest.php
+			path: tests/Tests/Types/BinaryUuidTypeTest.php
 
 		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with arguments Symfony\\Component\\Uid\\UuidV4, null and ''Uuid objects are…'' will always evaluate to false\.$#'
 			identifier: staticMethod.impossibleType
 			count: 1
-			path: tests/Doctrine/ODM/MongoDB/Tests/Types/BinaryUuidTypeTest.php
+			path: tests/Tests/Types/BinaryUuidTypeTest.php
 
 		-
 			message: '#^Method Documents\\Encryption\\Client\:\:__construct\(\) has parameter \$clientCards with generic interface Doctrine\\Common\\Collections\\Collection but does not specify its types\: TKey, T$#'
