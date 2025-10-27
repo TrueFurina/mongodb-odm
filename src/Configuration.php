@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB;
 
+use Composer\InstalledVersions;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
@@ -24,7 +25,6 @@ use Doctrine\ODM\MongoDB\Repository\RepositoryFactory;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\ObjectRepository;
 use InvalidArgumentException;
-use Jean85\PrettyVersions;
 use LogicException;
 use MongoDB\Client;
 use MongoDB\Driver\Manager;
@@ -803,7 +803,7 @@ class Configuration
     {
         if (! isset(self::$version)) {
             try {
-                self::$version = PrettyVersions::getVersion('doctrine/mongodb-odm')->getPrettyVersion();
+                return self::$version ??= InstalledVersions::getPrettyVersion('doctrine/mongodb-odm') ?? 'unknown';
             } catch (Throwable) {
                 return self::$version = 'unknown';
             }
