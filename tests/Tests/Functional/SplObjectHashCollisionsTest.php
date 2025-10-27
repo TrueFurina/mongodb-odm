@@ -1,0 +1,121 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Doctrine\ODM\MongoDB\Tests\Functional;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use ReflectionObject;
+
+class SplObjectHashCollisionsTest extends BaseTestCase
+{
+    /** @param callable(DocumentManager, object=): void $f */
+    #[DataProvider('provideParentAssociationsIsCleared')]
+    public function testParentAssociationsIsCleared(callable $f): void
+    {
+        $d         = new SplColDoc();
+        $d->one    = new SplColEmbed('d.one.v1');
+        $d->many[] = new SplColEmbed('d.many.0.v1');
+        $d->many[] = new SplColEmbed('d.many.1.v1');
+
+        $this->dm->persist($d);
+        $this->expectCount('parentAssociations', 3);
+        $this->expectCount('embeddedDocumentsRegistry', 3);
+        $f($this->dm, $d);
+        $this->expectCount('parentAssociations', 0);
+        $this->expectCount('embeddedDocumentsRegistry', 0);
+    }
+
+    /** @param callable(DocumentManager, object=): void $f */
+    #[DataProvider('provideParentAssociationsIsCleared')]
+    public function testParentAssociationsLeftover(callable $f, int $leftover): void
+    {
+        $d         = new SplColDoc();
+        $d->one    = new SplColEmbed('d.one.v1');
+        $d->many[] = new SplColEmbed('d.many.0.v1');
+        $d->many[] = new SplColEmbed('d.many.1.v1');
+        $this->dm->persist($d);
+        $d->one = new SplColEmbed('d.one.v2');
+        $this->dm->flush();
+
+        $this->expectCount('parentAssociations', 4);
+        $this->expectCount('embeddedDocumentsRegistry', 4);
+        $f($this->dm, $d);
+        $this->expectCount('parentAssociations', $leftover);
+        $this->expectCount('embeddedDocumentsRegistry', $leftover);
+    }
+
+    public static function provideParentAssociationsIsCleared(): array
+    {
+        return [
+            [
+                static function (DocumentManager $dm): void {
+                    $dm->clear();
+                },
+                0,
+            ],
+            [
+                static function (DocumentManager $dm, $doc): void {
+                    $dm->detach($doc);
+                },
+                1,
+            ],
+        ];
+    }
+
+    #[IgnoreDeprecations]
+    public function testParentAssociationsLeftoverPartialClear(): void
+    {
+        $this->testParentAssociationsLeftover(
+            static function (DocumentManager $dm): void {
+                $dm->clear(SplColDoc::class);
+            },
+            1,
+        );
+    }
+
+    private function expectCount(string $prop, int $expected): void
+    {
+        $ro = new ReflectionObject($this->uow);
+        $rp = $ro->getProperty($prop);
+        self::assertCount($expected, $rp->getValue($this->uow));
+    }
+}
+
+#[ODM\Document]
+class SplColDoc
+{
+    /** @var string|null */
+    #[ODM\Id]
+    public $id;
+
+    /** @var string|null */
+    #[ODM\Field(type: 'string')]
+    public $name;
+
+    /** @var object|null */
+    #[ODM\EmbedOne]
+    public $one;
+
+    /** @var Collection<int, object>|array<object> */
+    #[ODM\EmbedMany]
+    public $many = [];
+}
+
+#[ODM\EmbeddedDocument]
+class SplColEmbed
+{
+    /** @var string */
+    #[ODM\Field(type: 'string')]
+    public $name;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+}

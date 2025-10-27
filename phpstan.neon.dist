@@ -6,10 +6,10 @@ parameters:
   level: 5
   paths:
     - benchmark
-    - lib
+    - src
     - tests
   excludePaths:
-    - tests/Doctrine/ODM/MongoDB/Tests/Mapping/Driver/fixtures/User.php
+    - tests/Tests/Mapping/Driver/fixtures/User.php
     - tests/Hydrators/
     - tests/PersistentCollections/ (?)
     - tests/Proxies/
@@ -20,11 +20,11 @@ parameters:
 
       # Ignore circular references in Psalm types
       - message: '#^Circular definition detected in type alias#'
-        path: lib/Doctrine/ODM/MongoDB/Aggregation/
+        path: src/Aggregation/
 
       # Keep type assertions even when type is declared
       - identifier: staticMethod.alreadyNarrowedType
-        path: tests/Doctrine/
+        path: tests/Tests/
 
       - message: '#generic class Doctrine\\ODM\\MongoDB\\(Mapping\\ClassMetadata|Persisters\\DocumentPersister) (but )?does not specify its types\: T$#'
         identifier: missingType.generics

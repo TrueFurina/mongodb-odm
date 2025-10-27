@@ -96,4 +96,5 @@ jobs:
         run: "vendor/bin/phpunit --group atlas"
         env:
           DOCTRINE_MONGODB_SERVER: "mongodb://127.0.0.1:27017/?directConnection=true"
-          USE_LAZY_GHOST_OBJECTS: ${{ matrix.proxy == 'lazy-ghost' && '1' || '0' }}
+          USE_LAZY_GHOST_OBJECT: ${{ matrix.proxy == 'lazy-ghost' && '1' || '0' }}
+          USE_NATIVE_LAZY_OBJECT: ${{ matrix.proxy == 'native' && '1' || '0' }}
