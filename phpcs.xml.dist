@@ -12,7 +12,7 @@
     <config name="php_version" value="80100"/>
 
     <file>benchmark</file>
-    <file>lib</file>
+    <file>src</file>
     <file>tests</file>
     <file>tools</file>
 
@@ -50,46 +50,46 @@
     </rule>
 
     <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
-        <exclude-pattern>tests/Doctrine/ODM/MongoDB/Tests/Mapping/Documents/GlobalNamespaceDocument.php</exclude-pattern>
+        <exclude-pattern>tests/Tests/Mapping/Documents/GlobalNamespaceDocument.php</exclude-pattern>
     </rule>
 
     <rule ref="Squiz.Classes.ValidClassName.NotPascalCase">
-        <exclude-pattern>tests/Doctrine/ODM/MongoDB/Tests/Mapping/Documents/GlobalNamespaceDocument.php</exclude-pattern>
+        <exclude-pattern>tests/Tests/Mapping/Documents/GlobalNamespaceDocument.php</exclude-pattern>
     </rule>
 
     <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps">
-        <exclude-pattern>tests/Doctrine/ODM/MongoDB/Tests/Functional/FunctionalTest.php</exclude-pattern>
+        <exclude-pattern>tests/Tests/Functional/FunctionalTest.php</exclude-pattern>
     </rule>
 
     <rule ref="Generic.NamingConventions.UpperCaseConstantName.ClassConstantNotUpperCase">
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Events.php</exclude-pattern>
+        <exclude-pattern>src/Events.php</exclude-pattern>
     </rule>
 
     <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Mapping/Driver/CompatibilityAnnotationDriver.php</exclude-pattern>
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Tools/Console/Command/CommandCompatibility.php</exclude-pattern>
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Tools/Console/Helper/DocumentManagerHelper.php</exclude-pattern>
-        <exclude-pattern>*/tests/*</exclude-pattern>
+        <exclude-pattern>src/Mapping/Driver/CompatibilityAnnotationDriver.php</exclude-pattern>
+        <exclude-pattern>src/Tools/Console/Command/CommandCompatibility.php</exclude-pattern>
+        <exclude-pattern>src/Tools/Console/Helper/DocumentManagerHelper.php</exclude-pattern>
+        <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
     <rule ref="Squiz.Classes.ClassFileName.NoMatch">
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Tools/Console/Helper/DocumentManagerHelper.php</exclude-pattern>
-        <exclude-pattern>*/tests/*</exclude-pattern>
+        <exclude-pattern>src/Tools/Console/Helper/DocumentManagerHelper.php</exclude-pattern>
+        <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
     <!-- If forces to add "@inheritDoc" because the analysis is per file -->
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint">
-        <exclude-pattern>*/lib/*</exclude-pattern>
-        <exclude-pattern>tests/Doctrine/ODM/MongoDB/Tests/Functional/DocumentPersisterTest.php</exclude-pattern>
-        <exclude-pattern>tests/Doctrine/ODM/MongoDB/Tests/Functional/CustomTypeTest.php</exclude-pattern>
+        <exclude-pattern>src/*</exclude-pattern>
+        <exclude-pattern>tests/Tests/Functional/DocumentPersisterTest.php</exclude-pattern>
+        <exclude-pattern>tests/Tests/Functional/CustomTypeTest.php</exclude-pattern>
     </rule>
 
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint">
         <!-- We do want to test generating collections without return types -->
-        <exclude-pattern>*/tests/Doctrine/ODM/MongoDB/Tests/PersistentCollection/Coll*</exclude-pattern>
+        <exclude-pattern>tests/Tests/PersistentCollection/Coll*</exclude-pattern>
     </rule>
     <!-- It fails when using Nowdoc in method call -->
     <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall.MissingTrailingComma">
-        <exclude-pattern>lib/Doctrine/ODM/MongoDB/Tools/Console/Command/*</exclude-pattern>
+        <exclude-pattern>src/Tools/Console/Command/*</exclude-pattern>
     </rule>
 </ruleset>
