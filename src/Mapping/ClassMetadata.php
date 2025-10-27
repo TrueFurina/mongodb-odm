@@ -2441,7 +2441,7 @@ use const PHP_VERSION_ID;
                 } elseif (empty($mapping['type'])) {
                     $mapping['type'] = $this->generatorType === self::GENERATOR_TYPE_INCREMENT ? Type::INT : Type::CUSTOMID;
                 }
-            } elseif ($mapping['type'] !== Type::UUID) {
+            } elseif (empty($mapping['type']) || $mapping['type'] !== Type::UUID) {
                 $mapping['type'] = Type::ID;
             }
 
