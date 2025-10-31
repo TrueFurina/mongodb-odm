@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\Persistence\Mapping\Driver\FileClassLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use PHPUnit\Framework\Attributes\RequiresMethod;
 
 use function call_user_func;
 use function class_exists;
@@ -19,6 +21,7 @@ use function sprintf;
 
 use const E_USER_DEPRECATED;
 
+#[RequiresMethod(AnnotationReader::class, '__construct')]
 class AnnotationDriverTest extends AbstractAnnotationDriverTestCase
 {
     protected static function loadDriver(array $paths = []): MappingDriver
