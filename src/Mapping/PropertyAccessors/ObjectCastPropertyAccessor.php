@@ -52,7 +52,7 @@ class ObjectCastPropertyAccessor implements PropertyAccessor
             $object->__setInitialized(false);
         } elseif ($object instanceof GhostObjectInterface && ! $object->isProxyInitialized()) {
             $initializer = $object->getProxyInitializer();
-            $object->setProxyInitializer();
+            $object->setProxyInitializer(null);
             $this->reflectionProperty->setValue($object, $value);
             $object->setProxyInitializer($initializer);
         } else {

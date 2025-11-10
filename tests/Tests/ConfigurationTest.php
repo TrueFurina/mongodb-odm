@@ -13,9 +13,11 @@ use MongoDB\Driver\Manager;
 use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use ProxyManager\Configuration as ProxyManagerConfiguration;
 use stdClass;
 
 use function base64_encode;
+use function class_exists;
 use function str_repeat;
 
 class ConfigurationTest extends TestCase
@@ -38,6 +40,12 @@ class ConfigurationTest extends TestCase
         self::assertFalse($c->isLazyGhostObjectEnabled());
         $c->setUseLazyGhostObject(true);
         self::assertTrue($c->isLazyGhostObjectEnabled());
+
+        if (! class_exists(ProxyManagerConfiguration::class)) {
+            $this->expectException(LogicException::class);
+            $this->expectExceptionMessage('Package "friendsofphp/proxy-manager-lts" is required to disable LazyGhostObject.');
+        }
+
         $c->setUseLazyGhostObject(false);
         self::assertFalse($c->isLazyGhostObjectEnabled());
     }

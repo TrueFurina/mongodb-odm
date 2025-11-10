@@ -708,7 +708,8 @@ class Configuration
 
     public function isLazyGhostObjectEnabled(): bool
     {
-        return $this->lazyGhostObject;
+        // Always false if native lazy objects are enabled
+        return $this->lazyGhostObject && ! $this->nativeLazyObject;
     }
 
     public function setUseNativeLazyObject(bool $nativeLazyObject): void
@@ -718,7 +719,6 @@ class Configuration
         }
 
         $this->nativeLazyObject = $nativeLazyObject;
-        $this->lazyGhostObject  = ! $nativeLazyObject || $this->lazyGhostObject;
     }
 
     public function isNativeLazyObjectEnabled(): bool
