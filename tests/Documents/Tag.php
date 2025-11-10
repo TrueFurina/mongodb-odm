@@ -14,7 +14,7 @@ class Tag
     public ?string $id;
 
     #[ODM\Field]
-    public readonly string $name;
+    public string $name;
 
     /** @var Collection<int, BlogPost> */
     #[ODM\ReferenceMany(targetDocument: BlogPost::class, mappedBy: 'tags')]

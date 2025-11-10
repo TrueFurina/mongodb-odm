@@ -108,6 +108,15 @@ jobs:
             dependencies: "highest"
             symfony-version: false
             proxy: "native"
+          # Test removing optional dependencies
+          - topology: "server"
+            php-version: "8.4"
+            mongodb-version: "8.0"
+            driver-version: "stable"
+            dependencies: "highest"
+            symfony-version: "locked"
+            proxy: "native"
+            remove-optional-dependencies: true
           # Test with a sharded cluster
           # Currently disabled due to a bug where MongoDB reports "sharding status unknown"
 #          - topology: "sharded_cluster"
@@ -153,6 +162,13 @@ jobs:
       # Not used for tests, skip transient dependencies
       - name: "Remove phpbench/phpbench"
         run: composer remove --no-update --dev phpbench/phpbench
+
+      - name: "Remove optional dependencies"
+        if: "${{ matrix.remove-optional-dependencies }}"
+        run: |
+          composer remove --no-update friendsofphp/proxy-manager-lts symfony/var-exporter
+          composer remove --no-update --dev symfony/cache doctrine/orm doctrine/annotations
+          composer remove --no-update --dev doctrine/coding-standard phpstan/phpstan phpstan/phpstan-deprecation-rule phpstan/phpstan-phpunit
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"

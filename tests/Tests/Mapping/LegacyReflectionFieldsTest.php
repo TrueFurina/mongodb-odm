@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Mapping;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\LegacyReflectionFields;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
 use Documents\Address;
-use Documents\Tag;
 use Documents\User;
 use LogicException;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+
+use function sprintf;
 
 #[IgnoreDeprecations]
 class LegacyReflectionFieldsTest extends BaseTestCase
@@ -56,20 +60,33 @@ class LegacyReflectionFieldsTest extends BaseTestCase
 
     public function testGetSetReadonly(): void
     {
-        $class = $this->dm->getClassMetadata(Tag::class);
+        $class = $this->dm->getClassMetadata(ReadOnlyProperty::class);
         self::assertInstanceOf(LegacyReflectionFields::class, $class->reflFields);
 
-        $tag = new Tag('Important');
+        $tag = new ReadOnlyProperty('Important');
         $this->dm->persist($tag);
         $this->dm->flush();
 
-        $tag = $this->dm->find(Tag::class, $tag->id);
+        $tag = $this->dm->find(ReadOnlyProperty::class, $tag->id);
 
         // Accessing the readonly property through reflection
         self::assertEquals('Important', $class->getReflectionProperty('name')->getValue($tag));
 
         self::expectException(LogicException::class);
-        self::expectExceptionMessage('Attempting to change readonly property Documents\Tag::$name');
+        self::expectExceptionMessage(sprintf('Attempting to change readonly property %s::$name', ReadOnlyProperty::class));
         $class->getReflectionProperty('name')->setValue($tag, 'Very Important');
+    }
+}
+
+#[Document]
+class ReadOnlyProperty
+{
+    #[Id]
+    public string $id;
+
+    public function __construct(
+        #[Field]
+        public readonly string $name,
+    ) {
     }
 }

@@ -154,9 +154,23 @@ class DocumentManager implements ObjectManager
             $this->config->getDriverOptions(),
         );
 
-        $this->classNameResolver = $this->config->isLazyGhostObjectEnabled()
-            ? new CachingClassNameResolver(new LazyGhostProxyClassNameResolver())
-            : new CachingClassNameResolver(new ProxyManagerClassNameResolver($this->config));
+        if ($this->config->isNativeLazyObjectEnabled()) {
+            $this->classNameResolver = new class implements ClassNameResolver, ProxyClassNameResolver {
+                public function getRealClass(string $class): string
+                {
+                    return $class;
+                }
+
+                public function resolveClassName(string $className): string
+                {
+                    return $className;
+                }
+            };
+        } elseif ($this->config->isLazyGhostObjectEnabled()) {
+            $this->classNameResolver = new CachingClassNameResolver(new LazyGhostProxyClassNameResolver());
+        } else {
+            $this->classNameResolver = new CachingClassNameResolver(new ProxyManagerClassNameResolver($this->config));
+        }
 
         $metadataFactoryClassName = $this->config->getClassMetadataFactoryName();
         $this->metadataFactory    = new $metadataFactoryClassName();
