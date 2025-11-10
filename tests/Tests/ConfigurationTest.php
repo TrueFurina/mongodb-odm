@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests;
 
+use Composer\InstalledVersions;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\ConfigurationException;
 use Doctrine\ODM\MongoDB\PersistentCollection\PersistentCollectionFactory;
@@ -15,10 +16,13 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use ProxyManager\Configuration as ProxyManagerConfiguration;
 use stdClass;
+use Symfony\Component\VarExporter\LazyGhostTrait;
 
 use function base64_encode;
 use function class_exists;
 use function str_repeat;
+use function trait_exists;
+use function version_compare;
 
 class ConfigurationTest extends TestCase
 {
@@ -37,6 +41,11 @@ class ConfigurationTest extends TestCase
     {
         $c = new Configuration();
 
+        if (! trait_exists(LazyGhostTrait::class)) {
+            $this->expectException(LogicException::class);
+            $this->expectExceptionMessage('Package "symfony/var-exporter" >= 8.0 does not provide lazy ghost objects, use native lazy objects instead.');
+        }
+
         self::assertFalse($c->isLazyGhostObjectEnabled());
         $c->setUseLazyGhostObject(true);
         self::assertTrue($c->isLazyGhostObjectEnabled());
@@ -48,6 +57,21 @@ class ConfigurationTest extends TestCase
 
         $c->setUseLazyGhostObject(false);
         self::assertFalse($c->isLazyGhostObjectEnabled());
+    }
+
+    #[RequiresPhp('>= 8.4')]
+    public function testUseLazyGhostObjectWithSymfony8(): void
+    {
+        if (InstalledVersions::isInstalled('symfony/var-exporter') && version_compare(InstalledVersions::getVersion('symfony/var-exporter'), '8', '<')) {
+            $this->markTestSkipped('Symfony VarExporter 8 or higher is not installed.');
+        }
+
+        $c = new Configuration();
+
+        self::expectException(LogicException::class);
+        self::expectExceptionMessage('Package "symfony/var-exporter" >= 8.0 does not provide lazy ghost objects, use native lazy objects instead.');
+
+        $c->setUseLazyGhostObject(true);
     }
 
     public function testNativeLazyObjectDeprecatedByDefault(): void
