@@ -146,7 +146,7 @@ final class StaticProxyFactory implements ProxyFactory
         $skippedFieldsFqns = [];
 
         foreach ($metadata->getIdentifierFieldNames() as $idField) {
-            $skippedFieldsFqns[] = $this->propertyFqcn($metadata->getReflectionProperty($idField));
+            $skippedFieldsFqns[] = $this->propertyFqcn($metadata->getPropertyAccessor($idField)->getUnderlyingReflector());
         }
 
         foreach ($metadata->getReflectionClass()->getProperties() as $property) {

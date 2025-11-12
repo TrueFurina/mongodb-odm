@@ -453,24 +453,12 @@ EOF
         $metadata->reflClass->markLazyObjectAsInitialized($document);
 
         if ($document instanceof InternalProxy) {
-            // Skip initialization to not load any object data
             $document->__setInitialized(true);
         }
 
         // Support for legacy proxy-manager-lts
-        if ($document instanceof GhostObjectInterface && $document->getProxyInitializer() !== null) {
-            // Inject an empty initialiser to not load any object data
-            $document->setProxyInitializer(static function (
-                GhostObjectInterface $ghostObject,
-                string $method, // we don't care
-                array $parameters, // we don't care
-                &$initializer,
-                array $properties, // we currently do not use this
-            ): bool {
-                $initializer = null;
-
-                return true;
-            });
+        if ($document instanceof GhostObjectInterface) {
+            $document->setProxyInitializer(null);
         }
 
         $data = $this->getHydratorFor($metadata->name)->hydrate($document, $data, $hints);

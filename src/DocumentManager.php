@@ -41,6 +41,7 @@ use function gettype;
 use function is_object;
 use function ltrim;
 use function sprintf;
+use function trigger_deprecation;
 
 /**
  * The DocumentManager class is the central access point for managing the
@@ -153,15 +154,31 @@ class DocumentManager implements ObjectManager
             $this->config->getDriverOptions(),
         );
 
-        $this->classNameResolver = $this->config->isLazyGhostObjectEnabled()
-            ? new CachingClassNameResolver(new LazyGhostProxyClassNameResolver())
-            : new CachingClassNameResolver(new ProxyManagerClassNameResolver($this->config));
+        if ($this->config->isNativeLazyObjectEnabled()) {
+            $this->classNameResolver = new class implements ClassNameResolver, ProxyClassNameResolver {
+                public function getRealClass(string $class): string
+                {
+                    return $class;
+                }
+
+                public function resolveClassName(string $className): string
+                {
+                    return $className;
+                }
+            };
+        } elseif ($this->config->isLazyGhostObjectEnabled()) {
+            $this->classNameResolver = new CachingClassNameResolver(new LazyGhostProxyClassNameResolver());
+        } else {
+            $this->classNameResolver = new CachingClassNameResolver(new ProxyManagerClassNameResolver($this->config));
+        }
 
         $metadataFactoryClassName = $this->config->getClassMetadataFactoryName();
         $this->metadataFactory    = new $metadataFactoryClassName();
         $this->metadataFactory->setDocumentManager($this);
         $this->metadataFactory->setConfiguration($this->config);
-        $this->metadataFactory->setProxyClassNameResolver($this->classNameResolver);
+        if (! $this->config->isNativeLazyObjectEnabled()) {
+            $this->metadataFactory->setProxyClassNameResolver($this->classNameResolver);
+        }
 
         $cacheDriver = $this->config->getMetadataCache();
         if ($cacheDriver) {
@@ -295,10 +312,14 @@ class DocumentManager implements ObjectManager
     /**
      * Returns the class name resolver which is used to resolve real class names for proxy objects.
      *
-     * @deprecated Fetch metadata for any class string (e.g. proxy object class) and read the class name from the metadata object
+     * @deprecated Since 2.15, the use of proxy classes is deprecated and will be removed in Doctrine ODM 3.0.
      */
     public function getClassNameResolver(): ClassNameResolver
     {
+        if ($this->getConfiguration()->isNativeLazyObjectEnabled()) {
+            trigger_deprecation('doctrine/mongodb-odm', '2.15', 'The %s() method is deprecated and will be removed in Doctrine ODM 3.0. There are no proxy classes when using native lazy objects', __METHOD__);
+        }
+
         return $this->classNameResolver;
     }
 

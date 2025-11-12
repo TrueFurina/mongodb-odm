@@ -95,7 +95,6 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          tools: "pecl"
           extensions: "mongodb-${{ matrix.driver-version }}, bcmath"
           coverage: "none"
           ini-values: "zend.assertions=1"
@@ -103,24 +102,24 @@ jobs:
       - name: "Show driver information"
         run: "php --ri mongodb"
 
-      # Not used, skip transient dependencies
+      # Not used for tests, skip transient dependencies
       - name: "Remove phpbench/phpbench"
         run: composer remove --no-update --dev phpbench/phpbench
 
-      - name: "Configure Symfony ${{ matrix.symfony-version }}"
-        if: "${{ matrix.symfony-version != 'stable' }}"
+      - name: "Remove optional dependencies"
+        if: "${{ matrix.remove-optional-dependencies }}"
         run: |
-          composer config minimum-stability dev
-          # update symfony deps
-          composer require --no-update symfony/console:^${{ matrix.symfony-version }}
-          composer require --no-update symfony/var-dumper:^${{ matrix.symfony-version }}
-          composer require --no-update --dev symfony/cache:^${{ matrix.symfony-version }}
+          composer remove --no-update friendsofphp/proxy-manager-lts symfony/var-exporter
+          composer remove --no-update --dev symfony/cache doctrine/orm doctrine/annotations
+          composer remove --no-update --dev doctrine/coding-standard phpstan/phpstan phpstan/phpstan-deprecation-rule phpstan/phpstan-phpunit
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v3"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
           composer-options: "--prefer-dist"
+        env:
+          SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
 
       - name: "Install latest Python version"
         uses: actions/setup-python@v6
