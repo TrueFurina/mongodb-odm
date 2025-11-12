@@ -52,8 +52,6 @@ use function spl_object_id;
 use function sprintf;
 use function trigger_deprecation;
 
-use const PHP_VERSION_ID;
-
 /**
  * The UnitOfWork is responsible for tracking changes to objects during an
  * "object-level" transaction and for writing out changes to the database
@@ -2399,41 +2397,26 @@ final class UnitOfWork implements PropertyChangedListener
      *
      * @internal
      */
-    public function clear(?string $documentName = null): void
+    public function clear(): void
     {
-        if ($documentName === null) {
-            $this->identityMap                  =
-            $this->documentIdentifiers          =
-            $this->originalDocumentData         =
-            $this->documentChangeSets           =
-            $this->documentStates               =
-            $this->scheduledForSynchronization  =
-            $this->scheduledDocumentInsertions  =
-            $this->scheduledDocumentUpserts     =
-            $this->scheduledDocumentUpdates     =
-            $this->scheduledDocumentDeletions   =
-            $this->scheduledCollectionUpdates   =
-            $this->scheduledCollectionDeletions =
-            $this->parentAssociations           =
-            $this->embeddedDocumentsRegistry    =
-            $this->orphanRemovals               =
-            $this->hasScheduledCollections      = [];
+        $this->identityMap                  =
+        $this->documentIdentifiers          =
+        $this->originalDocumentData         =
+        $this->documentChangeSets           =
+        $this->documentStates               =
+        $this->scheduledForSynchronization  =
+        $this->scheduledDocumentInsertions  =
+        $this->scheduledDocumentUpserts     =
+        $this->scheduledDocumentUpdates     =
+        $this->scheduledDocumentDeletions   =
+        $this->scheduledCollectionUpdates   =
+        $this->scheduledCollectionDeletions =
+        $this->parentAssociations           =
+        $this->embeddedDocumentsRegistry    =
+        $this->orphanRemovals               =
+        $this->hasScheduledCollections      = [];
 
-            $event = new Event\OnClearEventArgs($this->dm);
-        } else {
-            $visited = [];
-            foreach ($this->identityMap as $className => $documents) {
-                if ($className !== $documentName) {
-                    continue;
-                }
-
-                foreach ($documents as $document) {
-                    $this->doDetach($document, $visited);
-                }
-            }
-
-            $event = new Event\OnClearEventArgs($this->dm, $documentName);
-        }
+        $event = new Event\OnClearEventArgs($this->dm);
 
         $this->evm->dispatchEvent(Events::onClear, $event);
     }
@@ -3080,7 +3063,7 @@ final class UnitOfWork implements PropertyChangedListener
             $obj->initializeProxy();
         } elseif ($obj instanceof PersistentCollectionInterface) {
             $obj->initialize();
-        } elseif (PHP_VERSION_ID >= 80400) {
+        } else {
             $this->dm->getClassMetadata($obj::class)->reflClass->initializeLazyObject($obj);
         }
     }

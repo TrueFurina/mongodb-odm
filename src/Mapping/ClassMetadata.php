@@ -63,8 +63,6 @@ use function strtolower;
 use function strtoupper;
 use function trigger_deprecation;
 
-use const PHP_VERSION_ID;
-
 /**
  * A <tt>ClassMetadata</tt> instance holds all the object-document mapping metadata
  * of a document and it's references.
@@ -305,13 +303,6 @@ use const PHP_VERSION_ID;
      * Offers full portability.
      */
     public const GENERATOR_TYPE_INCREMENT = 2;
-
-    /**
-     * UUID means Doctrine will generate a uuid for us.
-     *
-     * @deprecated without replacement. Use a custom generator or switch to binary UUIDs.
-     */
-    public const GENERATOR_TYPE_UUID = 3;
 
     /**
      * ALNUM means Doctrine will generate Alpha-numeric string identifiers, using the INCREMENT
@@ -1992,7 +1983,7 @@ use const PHP_VERSION_ID;
             $document->__load();
         } elseif ($document instanceof GhostObjectInterface && ! $document->isProxyInitialized()) {
             $document->initializeProxy();
-        } elseif (PHP_VERSION_ID >= 80400) {
+        } else {
             $this->reflClass->initializeLazyObject($document);
         }
 
@@ -2010,7 +2001,7 @@ use const PHP_VERSION_ID;
             $document->__load();
         } elseif ($document instanceof GhostObjectInterface && $field !== $this->identifier && ! $document->isProxyInitialized()) {
             $document->initializeProxy();
-        } elseif (PHP_VERSION_ID >= 80400 && $field !== $this->identifier && $this->reflClass->isUninitializedLazyObject($document)) {
+        } elseif ($field !== $this->identifier && $this->reflClass->isUninitializedLazyObject($document)) {
             $this->reflClass->initializeLazyObject($document);
         }
 
@@ -2166,18 +2157,6 @@ use const PHP_VERSION_ID;
     public function isIdGeneratorIncrement(): bool
     {
         return $this->generatorType === self::GENERATOR_TYPE_INCREMENT;
-    }
-
-    /**
-     * Checks whether the class will generate a uuid id.
-     *
-     * @deprecated Since 2.15, the UUID id generator is deprecated. Use GENERATOR_TYPE_AUTO with the UUID type instead.
-     */
-    public function isIdGeneratorUuid(): bool
-    {
-        trigger_deprecation('doctrine/mongodb-odm', '2.15', 'The method %s() is deprecated. Use GENERATOR_TYPE_AUTO with the UUID type instead.', __FUNCTION__);
-
-        return $this->generatorType === self::GENERATOR_TYPE_UUID;
     }
 
     /**
@@ -2584,21 +2563,6 @@ use const PHP_VERSION_ID;
         $this->checkDuplicateMapping($mapping);
         $this->typeRequirementsAreMet($mapping);
 
-        $deprecatedTypes = [
-            Type::BOOLEAN => Type::BOOL,
-            Type::INTEGER => Type::INT,
-            Type::INTID => Type::INT,
-        ];
-        if (isset($deprecatedTypes[$mapping['type']])) {
-            trigger_deprecation(
-                'doctrine/mongodb-odm',
-                '2.1',
-                'The "%s" mapping type is deprecated. Use "%s" instead.',
-                $mapping['type'],
-                $deprecatedTypes[$mapping['type']],
-            );
-        }
-
         $this->fieldMappings[$mapping['fieldName']] = $mapping;
         if (isset($mapping['association'])) {
             $this->associationMappings[$mapping['fieldName']] = $mapping;
@@ -2606,7 +2570,7 @@ use const PHP_VERSION_ID;
 
         $accessor = PropertyAccessorFactory::createPropertyAccessor($this->name, $mapping['fieldName']);
 
-        if (PHP_VERSION_ID >= 80400 && $accessor->getUnderlyingReflector()->isVirtual()) {
+        if ($accessor->getUnderlyingReflector()->isVirtual()) {
             throw MappingException::mappingVirtualPropertyNotAllowed($this->name, $mapping['fieldName']);
         }
 

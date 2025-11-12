@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB;
 
+use Composer\InstalledVersions;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\Psr6\CacheAdapter;
@@ -24,7 +25,6 @@ use Doctrine\ODM\MongoDB\Repository\RepositoryFactory;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Persistence\ObjectRepository;
 use InvalidArgumentException;
-use Jean85\PrettyVersions;
 use LogicException;
 use MongoDB\Client;
 use MongoDB\Driver\Manager;
@@ -48,8 +48,6 @@ use function is_string;
 use function trait_exists;
 use function trigger_deprecation;
 use function trim;
-
-use const PHP_VERSION_ID;
 
 /**
  * Configuration class for the DocumentManager. When setting up your DocumentManager
@@ -706,9 +704,7 @@ class Configuration
                 throw new LogicException('Package "friendsofphp/proxy-manager-lts" is required to disable LazyGhostObject.');
             }
 
-            if (PHP_VERSION_ID < 80400) {
-                trigger_deprecation('doctrine/mongodb-odm', '2.10', 'Using "friendsofphp/proxy-manager-lts" is deprecated. Use "symfony/var-exporter" LazyGhostObjects instead.');
-            }
+            trigger_deprecation('doctrine/mongodb-odm', '2.10', 'Using "friendsofphp/proxy-manager-lts" is deprecated. Use "symfony/var-exporter" LazyGhostObjects instead.');
         }
 
         $this->lazyGhostObject = $flag;
@@ -722,16 +718,12 @@ class Configuration
 
     public function setUseNativeLazyObject(bool $nativeLazyObject): void
     {
-        if (PHP_VERSION_ID < 80400 && $nativeLazyObject) {
-            throw new LogicException('Native lazy objects require PHP 8.4 or higher.');
-        }
-
         $this->nativeLazyObject = $nativeLazyObject;
     }
 
     public function isNativeLazyObjectEnabled(): bool
     {
-        if (PHP_VERSION_ID >= 80400 && ! $this->nativeLazyObject) {
+        if (! $this->nativeLazyObject) {
             trigger_deprecation('doctrine/mongodb-odm', '2.14', 'Not using native lazy objects is deprecated and will be impossible in Doctrine MongoDB ODM 3.0.');
         }
 
@@ -811,7 +803,7 @@ class Configuration
     {
         if (! isset(self::$version)) {
             try {
-                self::$version = PrettyVersions::getVersion('doctrine/mongodb-odm')->getPrettyVersion();
+                return self::$version ??= InstalledVersions::getPrettyVersion('doctrine/mongodb-odm') ?? 'unknown';
             } catch (Throwable) {
                 return self::$version = 'unknown';
             }

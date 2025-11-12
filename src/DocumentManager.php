@@ -716,21 +716,10 @@ class DocumentManager implements ObjectManager
      *
      * All documents that are currently managed by this DocumentManager become
      * detached.
-     *
-     * @param string|null $objectName if given, only documents of this type will get detached
      */
-    public function clear($objectName = null): void
+    public function clear(): void
     {
-        if ($objectName !== null) {
-            trigger_deprecation(
-                'doctrine/mongodb-odm',
-                '2.4',
-                'Calling %s() with any arguments to clear specific documents is deprecated and will not be supported in Doctrine ODM 3.0.',
-                __METHOD__,
-            );
-        }
-
-        $this->unitOfWork->clear($objectName);
+        $this->unitOfWork->clear();
     }
 
     /**

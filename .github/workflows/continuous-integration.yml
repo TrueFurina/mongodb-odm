@@ -19,9 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
           - "8.4"
         mongodb-version:
           - "8.0"
@@ -34,98 +31,44 @@ jobs:
         dependencies:
           - "highest"
         symfony-version:
-          - "locked"
-        proxy:
-          - "lazy-ghost"
+          - "stable"
         include:
           # Test against lowest dependencies
           - dependencies: "lowest"
-            php-version: "8.1"
+            php-version: "8.4"
             mongodb-version: "6.0"
-            driver-version: "1.21.0"
+            driver-version: "2.1.0"
             topology: "server"
-            symfony-version: "locked"
-            proxy: "lazy-ghost"
+            symfony-version: "stable"
           # Test with Symfony 6.4
           - topology: "server"
-            php-version: "8.1"
+            php-version: "8.4"
             mongodb-version: "6.0"
             driver-version: "stable"
             dependencies: "highest"
             symfony-version: "6.4"
-            proxy: "lazy-ghost"
           # Test with a 6.0 replica set
           - topology: "replica_set"
-            php-version: "8.2"
+            php-version: "8.4"
             mongodb-version: "6.0"
             driver-version: "stable"
             dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "lazy-ghost"
+            symfony-version: "stable"
           # Test with a 8.0 replica set
           - topology: "replica_set"
-            php-version: "8.2"
-            mongodb-version: "8.0"
-            driver-version: "stable"
-            dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "lazy-ghost"
-          # Test with ProxyManager
-          - php-version: "8.2"
-            mongodb-version: "6.0"
-            driver-version: "stable"
-            dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "proxy-manager"
-          # Test with Native Lazy Objects
-          - php-version: "8.4"
-            mongodb-version: "8.0"
-            driver-version: "stable"
-            dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "native"
-          # Test with extension 1.21
-          - topology: "server"
-            php-version: "8.2"
-            mongodb-version: "8.0"
-            driver-version: "1.21.0"
-            dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "lazy-ghost"
-          # Test with Symfony 7.4 LTS
-          - topology: "server"
-            php-version: "8.2"
-            mongodb-version: "8.0"
-            driver-version: "stable"
-            dependencies: "highest"
-            symfony-version: "7.4"
-            proxy: "lazy-ghost"
-          # Test with Symfony 8
-          - topology: "server"
             php-version: "8.4"
             mongodb-version: "8.0"
             driver-version: "stable"
             dependencies: "highest"
-            symfony-version: false
-            proxy: "native"
-          # Test removing optional dependencies
-          - topology: "server"
-            php-version: "8.4"
-            mongodb-version: "8.0"
-            driver-version: "stable"
-            dependencies: "highest"
-            symfony-version: "locked"
-            proxy: "native"
-            remove-optional-dependencies: true
+            symfony-version: "stable"
           # Test with a sharded cluster
           # Currently disabled due to a bug where MongoDB reports "sharding status unknown"
 #          - topology: "sharded_cluster"
-#            php-version: "8.2"
+#            php-version: "8.4"
 #            mongodb-version: "6.0"
 #            driver-version: "stable"
 #            dependencies: "highest"
-#            symfony-version: "locked"
-#            proxy: "lazy-ghost"
+#            symfony-version: "stable"
 
     steps:
       - name: "Checkout"
@@ -193,6 +136,6 @@ jobs:
         run: "vendor/bin/phpunit --exclude-group=atlas ${{ matrix.dependencies == 'lowest' && '--do-not-fail-on-deprecation --do-not-fail-on-warning --do-not-fail-on-notice' || '' }}"
         env:
           DOCTRINE_MONGODB_SERVER: ${{ steps.setup-mongodb.outputs.cluster-uri }}
-          USE_LAZY_GHOST_OBJECT: ${{ matrix.proxy == 'lazy-ghost' && '1' || '0' }}
-          USE_NATIVE_LAZY_OBJECT: ${{ matrix.proxy == 'native' && '1' || '0' }}
+          USE_LAZY_GHOST_OBJECT: 0
+          USE_NATIVE_LAZY_OBJECT: 1
           CRYPT_SHARED_LIB_PATH: ${{ steps.setup-mongodb.outputs.crypt-shared-lib-path }}
