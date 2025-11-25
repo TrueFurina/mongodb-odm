@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Tests\Functional;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
-use Documents84\PropertyHooks\MappingVirtualProperty;
-use Documents84\PropertyHooks\User;
-use PHPUnit\Framework\Attributes\RequiresPhp;
+use Documents\PropertyHooks\User;
 
-#[RequiresPhp('>= 8.4.0')]
 class PropertyHooksTest extends BaseTestCase
 {
     protected function setUp(): void
@@ -93,8 +93,31 @@ class PropertyHooksTest extends BaseTestCase
     public function testMappingVirtualPropertyIsNotSupported(): void
     {
         $this->expectException(MappingException::class);
-        $this->expectExceptionMessage('Mapping virtual property "fullName" on document "Documents84\PropertyHooks\MappingVirtualProperty" is not allowed.');
+        $this->expectExceptionMessage('Mapping virtual property "fullName" on document "' . __NAMESPACE__ . '\MappingVirtualProperty" is not allowed.');
 
         $this->dm->getClassMetadata(MappingVirtualProperty::class);
     }
+}
+
+#[Document(collection: 'property_hooks_user')]
+class MappingVirtualProperty
+{
+    // phpcs:disable
+    #[Id]
+    public ?string $id;
+
+    #[Field]
+    public string $first;
+
+    #[Field]
+    public string $last;
+
+    #[Field]
+    public string $fullName {
+        get => $this->first . " " . $this->last;
+        set {
+            [$this->first, $this->last] = explode(' ', $value, 2);
+        }
+    }
+    // phpcs:enable
 }
