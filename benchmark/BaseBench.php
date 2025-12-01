@@ -16,8 +16,6 @@ use function getenv;
 use function in_array;
 use function iterator_to_array;
 
-use const PHP_VERSION_ID;
-
 abstract class BaseBench
 {
     public const DATABASE_NAME           = 'doctrine_odm_performance';
@@ -43,12 +41,7 @@ abstract class BaseBench
         $config->setDefaultDB(self::DATABASE_NAME);
         $config->setMetadataDriverImpl(self::createMetadataDriverImpl());
         $config->setMetadataCache(new ArrayAdapter());
-
-        if (PHP_VERSION_ID >= 80400) {
-            $config->setUseNativeLazyObject(true);
-        } else {
-            $config->setUseLazyGhostObject(true);
-        }
+        $config->setUseNativeLazyObject(true);
 
         $client = new Client(
             getenv('DOCTRINE_MONGODB_SERVER') ?: self::DEFAULT_MONGODB_SERVER,

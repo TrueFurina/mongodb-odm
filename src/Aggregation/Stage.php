@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Aggregation;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use GeoJson\Geometry\Point;
 
 use function trigger_deprecation;
@@ -19,12 +18,8 @@ use function trigger_deprecation;
  */
 abstract class Stage
 {
-    /** @var Builder */
-    protected $builder;
-
-    public function __construct(Builder $builder)
+    public function __construct(protected Builder $builder)
     {
-        $this->builder = $builder;
     }
 
     /**
@@ -34,26 +29,6 @@ abstract class Stage
      * @phpstan-return StageExpression
      */
     abstract public function getExpression(): ?array;
-
-    /**
-     * Executes the aggregation pipeline
-     *
-     * @deprecated This method was deprecated in doctrine/mongodb-odm 2.2. Please use getAggregation() instead.
-     *
-     * @param array<string, mixed> $options
-     */
-    public function execute(array $options = []): Iterator
-    {
-        trigger_deprecation(
-            'doctrine/mongodb-odm',
-            '2.2',
-            'Using "%s" is deprecated, use "%s::getAggregation()" instead.',
-            __METHOD__,
-            self::class,
-        );
-
-        return $this->builder->execute($options);
-    }
 
     /**
      * Returns an aggregation object for the current pipeline
