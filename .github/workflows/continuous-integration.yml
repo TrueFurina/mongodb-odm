@@ -47,7 +47,7 @@ jobs:
             mongodb-version: "6.0"
             driver-version: "stable"
             dependencies: "highest"
-            symfony-version: "6.4"
+            symfony-version: "6.4.*"
           # Test with a 6.0 replica set
           - topology: "replica_set"
             php-version: "8.4"
