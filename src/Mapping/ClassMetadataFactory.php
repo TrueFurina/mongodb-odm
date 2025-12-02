@@ -151,7 +151,8 @@ final class ClassMetadataFactory extends AbstractClassMetadataFactory implements
             }
 
             if ($parent->isFile) {
-                $class->isFile = true;
+                $class->markAsFile();
+
                 $class->setBucketName($parent->bucketName);
 
                 if ($parent->chunkSizeBytes !== null) {
@@ -321,7 +322,7 @@ final class ClassMetadataFactory extends AbstractClassMetadataFactory implements
      */
     private function addInheritedFields(ClassMetadata $subClass, ClassMetadata $parentClass): void
     {
-        foreach ($parentClass->fieldMappings as $fieldName => $mapping) {
+        foreach ($parentClass->fieldMappings as $mapping) {
             if (! isset($mapping['inherited']) && ! $parentClass->isMappedSuperclass) {
                 $mapping['inherited'] = $parentClass->name;
             }
@@ -334,7 +335,7 @@ final class ClassMetadataFactory extends AbstractClassMetadataFactory implements
         }
 
         foreach ($parentClass->propertyAccessors as $name => $field) {
-            $subClass->propertyAccessors[$name] = $field;
+            $subClass->setPropertyAccessor($name, $field);
         }
     }
 

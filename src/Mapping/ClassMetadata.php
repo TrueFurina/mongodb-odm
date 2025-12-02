@@ -481,80 +481,80 @@ final class ClassMetadata implements BaseClassMetadata
     private const ALLOWED_GRIDFS_FIELDS = ['_id', 'chunkSize', 'filename', 'length', 'metadata', 'uploadDate'];
 
     /**
-     * READ-ONLY: The name of the mongo database the document is mapped to.
+     * The name of the mongo database the document is mapped to.
      */
-    public ?string $db = null;
+    public private(set) ?string $db = null;
 
     /**
-     * READ-ONLY: The name of the mongo collection the document is mapped to.
+     * The name of the mongo collection the document is mapped to.
      */
-    public ?string $collection = null;
+    public private(set) ?string $collection = null;
 
     /**
-     * READ-ONLY: The name of the GridFS bucket the document is mapped to.
+     * The name of the GridFS bucket the document is mapped to.
      */
-    public string $bucketName = 'fs';
+    public private(set) string $bucketName = 'fs';
 
     /**
-     * READ-ONLY: If the collection should be a fixed size.
+     * If the collection should be a fixed size.
      */
-    public bool $collectionCapped = false;
+    public private(set) bool $collectionCapped = false;
 
     /**
-     * READ-ONLY: If the collection is fixed size, its size in bytes.
+     * If the collection is fixed size, its size in bytes.
      */
-    public ?int $collectionSize = null;
+    public private(set) ?int $collectionSize = null;
 
     /**
-     * READ-ONLY: If the collection is fixed size, the maximum number of elements to store in the collection.
+     * If the collection is fixed size, the maximum number of elements to store in the collection.
      */
-    public ?int $collectionMax = null;
+    public private(set) ?int $collectionMax = null;
 
     /**
-     * READ-ONLY Describes how MongoDB clients route read operations to the members of a replica set.
+     * Describes how MongoDB clients route read operations to the members of a replica set.
      */
-    public ?string $readPreference = null;
+    public private(set) ?string $readPreference = null;
 
     /**
-     * READ-ONLY Associated with readPreference Allows to specify criteria so that your application can target read
+     * Associated with readPreference Allows to specify criteria so that your application can target read
      * operations to specific members, based on custom parameters.
      *
      * @var array<array<string, string>>
      */
-    public array $readPreferenceTags = [];
+    public private(set) array $readPreferenceTags = [];
 
     /**
-     * READ-ONLY: Describes the level of acknowledgement requested from MongoDB for write operations.
+     * Describes the level of acknowledgement requested from MongoDB for write operations.
      */
-    public string|int|null $writeConcern = null;
+    public private(set) string|int|null $writeConcern = null;
 
     /**
-     * READ-ONLY: The field name of the document identifier.
+     * The field name of the document identifier.
      */
-    public ?string $identifier = null;
+    public private(set) ?string $identifier = null;
 
     /**
-     * READ-ONLY: The array of indexes for the document collection.
+     * The array of indexes for the document collection.
      *
      * @var array<array<string, mixed>>
      * @phpstan-var array<IndexMapping>
      */
-    public array $indexes = [];
+    public private(set) array $indexes = [];
 
     /**
-     * READ-ONLY: The array of search indexes for the document collection.
+     * The array of search indexes for the document collection.
      *
      * @var list<SearchIndexMapping>
      */
-    public array $searchIndexes = [];
+    public private(set) array $searchIndexes = [];
 
     /**
-     * READ-ONLY: Keys and options describing shard key. Only for sharded collections.
+     * Keys and options describing shard key. Only for sharded collections.
      *
      * @var array<string, array>
      * @phpstan-var ShardKey
      */
-    public array $shardKey = [];
+    public private(set) array $shardKey = [];
 
     /**
      * Allows users to specify a validation schema for the collection.
@@ -574,20 +574,20 @@ final class ClassMetadata implements BaseClassMetadata
     private string $validationLevel = self::SCHEMA_VALIDATION_LEVEL_STRICT;
 
     /**
-     * READ-ONLY: The name of the document class.
+     * The name of the document class.
      *
-     * @var class-string<T>
+     * @var class-string<T>|null
      */
-    public string $name;
+    public private(set) ?string $name = null;
 
     /**
-     * READ-ONLY: The name of the document class that is at the root of the mapped document inheritance
+     * The name of the document class that is at the root of the mapped document inheritance
      * hierarchy. If the document is not part of a mapped inheritance hierarchy this is the same
      * as {@link $documentName}.
      *
-     * @var class-string
+     * @var class-string|null
      */
-    public string $rootDocumentName;
+    public private(set) ?string $rootDocumentName = null;
 
     /**
      * The name of the custom repository class used for the document class.
@@ -595,21 +595,21 @@ final class ClassMetadata implements BaseClassMetadata
      *
      * @var class-string|null
      */
-    public ?string $customRepositoryClassName = null;
+    public private(set) ?string $customRepositoryClassName = null;
 
     /**
-     * READ-ONLY: The names of the parent classes (ancestors).
+     * The names of the parent classes (ancestors).
      *
      * @var list<class-string>
      */
-    public array $parentClasses = [];
+    public private(set) array $parentClasses = [];
 
     /**
-     * READ-ONLY: The names of all subclasses (descendants).
+     * The names of all subclasses (descendants).
      *
      * @var list<class-string>
      */
-    public array $subClasses = [];
+    public private(set) array $subClasses = [];
 
     /**
      * The ReflectionProperty instances of the mapped class.
@@ -618,35 +618,35 @@ final class ClassMetadata implements BaseClassMetadata
      *
      * @var LegacyReflectionFields|array<ReflectionProperty>
      */
-    public LegacyReflectionFields|array $reflFields = [];
+    public private(set) LegacyReflectionFields|array $reflFields = [];
 
     /** @var array<string, PropertyAccessors\PropertyAccessor> */
-    public array $propertyAccessors = [];
+    public private(set) array $propertyAccessors = [];
 
     /**
-     * READ-ONLY: The inheritance mapping type used by the class.
+     * The inheritance mapping type used by the class.
      */
-    public int $inheritanceType = self::INHERITANCE_TYPE_NONE;
+    public private(set) int $inheritanceType = self::INHERITANCE_TYPE_NONE;
 
     /**
-     * READ-ONLY: The Id generator type used by the class.
+     * The Id generator type used by the class.
      */
-    public int $generatorType = self::GENERATOR_TYPE_AUTO;
+    public private(set) int $generatorType = self::GENERATOR_TYPE_AUTO;
 
     /**
-     * READ-ONLY: The Id generator options.
+     * The Id generator options.
      *
      * @var array<string, mixed>
      */
-    public array $generatorOptions = [];
+    public private(set) array $generatorOptions = [];
 
     /**
-     * READ-ONLY: The ID generator used for generating IDs for this class.
+     * The ID generator used for generating IDs for this class.
      */
-    public ?IdGenerator $idGenerator = null;
+    public private(set) ?IdGenerator $idGenerator = null;
 
     /**
-     * READ-ONLY: The field mappings of the class.
+     * The field mappings of the class.
      * Keys are field names and values are mapping definitions.
      *
      * The mapping definition array has the following values:
@@ -661,33 +661,33 @@ final class ClassMetadata implements BaseClassMetadata
      * @var array<string, mixed>
      * @phpstan-var array<string, FieldMapping>
      */
-    public array $fieldMappings = [];
+    public private(set) array $fieldMappings = [];
 
     /**
-     * READ-ONLY: The association mappings of the class.
+     * The association mappings of the class.
      * Keys are field names and values are mapping definitions.
      *
      * @var array<string, mixed>
      * @phpstan-var array<string, AssociationFieldMapping>
      */
-    public array $associationMappings = [];
+    public private(set) array $associationMappings = [];
 
     /**
-     * READ-ONLY: Array of fields to also load with a given method.
+     * Array of fields to also load with a given method.
      *
      * @var array<string, mixed[]>
      */
-    public array $alsoLoadMethods = [];
+    public private(set) array $alsoLoadMethods = [];
 
     /**
-     * READ-ONLY: The registered lifecycle callbacks for documents of this class.
+     * The registered lifecycle callbacks for documents of this class.
      *
      * @var array<string, list<string>>
      */
-    public array $lifecycleCallbacks = [];
+    public private(set) array $lifecycleCallbacks = [];
 
     /**
-     * READ-ONLY: The discriminator value of this class.
+     * The discriminator value of this class.
      *
      * <b>This does only apply to the JOINED and SINGLE_COLLECTION inheritance mapping strategies
      * where a discriminator field is used.</b>
@@ -696,10 +696,10 @@ final class ClassMetadata implements BaseClassMetadata
      *
      * @var class-string|string|int|null
      */
-    public string|int|null $discriminatorValue = null;
+    public private(set) string|int|null $discriminatorValue = null;
 
     /**
-     * READ-ONLY: The discriminator map of all mapped classes in the hierarchy.
+     * The discriminator map of all mapped classes in the hierarchy.
      *
      * <b>This does only apply to the SINGLE_COLLECTION inheritance mapping strategy
      * where a discriminator field is used.</b>
@@ -708,97 +708,99 @@ final class ClassMetadata implements BaseClassMetadata
      *
      * @var array<string|int, class-string>
      */
-    public array $discriminatorMap = [];
+    public private(set) array $discriminatorMap = [];
 
     /**
-     * READ-ONLY: The definition of the discriminator field used in SINGLE_COLLECTION
+     * The definition of the discriminator field used in SINGLE_COLLECTION
      * inheritance mapping.
      */
-    public ?string $discriminatorField = null;
+    public private(set) ?string $discriminatorField = null;
 
     /**
-     * READ-ONLY: The default value for discriminatorField in case it's not set in the document
+     * The default value for discriminatorField in case it's not set in the document
      *
      * @see discriminatorField
      */
-    public string|int|null $defaultDiscriminatorValue = null;
+    public private(set) string|int|null $defaultDiscriminatorValue = null;
 
     /**
-     * READ-ONLY: Whether this class describes the mapping of a mapped superclass.
+     * Whether this class describes the mapping of a mapped superclass.
      */
-    public bool $isMappedSuperclass = false;
+    public private(set) bool $isMappedSuperclass = false;
 
     /**
-     * READ-ONLY: Whether this class describes the mapping of a embedded document.
+     * Whether this class describes the mapping of a embedded document.
      */
-    public bool $isEmbeddedDocument = false;
+    public private(set) bool $isEmbeddedDocument = false;
 
     /**
-     * READ-ONLY: Whether this class describes the mapping of an aggregation result document.
+     * Whether this class describes the mapping of an aggregation result document.
      */
-    public bool $isQueryResultDocument = false;
+    public private(set) bool $isQueryResultDocument = false;
 
     /**
-     * READ-ONLY: Whether this class describes the mapping of a database view.
+     * Whether this class describes the mapping of a database view.
      */
-    private bool $isView = false;
+    public private(set) bool $isView = false;
 
     /**
-     * READ-ONLY: Whether this class describes the mapping of a gridFS file
+     * Whether this class describes the mapping of a gridFS file
      */
-    public bool $isFile = false;
+    public private(set) bool $isFile = false;
 
     /**
-     * READ-ONLY: The default chunk size in bytes for the file
+     * The default chunk size in bytes for the file
      */
-    public ?int $chunkSizeBytes = null;
+    public private(set) ?int $chunkSizeBytes = null;
 
     /**
-     * READ-ONLY: The policy used for change-tracking on entities of this class.
+     * The policy used for change-tracking on entities of this class.
      */
-    public int $changeTrackingPolicy = self::CHANGETRACKING_DEFERRED_IMPLICIT;
+    public private(set) int $changeTrackingPolicy = self::CHANGETRACKING_DEFERRED_IMPLICIT;
 
     /**
-     * READ-ONLY: A flag for whether or not instances of this class are to be versioned
+     * A flag for whether or not instances of this class are to be versioned
      * with optimistic locking.
      */
-    public bool $isVersioned = false;
+    public private(set) bool $isVersioned = false;
 
     /**
-     * READ-ONLY: The name of the field which is used for versioning in optimistic locking (if any).
+     * The name of the field which is used for versioning in optimistic locking (if any).
      */
-    public ?string $versionField = null;
+    public private(set) ?string $versionField = null;
 
     /**
-     * READ-ONLY: A flag for whether or not instances of this class are to allow pessimistic
+     * A flag for whether or not instances of this class are to allow pessimistic
      * locking.
      */
-    public bool $isLockable = false;
+    public private(set) bool $isLockable = false;
 
     /**
-     * READ-ONLY: The name of the field which is used for locking a document.
+     * The name of the field which is used for locking a document.
      */
-    public mixed $lockField = null;
+    public private(set) mixed $lockField = null;
 
     /**
      * The ReflectionClass instance of the mapped class.
      *
      * @var ReflectionClass<T>
      */
-    public ReflectionClass $reflClass;
+    public private(set) ReflectionClass $reflClass;
 
     /**
-     * READ_ONLY: A flag for whether or not this document is read-only.
+     * A flag for whether or not this document is read-only.
      */
-    public bool $isReadOnly = false;
+    public private(set) bool $isReadOnly = false;
 
     /**
-     * READ-ONLY: A flag for whether or not this document has encrypted fields.
+     * A flag for whether or not this document has encrypted fields.
      */
-    public bool $isEncrypted = false;
+    public private(set) bool $isEncrypted = false;
 
-    /** READ ONLY: stores metadata about the time series collection */
-    public ?TimeSeries $timeSeriesOptions = null;
+    /**
+     * Stores metadata about the time series collection
+     */
+    public private(set) ?TimeSeries $timeSeriesOptions = null;
 
     private InstantiatorInterface $instantiator;
 
@@ -965,7 +967,7 @@ final class ClassMetadata implements BaseClassMetadata
             return;
         }
 
-        if (! $document instanceof $this->name) {
+        if ($this->name !== null && ! $document instanceof $this->name) {
             throw new InvalidArgumentException(sprintf('Expected document class "%s"; found: "%s"', $this->name, $document::class));
         }
 
@@ -2152,6 +2154,21 @@ final class ClassMetadata implements BaseClassMetadata
         $this->lockField = $lockField;
     }
 
+    public function setPropertyAccessor(string $name, PropertyAccessors\PropertyAccessor $accessor): void
+    {
+        $this->propertyAccessors[$name] = $accessor;
+    }
+
+    public function unsetFieldMapping(string $fieldName): void
+    {
+        unset($this->fieldMappings[$fieldName]);
+    }
+
+    public function unsetAssociationMapping(string $fieldName): void
+    {
+        unset($this->associationMappings[$fieldName]);
+    }
+
     /**
      * Marks this class as read only, no change tracking is applied to it.
      */
@@ -2191,6 +2208,31 @@ final class ClassMetadata implements BaseClassMetadata
         $this->validateTimeSeriesOptions($options);
 
         $this->timeSeriesOptions = $options;
+    }
+
+    public function markAsFile(): void
+    {
+        $this->isFile = true;
+    }
+
+    public function markAsEncrypted(): void
+    {
+        $this->isEncrypted = true;
+    }
+
+    public function markAsMappedSuperclass(): void
+    {
+        $this->isMappedSuperclass = true;
+    }
+
+    public function markAsEmbeddedDocument(): void
+    {
+        $this->isEmbeddedDocument = true;
+    }
+
+    public function markAsQueryResultDocument(): void
+    {
+        $this->isQueryResultDocument = true;
     }
 
     public function getFieldNames(): array

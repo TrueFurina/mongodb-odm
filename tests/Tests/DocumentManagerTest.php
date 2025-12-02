@@ -35,6 +35,7 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\Client;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use ReflectionProperty;
 use RuntimeException;
 use stdClass;
 use TypeError;
@@ -250,9 +251,15 @@ class DocumentManagerTest extends BaseTestCase
         $mapping = ClassMetadataTestUtil::getFieldMapping(['targetDocument' => User::class]);
         $data    = ['type' => 'forum_user'];
 
-        $userClassMetadata                     = new ClassMetadata(ForumUser::class);
-        $userClassMetadata->discriminatorField = 'type';
-        $userClassMetadata->discriminatorMap   = ['forum_user' => ForumUser::class];
+        $userClassMetadata = new ClassMetadata(ForumUser::class);
+        new ReflectionProperty(ClassMetadata::class, 'discriminatorField')->setValue(
+            $userClassMetadata,
+            'type',
+        );
+        new ReflectionProperty(ClassMetadata::class, 'discriminatorMap')->setValue(
+            $userClassMetadata,
+            ['forum_user' => ForumUser::class],
+        );
         $this->dm->getMetadataFactory()->setMetadataFor(User::class, $userClassMetadata);
 
         self::assertEquals(ForumUser::class, $this->dm->getClassNameForAssociation($mapping, $data));

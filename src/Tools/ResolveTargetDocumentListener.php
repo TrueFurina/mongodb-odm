@@ -90,8 +90,8 @@ class ResolveTargetDocumentListener implements EventSubscriber
         $newMapping['fieldName'] = $mapping['fieldName'];
 
         // clear reference case of duplicate exception
-        unset($classMetadata->fieldMappings[$mapping['fieldName']]);
-        unset($classMetadata->associationMappings[$mapping['fieldName']]);
+        $classMetadata->unsetFieldMapping($mapping['fieldName']);
+        $classMetadata->unsetAssociationMapping($mapping['fieldName']);
 
         switch ($mapping['association']) {
             case ClassMetadata::REFERENCE_ONE:
