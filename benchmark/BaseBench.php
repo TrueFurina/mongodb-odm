@@ -18,8 +18,8 @@ use function iterator_to_array;
 
 abstract class BaseBench
 {
-    public const DATABASE_NAME           = 'doctrine_odm_performance';
-    private const DEFAULT_MONGODB_SERVER = 'mongodb://localhost:27017';
+    public const string DATABASE_NAME           = 'doctrine_odm_performance';
+    private const string DEFAULT_MONGODB_SERVER = 'mongodb://localhost:27017';
 
     protected static DocumentManager $documentManager;
 

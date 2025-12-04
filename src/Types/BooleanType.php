@@ -9,14 +9,12 @@ namespace Doctrine\ODM\MongoDB\Types;
  */
 class BooleanType extends Type
 {
-    /** @return bool|null */
-    public function convertToDatabaseValue($value)
+    public function convertToDatabaseValue(mixed $value): ?bool
     {
         return $value !== null ? (bool) $value : null;
     }
 
-    /** @return bool|null */
-    public function convertToPHPValue($value)
+    public function convertToPHPValue(mixed $value): ?bool
     {
         return $value !== null ? (bool) $value : null;
     }

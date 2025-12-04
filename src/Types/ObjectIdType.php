@@ -11,8 +11,7 @@ use MongoDB\BSON\ObjectId;
  */
 class ObjectIdType extends Type implements Versionable
 {
-    /** @return ObjectId|null */
-    public function convertToDatabaseValue($value)
+    public function convertToDatabaseValue(mixed $value): ?ObjectId
     {
         if ($value === null) {
             return null;
@@ -25,8 +24,7 @@ class ObjectIdType extends Type implements Versionable
         return $value;
     }
 
-    /** @return string|null */
-    public function convertToPHPValue($value)
+    public function convertToPHPValue(mixed $value): ?string
     {
         return $value !== null ? (string) $value : null;
     }
@@ -41,7 +39,7 @@ class ObjectIdType extends Type implements Versionable
         return '$return = (string) $value;';
     }
 
-    public function getNextVersion($current): ObjectId
+    public function getNextVersion(mixed $current): ObjectId
     {
         return new ObjectId();
     }
