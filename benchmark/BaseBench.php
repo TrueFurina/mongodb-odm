@@ -32,9 +32,10 @@ abstract class BaseBench
     {
         $config = new Configuration();
 
-        $config->setHydratorDir(__DIR__ . '/../../tests/Hydrators');
+        $config->setHydratorDir(__DIR__ . '/../tests/Hydrators');
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_ALWAYS);
         $config->setHydratorNamespace('Hydrators');
-        $config->setPersistentCollectionDir(__DIR__ . '/../../tests/PersistentCollections');
+        $config->setPersistentCollectionDir(__DIR__ . '/../tests/PersistentCollections');
         $config->setPersistentCollectionNamespace('PersistentCollections');
         $config->setDefaultDB(self::DATABASE_NAME);
         $config->setMetadataDriverImpl(self::createMetadataDriverImpl());
