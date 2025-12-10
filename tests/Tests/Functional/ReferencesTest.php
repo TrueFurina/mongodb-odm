@@ -15,6 +15,7 @@ use Doctrine\ODM\MongoDB\PersistentCollection\PersistentCollectionInterface;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
 use Documents\Account;
 use Documents\Address;
+use Documents\DocumentWithUnmappedProperties;
 use Documents\Group;
 use Documents\Phonenumber;
 use Documents\Profile;
@@ -28,6 +29,15 @@ use function assert;
 
 class ReferencesTest extends BaseTestCase
 {
+    public function testSkipInitializationForUnmappedProperties(): void
+    {
+        $loadedDocument = $this->dm->getReference(DocumentWithUnmappedProperties::class, '123');
+        $this->assertInstanceOf(DocumentWithUnmappedProperties::class, $loadedDocument);
+
+        self::assertSame('bar', $loadedDocument->foo);
+        self::assertTrue($this->dm->isUninitializedObject($loadedDocument));
+    }
+
     public function testManyDeleteReference(): void
     {
         $user = new User();
