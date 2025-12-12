@@ -13,6 +13,7 @@ use Doctrine\ODM\MongoDB\Mapping\PropertyAccessors\EnumPropertyAccessor;
 use Doctrine\ODM\MongoDB\Mapping\TimeSeries\Granularity;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
+use Doctrine\ODM\MongoDB\Tests\CaptureDeprecationMessages;
 use Doctrine\ODM\MongoDB\Tests\ClassMetadataTestUtil;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
@@ -51,6 +52,8 @@ use function unserialize;
 
 class ClassMetadataTest extends BaseTestCase
 {
+    use CaptureDeprecationMessages;
+
     public function testClassMetadataInstanceSerialization(): void
     {
         $cm = new ClassMetadata(CmsUser::class);
@@ -83,6 +86,8 @@ class ClassMetadataTest extends BaseTestCase
         $cm->setValidator(Document::fromJSON($validatorJson)->toPHP());
         $cm->setValidationAction(ClassMetadata::SCHEMA_VALIDATION_ACTION_WARN);
         $cm->setValidationLevel(ClassMetadata::SCHEMA_VALIDATION_LEVEL_OFF);
+        $cm->markAsEncrypted(true);
+        $cm->addSearchIndex(['mappings' => ['fields' => ['title' => ['type' => 'string']]]], 'custom_name');
         self::assertIsArray($cm->getFieldMapping('phonenumbers'));
         self::assertCount(1, $cm->fieldMappings);
         self::assertCount(1, $cm->associationMappings);
@@ -115,6 +120,8 @@ class ClassMetadataTest extends BaseTestCase
         self::assertEquals(Document::fromJSON($validatorJson)->toPHP(), $cm->getValidator());
         self::assertEquals(ClassMetadata::SCHEMA_VALIDATION_ACTION_WARN, $cm->getValidationAction());
         self::assertEquals(ClassMetadata::SCHEMA_VALIDATION_LEVEL_OFF, $cm->getValidationLevel());
+        self::assertTrue($cm->isEncrypted);
+        self::assertSame([['definition' => ['mappings' => ['fields' => ['title' => ['type' => 'string']]]], 'name' => 'custom_name', 'type' => 'search']], $cm->getSearchIndexes());
     }
 
     public function testOwningSideAndInverseSide(): void
