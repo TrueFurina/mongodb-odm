@@ -41,7 +41,6 @@ use stdClass;
 
 use function array_combine;
 use function array_fill;
-use function array_intersect_key;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
@@ -1606,40 +1605,25 @@ final class DocumentPersister
     private function prepareReference(string $fieldName, object $value, array $mapping, bool $inNewObj): array
     {
         $reference = $this->dm->createReference($value, $mapping);
+
+        // If a reference is stored as an identifier, we can always match it
+        // directly. For ReferenceMany, multi-key indexes are used to match
+        // array elements
         if ($inNewObj || $mapping['storeAs'] === ClassMetadata::REFERENCE_STORE_AS_ID) {
             return [[$fieldName, $reference]];
         }
 
-        switch ($mapping['storeAs']) {
-            case ClassMetadata::REFERENCE_STORE_AS_REF:
-                $keys = ['id' => true];
-                break;
-
-            case ClassMetadata::REFERENCE_STORE_AS_DB_REF:
-            case ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB:
-                $keys = ['$ref' => true, '$id' => true, '$db' => true];
-
-                if ($mapping['storeAs'] === ClassMetadata::REFERENCE_STORE_AS_DB_REF) {
-                    unset($keys['$db']);
-                }
-
-                if (isset($mapping['targetDocument'])) {
-                    unset($keys['$ref'], $keys['$db']);
-                }
-
-                break;
-
-            default:
-                throw new InvalidArgumentException(sprintf('Reference type %s is invalid.', $mapping['storeAs']));
-        }
-
+        // For other ReferenceMany fields, we need to use $elemMatch to find a
+        // single array element that matches all fields
         if ($mapping['type'] === ClassMetadata::MANY) {
-            return [[$fieldName, ['$elemMatch' => array_intersect_key($reference, $keys)]]];
+            return [[$fieldName, ['$elemMatch' => $reference]]];
         }
 
+        // For ReferenceOne fields, we can use multiple conditions on individual
+        // fields, prefixed with the field name of the reference
         return array_map(
             static fn ($key) => [$fieldName . '.' . $key, $reference[$key]],
-            array_keys($keys),
+            array_keys($reference),
         );
     }
 }
