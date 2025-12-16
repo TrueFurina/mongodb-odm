@@ -6,42 +6,16 @@ namespace Doctrine\ODM\MongoDB\Mapping\Annotations;
 
 use Attribute;
 use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\Validation as ValidationAttribute;
 
 /**
+ * @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\Validation instead
+ *
  * @Annotation
  * @NamedArgumentConstructor
  * @Target({"CLASS"})
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class Validation implements Annotation
+final class Validation extends ValidationAttribute implements Annotation
 {
-    /** @var string|null */
-    public $validator;
-
-    /**
-     * @var string|null
-     * @Enum({
-     *     ClassMetadata::SCHEMA_VALIDATION_ACTION_ERROR,
-     *     ClassMetadata::SCHEMA_VALIDATION_ACTION_WARN,
-     *     })
-     */
-    public $action;
-
-    /**
-     * @var string|null
-     * @Enum({
-     *     ClassMetadata::SCHEMA_VALIDATION_LEVEL_OFF,
-     *     ClassMetadata::SCHEMA_VALIDATION_LEVEL_STRICT,
-     *     ClassMetadata::SCHEMA_VALIDATION_LEVEL_MODERATE,
-     *     })
-     */
-    public $level;
-
-    public function __construct(?string $validator = null, ?string $action = null, ?string $level = null)
-    {
-        $this->validator = $validator;
-        $this->action    = $action;
-        $this->level     = $level;
-    }
 }

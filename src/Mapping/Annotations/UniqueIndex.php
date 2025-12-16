@@ -6,36 +6,17 @@ namespace Doctrine\ODM\MongoDB\Mapping\Annotations;
 
 use Attribute;
 use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\UniqueIndex as UniqueIndexAttribute;
 
 /**
  * Specifies a unique index on a field
+ *
+ * @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\UniqueIndex instead
  *
  * @Annotation
  * @NamedArgumentConstructor
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class UniqueIndex extends AbstractIndex
+final class UniqueIndex extends UniqueIndexAttribute implements Annotation
 {
-    public function __construct(
-        array $keys = [],
-        ?string $name = null,
-        ?bool $background = null,
-        ?int $expireAfterSeconds = null,
-        $order = null,
-        bool $sparse = false,
-        array $options = [],
-        array $partialFilterExpression = [],
-    ) {
-        parent::__construct(
-            $keys,
-            $name,
-            $background,
-            $expireAfterSeconds,
-            $order,
-            true,
-            $sparse,
-            $options,
-            $partialFilterExpression,
-        );
-    }
 }
