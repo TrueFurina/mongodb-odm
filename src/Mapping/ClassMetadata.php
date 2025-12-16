@@ -30,6 +30,7 @@ use MongoDB\BSON\Int64;
 use MongoDB\BSON\UTCDateTime;
 use ReflectionClass;
 use ReflectionEnum;
+use ReflectionMethod;
 use ReflectionNamedType;
 use Symfony\Component\Uid\UuidV1;
 use Symfony\Component\Uid\UuidV4;
@@ -56,6 +57,7 @@ use function ltrim;
 use function sprintf;
 use function strtolower;
 use function strtoupper;
+use function trigger_deprecation;
 
 /**
  * A <tt>ClassMetadata</tt> instance holds all the object-document mapping metadata
@@ -833,7 +835,7 @@ final class ClassMetadata implements BaseClassMetadata
             return $pathPrefix;
         }
 
-        return ($pathPrefix ? $pathPrefix . '.' : '') . static::getReferencePrefix($storeAs) . 'id';
+        return ($pathPrefix ? $pathPrefix . '.' : '') . self::getReferencePrefix($storeAs) . 'id';
     }
 
     public function getReflectionClass(): ReflectionClass
@@ -2460,7 +2462,31 @@ final class ClassMetadata implements BaseClassMetadata
      *      - reflClass (ReflectionClass)
      *      - propertyAccessors (ReflectionProperty array)
      *
-     * @return array The names of all the fields that should be serialized.
+     * @return array<string, mixed> The serialized data.
+     */
+    public function __serialize(): array
+    {
+        if (static::class !== self::class && (new ReflectionMethod($this, '__sleep'))->getDeclaringClass() !== self::class) {
+            trigger_deprecation(
+                'doctrine/mongodb-odm',
+                '2.16',
+                'The method __sleep() is deprecated. Implement and use %s() instead.',
+                __METHOD__,
+            );
+        }
+
+        $data = [];
+        foreach ($this->__sleep() as $field) {
+            $data[$field] = $this->$field;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return list<string> The names of all the fields that should be serialized.
      */
     public function __sleep(): array
     {
@@ -2480,8 +2506,10 @@ final class ClassMetadata implements BaseClassMetadata
             'generatorOptions',
             'idGenerator',
             'indexes',
+            'searchIndexes',
             'shardKey',
             'timeSeriesOptions',
+            'isEncrypted',
         ];
 
         // The rest of the metadata is only serialized if necessary.
@@ -2515,7 +2543,7 @@ final class ClassMetadata implements BaseClassMetadata
             $serialized[] = 'isQueryResultDocument';
         }
 
-        if ($this->isView()) {
+        if ($this->isView) {
             $serialized[] = 'isView';
             $serialized[] = 'rootClass';
         }
@@ -2560,8 +2588,20 @@ final class ClassMetadata implements BaseClassMetadata
     }
 
     /**
-     * Restores some state that cannot be serialized/unserialized.
+     * Restores the serialized values and some state that cannot be serialized/unserialized.
+     *
+     * @param array<string, mixed> $data The serialized data.
      */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $field => $value) {
+            $this->$field = $value;
+        }
+
+        $this->__wakeup();
+    }
+
+    /** @deprecated */
     public function __wakeup(): void
     {
         // Restore ReflectionClass and properties

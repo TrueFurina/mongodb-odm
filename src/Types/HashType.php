@@ -27,4 +27,9 @@ class HashType extends Type
     {
         return $value !== null ? (array) $value : null;
     }
+
+    public function closureToPHP(): string
+    {
+        return '$return = (array) $value;';
+    }
 }
