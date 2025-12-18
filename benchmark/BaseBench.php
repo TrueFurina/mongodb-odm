@@ -9,7 +9,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use MongoDB\Client;
 use MongoDB\Model\DatabaseInfo;
-use PhpBench\Benchmark\Metadata\Annotations\BeforeMethods;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 use function array_map;
@@ -17,14 +16,14 @@ use function getenv;
 use function in_array;
 use function iterator_to_array;
 
-/** @BeforeMethods({"initDocumentManager", "clearDatabase"}) */
+use const PHP_VERSION_ID;
+
 abstract class BaseBench
 {
     public const DATABASE_NAME           = 'doctrine_odm_performance';
     private const DEFAULT_MONGODB_SERVER = 'mongodb://localhost:27017';
 
-    /** @var DocumentManager */
-    protected static $documentManager;
+    protected static DocumentManager $documentManager;
 
     protected function getDocumentManager(): DocumentManager
     {
@@ -35,15 +34,22 @@ abstract class BaseBench
     {
         $config = new Configuration();
 
-        $config->setProxyDir(__DIR__ . '/../../tests/Proxies');
+        $config->setProxyDir(__DIR__ . '/../tests/Proxies');
         $config->setProxyNamespace('Proxies');
-        $config->setHydratorDir(__DIR__ . '/../../tests/Hydrators');
+        $config->setHydratorDir(__DIR__ . '/../tests/Hydrators');
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_ALWAYS);
         $config->setHydratorNamespace('Hydrators');
-        $config->setPersistentCollectionDir(__DIR__ . '/../../tests/PersistentCollections');
+        $config->setPersistentCollectionDir(__DIR__ . '/../tests/PersistentCollections');
         $config->setPersistentCollectionNamespace('PersistentCollections');
         $config->setDefaultDB(self::DATABASE_NAME);
         $config->setMetadataDriverImpl(self::createMetadataDriverImpl());
         $config->setMetadataCache(new ArrayAdapter());
+
+        if (PHP_VERSION_ID >= 80400) {
+            $config->setUseNativeLazyObject(true);
+        } else {
+            $config->setUseLazyGhostObject(true);
+        }
 
         $client = new Client(
             getenv('DOCTRINE_MONGODB_SERVER') ?: self::DEFAULT_MONGODB_SERVER,

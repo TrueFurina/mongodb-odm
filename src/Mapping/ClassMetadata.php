@@ -13,8 +13,7 @@ use Doctrine\Instantiator\Instantiator;
 use Doctrine\Instantiator\InstantiatorInterface;
 use Doctrine\ODM\MongoDB\Id\IdGenerator;
 use Doctrine\ODM\MongoDB\LockException;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\EncryptQuery;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\TimeSeries;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\TimeSeries;
 use Doctrine\ODM\MongoDB\Mapping\PropertyAccessors\EnumPropertyAccessor;
 use Doctrine\ODM\MongoDB\Mapping\PropertyAccessors\PropertyAccessor;
 use Doctrine\ODM\MongoDB\Mapping\PropertyAccessors\PropertyAccessorFactory;
@@ -34,6 +33,7 @@ use MongoDB\BSON\UTCDateTime;
 use ProxyManager\Proxy\GhostObjectInterface;
 use ReflectionClass;
 use ReflectionEnum;
+use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionProperty;
 use Symfony\Component\Uid\UuidV1;
@@ -923,7 +923,7 @@ use const PHP_VERSION_ID;
             return $pathPrefix;
         }
 
-        return ($pathPrefix ? $pathPrefix . '.' : '') . static::getReferencePrefix($storeAs) . 'id';
+        return ($pathPrefix ? $pathPrefix . '.' : '') . self::getReferencePrefix($storeAs) . 'id';
     }
 
     public function getReflectionClass(): ReflectionClass
@@ -1140,9 +1140,14 @@ use const PHP_VERSION_ID;
             return;
         }
 
-        // @todo: deprecate, document and remove this:
         // Handle array argument with name/fieldName keys for BC
         if (is_array($discriminatorField)) {
+            trigger_deprecation(
+                'doctrine/mongodb-odm',
+                '2.16',
+                'Passing array to %s() is deprecated, pass string instead.',
+                __FUNCTION__,
+            );
             if (isset($discriminatorField['name'])) {
                 $discriminatorField = $discriminatorField['name'];
             } elseif (isset($discriminatorField['fieldName'])) {
@@ -2640,7 +2645,31 @@ use const PHP_VERSION_ID;
      *      - reflFields (ReflectionProperty array)
      *      - propertyAccessors (ReflectionProperty array)
      *
-     * @return array The names of all the fields that should be serialized.
+     * @return array<string, mixed> The serialized data.
+     */
+    public function __serialize(): array
+    {
+        if (static::class !== self::class && (new ReflectionMethod($this, '__sleep'))->getDeclaringClass() !== self::class) {
+            trigger_deprecation(
+                'doctrine/mongodb-odm',
+                '2.16',
+                'The method __sleep() is deprecated. Implement and use %s() instead.',
+                __METHOD__,
+            );
+        }
+
+        $data = [];
+        foreach ($this->__sleep() as $field) {
+            $data[$field] = $this->$field;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @return list<string> The names of all the fields that should be serialized.
      */
     public function __sleep()
     {
@@ -2660,8 +2689,10 @@ use const PHP_VERSION_ID;
             'generatorOptions',
             'idGenerator',
             'indexes',
+            'searchIndexes',
             'shardKey',
             'timeSeriesOptions',
+            'isEncrypted',
         ];
 
         // The rest of the metadata is only serialized if necessary.
@@ -2695,7 +2726,7 @@ use const PHP_VERSION_ID;
             $serialized[] = 'isQueryResultDocument';
         }
 
-        if ($this->isView()) {
+        if ($this->isView) {
             $serialized[] = 'isView';
             $serialized[] = 'rootClass';
         }
@@ -2740,8 +2771,20 @@ use const PHP_VERSION_ID;
     }
 
     /**
-     * Restores some state that cannot be serialized/unserialized.
+     * Restores the serialized values and some state that cannot be serialized/unserialized.
+     *
+     * @param array<string, mixed> $data The serialized data.
      */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $field => $value) {
+            $this->$field = $value;
+        }
+
+        $this->__wakeup();
+    }
+
+    /** @deprecated */
     public function __wakeup(): void
     {
         // Restore ReflectionClass and properties

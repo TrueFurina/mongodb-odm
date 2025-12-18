@@ -303,8 +303,13 @@ class Configuration
         return $this->attributes['metadataDriverImpl'] ?? null;
     }
 
+    /** @deprecated Since 2.2, use {@see getMetadataCache()} instead. */
     public function getMetadataCacheImpl(): ?Cache
     {
+        if (! class_exists(DoctrineProvider::class)) {
+            throw new LogicException('The "doctrine/cache" package is deprecated and no longer required by "doctrine/mongodb-odm". Use "getMetadataCache" instead.');
+        }
+
         trigger_deprecation(
             'doctrine/mongodb-odm',
             '2.2',
@@ -316,6 +321,7 @@ class Configuration
         return $this->attributes['metadataCacheImpl'] ?? null;
     }
 
+    /** @deprecated Since 2.2, use {@see setMetadataCache()} instead. */
     public function setMetadataCacheImpl(Cache $cacheImpl): void
     {
         trigger_deprecation(
@@ -337,12 +343,19 @@ class Configuration
 
     public function setMetadataCache(CacheItemPoolInterface $cache): void
     {
-        $this->metadataCache                   = $cache;
+        $this->metadataCache = $cache;
+
+        if (! class_exists(DoctrineProvider::class)) {
+            return;
+        }
+
         $this->attributes['metadataCacheImpl'] = DoctrineProvider::wrap($cache);
     }
 
     /**
      * Sets the directory where Doctrine generates any necessary proxy class files.
+     *
+     * @deprecated Since 2.16, proxy directory is no longer used when native lazy objects are enabled.
      */
     public function setProxyDir(string $dir): void
     {
@@ -352,9 +365,15 @@ class Configuration
 
     /**
      * Gets the directory where Doctrine generates any necessary proxy class files.
+     *
+     * @deprecated Since 2.16, proxy directory is no longer used when native lazy objects are enabled.
      */
     public function getProxyDir(): ?string
     {
+        if ($this->isNativeLazyObjectEnabled()) {
+            trigger_deprecation('doctrine/mongodb-odm', '2.16', 'Using "%s" is deprecated when native lazy objects are enabled.', __METHOD__);
+        }
+
         return $this->attributes['proxyDir'] ?? null;
     }
 

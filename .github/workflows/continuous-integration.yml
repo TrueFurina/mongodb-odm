@@ -121,7 +121,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           fetch-depth: 2
 
@@ -134,7 +134,7 @@ jobs:
           key: "extcache-v1"
 
       - name: Cache extensions
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}

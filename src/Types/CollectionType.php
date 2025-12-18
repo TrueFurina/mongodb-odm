@@ -14,6 +14,7 @@ use function is_array;
  */
 class CollectionType extends Type
 {
+    /** @return list<mixed>|null */
     public function convertToDatabaseValue($value)
     {
         if ($value !== null && ! is_array($value)) {
@@ -23,8 +24,14 @@ class CollectionType extends Type
         return $value !== null ? array_values($value) : null;
     }
 
+    /** @return list<mixed>|null */
     public function convertToPHPValue($value)
     {
         return $value !== null ? array_values($value) : null;
+    }
+
+    public function closureToPHP(): string
+    {
+        return '$return = array_values($value);';
     }
 }

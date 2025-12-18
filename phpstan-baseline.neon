@@ -373,10 +373,10 @@ parameters:
 			path: src/Iterator/IterableResult.php
 
 		-
-			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\SearchIndex\:\:__construct\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\Attribute\\SearchIndex\:\:__construct\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: src/Mapping/Annotations/SearchIndex.php
+			path: src/Mapping/Attribute/SearchIndex.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:addInheritedAssociationMapping\(\) has Doctrine\\ODM\\MongoDB\\Mapping\\MappingException in PHPDoc @throws tag but it''s not thrown\.$#'
@@ -415,8 +415,20 @@ parameters:
 			path: src/Mapping/ClassMetadata.php
 
 		-
-			message: '#^Property Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\:\:\$rootClass \(class\-string\|null\) is never assigned null so it can be removed from the property type\.$#'
-			identifier: property.unusedType
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: src/Mapping/ClassMetadata.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\ClassMetadata'' and ''Doctrine\\\\ODM\\\\MongoDB\\\\Mapping\\\\ClassMetadata'' will always evaluate to false\.$#'
+			identifier: notIdentical.alwaysFalse
+			count: 1
+			path: src/Mapping/ClassMetadata.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and \*NEVER\* will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: src/Mapping/ClassMetadata.php
 
@@ -463,7 +475,7 @@ parameters:
 			path: src/Mapping/Driver/XmlDriver.php
 
 		-
-			message: '#^Parameter \#2 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver\:\:addFieldMapping\(\) expects array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\}, array\<string, array\<''contention''\|''max''\|''min''\|''precision''\|''queryType''\|''sparsity''\|''trimFactor''\|int\<0, max\>, Doctrine\\ODM\\MongoDB\\Mapping\\Annotations\\EncryptQuery\|float\|int\|MongoDB\\BSON\\Decimal128\|MongoDB\\BSON\\Int64\|MongoDB\\BSON\\UTCDateTime\|string\|null\>\|bool\|string\> given\.$#'
+			message: '#^Parameter \#2 \$mapping of method Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver\:\:addFieldMapping\(\) expects array\{type\?\: string, fieldName\?\: string, name\?\: string, strategy\?\: string, association\?\: int, id\?\: bool, isOwningSide\?\: bool, collectionClass\?\: class\-string, \.\.\.\}, array\<string, array\<''contention''\|''max''\|''min''\|''precision''\|''queryType''\|''sparsity''\|''trimFactor''\|int\<0, max\>, Doctrine\\ODM\\MongoDB\\Mapping\\EncryptQuery\|float\|int\|MongoDB\\BSON\\Decimal128\|MongoDB\\BSON\\Int64\|MongoDB\\BSON\\UTCDateTime\|string\|null\>\|bool\|string\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Mapping/Driver/XmlDriver.php
@@ -1067,6 +1079,12 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: tests/Tests/Functional/TargetDocumentTest.php
+
+		-
+			message: '#^Class Doctrine\\ODM\\MongoDB\\Tests\\Mapping\\ExtendedClassMetadata extends @final class Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadata\.$#'
+			identifier: class.extendsFinalByPhpDoc
+			count: 1
+			path: tests/Tests/Mapping/ClassMetadataTest.php
 
 		-
 			message: '#^Method Doctrine\\ODM\\MongoDB\\Tests\\Mapping\\ClassMetadataTest\:\:testEmptyVectorSearchIndexDefinition\(\) has parameter \$definition with no value type specified in iterable type array\.$#'

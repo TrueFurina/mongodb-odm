@@ -16,6 +16,7 @@ jobs:
       matrix:
         php-version:
           - "8.1"
+          - "8.4"
 
     services:
       mongodb:
@@ -25,7 +26,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
 
       - name: Setup cache environment
         id: extcache
@@ -36,7 +37,7 @@ jobs:
           key: "extcache-v1"
 
       - name: Cache extensions
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}
@@ -56,10 +57,10 @@ jobs:
         uses: "ramsey/composer-install@v3"
 
       - name: "Upload composer.lock as build artifact"
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
-          name: composer.lock
+          name: composer.lock-${{ matrix.php-version }}
           path: composer.lock
 
       - name: "Run PHPBench"
-        run: "vendor/bin/phpbench run --report=default --revs=100 --iterations=5 --report=aggregate"
+        run: "vendor/bin/phpbench run --report=default --report=aggregate"

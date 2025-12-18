@@ -14,6 +14,9 @@ use function substr;
  */
 class TimestampType extends Type
 {
+    use ClosureToPHP;
+
+    /** @return Timestamp|null */
     public function convertToDatabaseValue($value)
     {
         if ($value instanceof Timestamp) {
@@ -23,6 +26,7 @@ class TimestampType extends Type
         return $value !== null ? new Timestamp(0, $value) : null;
     }
 
+    /** @return int|string|null */
     public function convertToPHPValue($value)
     {
         return $value instanceof Timestamp ? $this->extractSeconds($value) : ($value !== null ? (string) $value : null);

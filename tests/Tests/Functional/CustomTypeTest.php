@@ -7,6 +7,7 @@ namespace Doctrine\ODM\MongoDB\Tests\Functional;
 use DateTime;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ODM\MongoDB\Tests\BaseTestCase;
+use Doctrine\ODM\MongoDB\Tests\CaptureDeprecationMessages;
 use Doctrine\ODM\MongoDB\Types\ClosureToPHP;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Exception;
@@ -20,12 +21,15 @@ use function is_array;
 
 class CustomTypeTest extends BaseTestCase
 {
+    use CaptureDeprecationMessages;
+
     public function setUp(): void
     {
         parent::setUp();
 
         Type::addType('date_collection', DateCollectionType::class);
         Type::addType(Language::class, LanguageType::class);
+        Type::addType('custom_type_without_closure_to_php', CustomTypeWithoutClosureToPHP::class);
     }
 
     #[After]
@@ -88,6 +92,16 @@ class CustomTypeTest extends BaseTestCase
 
         $databaseValue = Type::convertPHPToDatabaseValue($lang);
         self::assertSame(['name' => 'French', 'code' => 'fr'], $databaseValue);
+    }
+
+    public function testNotOverridingClosureToPHPIsDeprecated(): void
+    {
+        $type = Type::getType('custom_type_without_closure_to_php');
+
+        $code = $this->captureDeprecationMessages(static fn () => $type->closureToPHP(), $deprecations);
+
+        self::assertSame('$return = $value;', $code);
+        self::assertSame(['Since doctrine/mongodb-odm 2.16: The method Type::closureToPHP() will change its default implementation in 3.0 to use convertToPHPValue(). Override this method if you need custom behavior before upgrading to 3.0 or use the trait ClosureToPHP to get the upcoming behavior now.'], $deprecations);
     }
 }
 
@@ -197,4 +211,8 @@ class LanguageType extends Type
 
         return new Language($value['name'], $value['code']);
     }
+}
+
+class CustomTypeWithoutClosureToPHP extends Type
+{
 }
