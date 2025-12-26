@@ -7,9 +7,9 @@ namespace Documents\Encryption;
 use DateTimeImmutable;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Encrypt;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\EncryptQuery;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\EncryptQuery;
 use Doctrine\ODM\MongoDB\Types\Type;
 use MongoDB\BSON\Decimal128;
 

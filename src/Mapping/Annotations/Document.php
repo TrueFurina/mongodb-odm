@@ -5,40 +5,18 @@ declare(strict_types=1);
 namespace Doctrine\ODM\MongoDB\Mapping\Annotations;
 
 use Attribute;
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\Document as DocumentAttribute;
 
 /**
  * Identifies a class as a document that can be stored in the database
+ *
+ * @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\Document instead
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class Document extends AbstractDocument
+final class Document extends DocumentAttribute implements Annotation
 {
-    /** @var string|null */
-    public $db;
-
-    /** @var string|null */
-    public $repositoryClass;
-
-    /** @var bool */
-    public $readOnly;
-
-    /** @var string|null */
-    public $shardKey;
-
-    /**
-     * @param string|array{name: string, capped?: bool, size?: int, max?: int}|null $collection
-     * @param int|string|null                                                       $writeConcern
-     */
-    public function __construct(
-        ?string $db = null,
-        public $collection = null,
-        ?string $repositoryClass = null,
-        bool $readOnly = false,
-        ?string $shardKey = null,
-        public $writeConcern = null,
-    ) {
-        $this->db              = $db;
-        $this->repositoryClass = $repositoryClass;
-        $this->readOnly        = $readOnly;
-        $this->shardKey        = $shardKey;
-    }
 }

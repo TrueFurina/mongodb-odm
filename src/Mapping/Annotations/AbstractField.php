@@ -4,40 +4,14 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Mapping\Annotations;
 
-abstract class AbstractField implements Annotation
-{
-    /** @var string|null */
-    public $name;
+use function class_exists;
 
-    /** @var string|null */
-    public $type;
+class_exists(\Doctrine\ODM\MongoDB\Mapping\Attribute\AbstractField::class);
 
-    /** @var bool */
-    public $nullable;
-
-    /** @var mixed[] */
-    public $options;
-
-    /** @var string|null */
-    public $strategy;
-
-    /** @var bool */
-    public $notSaved;
-
-    /** @param mixed[] $options */
-    public function __construct(
-        ?string $name = null,
-        ?string $type = null,
-        bool $nullable = false,
-        array $options = [],
-        ?string $strategy = null,
-        bool $notSaved = false,
-    ) {
-        $this->name     = $name;
-        $this->type     = $type;
-        $this->nullable = $nullable;
-        $this->options  = $options;
-        $this->strategy = $strategy;
-        $this->notSaved = $notSaved;
+// @phpstan-ignore-next-line if.alwaysFalse
+if (false) {
+    /** @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\AbstractField instead */
+    abstract class AbstractField extends \Doctrine\ODM\MongoDB\Mapping\Attribute\AbstractField
+    {
     }
 }

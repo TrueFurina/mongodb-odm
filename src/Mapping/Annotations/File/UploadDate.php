@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Doctrine\ODM\MongoDB\Mapping\Annotations\File;
 
 use Attribute;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\AbstractField;
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Annotation;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\File\UploadDate as UploadDateAttribute;
 
+/**
+ * @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\File\UploadDate instead
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
+ */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class UploadDate extends AbstractField
+final class UploadDate extends UploadDateAttribute implements Annotation
 {
-    public function __construct()
-    {
-        parent::__construct('uploadDate', 'date', false, [], null, true);
-    }
 }
