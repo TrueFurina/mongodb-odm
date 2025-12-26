@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\Mapping\Annotations;
 
-use MongoDB\Driver\ClientEncryption;
+use Doctrine\ODM\MongoDB\Mapping\EncryptQuery;
 
-enum EncryptQuery: string
-{
-    case Equality = ClientEncryption::QUERY_TYPE_EQUALITY;
-    case Range    = ClientEncryption::QUERY_TYPE_RANGE;
-}
+use function class_exists;
+use function trigger_deprecation;
+
+trigger_deprecation('doctrine/mongodb-odm', '2.16', 'Enum %s\\EncryptQuery is deprecated, use %s instead.', __NAMESPACE__, EncryptQuery::class);
+
+class_exists(EncryptQuery::class);

@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Doctrine\ODM\MongoDB\Mapping\Annotations\File;
 
 use Attribute;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\AbstractField;
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Annotation;
+use Doctrine\ODM\MongoDB\Mapping\Attribute\File\ChunkSize as ChunkSizeAttribute;
 
+/**
+ * @deprecated Use \Doctrine\ODM\MongoDB\Mapping\Attribute\File\ChunkSize instead
+ *
+ * @Annotation
+ * @NamedArgumentConstructor
+ */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class ChunkSize extends AbstractField
+final class ChunkSize extends ChunkSizeAttribute implements Annotation
 {
-    public function __construct()
-    {
-        parent::__construct('chunkSize', 'int', false, [], null, true);
-    }
 }

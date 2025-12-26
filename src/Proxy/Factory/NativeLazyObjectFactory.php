@@ -95,6 +95,10 @@ class NativeLazyObjectFactory implements ProxyFactory
                 continue;
             }
 
+            if ($property->isStatic()) {
+                continue;
+            }
+
             $skippedProperties[] = $property;
         }
 
