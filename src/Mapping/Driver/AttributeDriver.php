@@ -25,7 +25,6 @@ use function array_replace;
 use function assert;
 use function class_exists;
 use function constant;
-use function is_array;
 
 /**
  * The AttributeDriver reads the mapping metadata from attributes.
@@ -96,9 +95,7 @@ class AttributeDriver implements MappingDriver
             } elseif ($attribute instanceof ODM\DiscriminatorField) {
                 $metadata->setDiscriminatorField($attribute->value);
             } elseif ($attribute instanceof ODM\DiscriminatorMap) {
-                $value = $attribute->value;
-                assert(is_array($value));
-                $metadata->setDiscriminatorMap($value);
+                $metadata->setDiscriminatorMap($attribute->value);
             } elseif ($attribute instanceof ODM\DiscriminatorValue) {
                 $metadata->setDiscriminatorValue($attribute->value);
             } elseif ($attribute instanceof ODM\ChangeTrackingPolicy) {
@@ -218,6 +215,16 @@ class AttributeDriver implements MappingDriver
                     $mapping['lock'] = true;
                 } elseif ($propertyAttribute instanceof ODM\Encrypt) {
                     $mapping['encrypt'] = (array) $propertyAttribute;
+                } elseif ($propertyAttribute instanceof ODM\Id) {
+                    $mapping['id'] = true;
+                } elseif (
+                    $propertyAttribute instanceof ODM\EmbedOne
+                    || $propertyAttribute instanceof ODM\EmbedMany
+                    || $propertyAttribute instanceof ODM\File\Metadata
+                ) {
+                    $mapping['embedded'] = true;
+                } elseif ($propertyAttribute instanceof ODM\ReferenceOne || $propertyAttribute instanceof ODM\ReferenceMany) {
+                    $mapping['reference'] = true;
                 }
             }
 
