@@ -7,11 +7,15 @@ namespace Doctrine\ODM\MongoDB\PersistentCollection;
 use BadMethodCallException;
 use Closure;
 use Doctrine\Common\Collections\Collection as BaseCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\ReadableCollection;
+use Doctrine\Common\Collections\Selectable;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\MongoDBException;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
+use LogicException;
 use Traversable;
 
 use function array_combine;
@@ -769,5 +773,16 @@ trait PersistentCollectionTrait
         }
 
         return $this->coll->reduce($func, $initial);
+    }
+
+    public function matching(Criteria $criteria): ReadableCollection
+    {
+        $this->initialize();
+
+        if (! $this->coll instanceof Selectable) {
+            throw new LogicException('The backed collection must implement Selectable to use matching().');
+        }
+
+        return $this->coll->matching($criteria);
     }
 }
