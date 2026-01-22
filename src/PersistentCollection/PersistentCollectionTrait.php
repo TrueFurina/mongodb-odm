@@ -440,12 +440,10 @@ trait PersistentCollectionTrait
      *
      * @param mixed $element The element to add.
      * @phpstan-param T $element
-     *
-     * @return true The return value is kept for BC reasons, but will be void in doctrine/mongodb-odm 3.0.
      */
-    public function add($element): bool
+    public function add($element): void
     {
-        return $this->doAdd($element, false);
+        $this->doAdd($element, false);
     }
 
     public function isEmpty(): bool
