@@ -29,7 +29,7 @@
         "php": "^8.4",
         "ext-mongodb": "^2.1",
         "composer-runtime-api": "^2.0",
-        "doctrine/collections": "^1.5 || ^2.0",
+        "doctrine/collections": "^2.1",
         "doctrine/event-manager": "^1.0 || ^2.0",
         "doctrine/instantiator": "^1.1 || ^2",
         "doctrine/persistence": "^3.2 || ^4",

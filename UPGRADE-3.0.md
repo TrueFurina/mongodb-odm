@@ -100,3 +100,7 @@ The default implementation of `Type::closureToPHP` has been modified to call
 `convertToPHPValue` on the type class. This implementation was provided by
 the `ClosureToPHP` trait, which is deprecated. If you have custom types
 that use the `ClosureToPHP` trait, remove the trait.
+
+## Persistent Collections
+
+The return type of `PersistentCollection::add()` has changed from `true` to `void`.

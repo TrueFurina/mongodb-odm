@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\PersistentCollection;
 
-use BadMethodCallException;
 use Closure;
 use Doctrine\Common\Collections\Collection as BaseCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\MongoDBException;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
+use LogicException;
 use Traversable;
 
 use function array_combine;
@@ -21,7 +23,7 @@ use function array_udiff_assoc;
 use function array_values;
 use function count;
 use function is_object;
-use function method_exists;
+use function sprintf;
 
 /**
  * Trait with methods needed to implement PersistentCollectionInterface.
@@ -433,10 +435,15 @@ trait PersistentCollectionTrait
         $this->doSet($key, $value, false);
     }
 
-    /** @param T $element */
-    public function add(mixed $element): bool
+    /**
+     * Adds an element at the end of the collection.
+     *
+     * @param mixed $element The element to add.
+     * @phpstan-param T $element
+     */
+    public function add($element): void
     {
-        return $this->doAdd($element, false);
+        $this->doAdd($element, false);
     }
 
     public function isEmpty(): bool
@@ -746,10 +753,6 @@ trait PersistentCollectionTrait
      */
     public function findFirst(Closure $p): ?object
     {
-        if (! method_exists($this->coll, 'findFirst')) {
-            throw new BadMethodCallException('findFirst() is only available since doctrine/collections v2');
-        }
-
         return $this->coll->findFirst($p);
     }
 
@@ -764,10 +767,24 @@ trait PersistentCollectionTrait
      */
     public function reduce(Closure $func, mixed $initial = null): mixed
     {
-        if (! method_exists($this->coll, 'reduce')) {
-            throw new BadMethodCallException('reduce() is only available since doctrine/collections v2');
+        return $this->coll->reduce($func, $initial);
+    }
+
+    /** @return BaseCollection<TKey, T> */
+    public function matching(Criteria $criteria): BaseCollection
+    {
+        $this->initialize();
+
+        if (! $this->coll instanceof Selectable) {
+            throw new LogicException('The backed collection must implement Selectable to use matching().');
         }
 
-        return $this->coll->reduce($func, $initial);
+        $coll = $this->coll->matching($criteria);
+
+        if (! $coll instanceof BaseCollection) {
+            throw new LogicException(sprintf('The matching() method of the backed collection must return an instance of "%s".', BaseCollection::class));
+        }
+
+        return $coll;
     }
 }
