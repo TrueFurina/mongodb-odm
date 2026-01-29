@@ -260,7 +260,7 @@ use function strtoupper;
  * @phpstan-type SearchIndexMapping array{
  *      type: "search"|"vectorSearch",
  *      name: string,
- *      definition: SearchIndexDefinition
+ *      definition: SearchIndexDefinition|VectorSearchIndexDefinition
  * }
  * @phpstan-type VectorSearchIndexField array{
  *     type: "vector"|"filter",
