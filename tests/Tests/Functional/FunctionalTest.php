@@ -416,6 +416,13 @@ class FunctionalTest extends BaseTestCase
 
     public function testTest(): void
     {
+        // Creating collections before inserting data helps avoid aborted transactions on sharded clusters
+        // Without this, the transaction fails because an "error from cluster data placement"
+        $sm = $this->dm->getSchemaManager();
+        $sm->createDocumentCollection(Employee::class);
+        $sm->createDocumentCollection(Project::class);
+        $sm->createDocumentCollection(Manager::class);
+
         $employee = new Employee();
         $employee->setName('Employee');
         $employee->setSalary(50000.00);
@@ -829,6 +836,13 @@ class FunctionalTest extends BaseTestCase
 
     public function testModifyGroupsArrayDirectly(): void
     {
+        // Creating collections before inserting data helps avoid aborted transactions on sharded clusters
+        // Without this, the transaction fails because an "error from cluster data placement"
+        $sm = $this->dm->getSchemaManager();
+        $sm->createDocumentCollection(Account::class);
+        $sm->createDocumentCollection(User::class);
+        $sm->createDocumentCollection(Group::class);
+
         $account = new Account();
         $account->setName('Jon Test Account');
 
@@ -866,6 +880,13 @@ class FunctionalTest extends BaseTestCase
 
     public function testReplaceEntireGroupsArray(): void
     {
+        // Creating collections before inserting data helps avoid aborted transactions on sharded clusters
+        // Without this, the transaction fails because an "error from cluster data placement"
+        $sm = $this->dm->getSchemaManager();
+        $sm->createDocumentCollection(Account::class);
+        $sm->createDocumentCollection(User::class);
+        $sm->createDocumentCollection(Group::class);
+
         $account = new Account();
         $account->setName('Jon Test Account');
 

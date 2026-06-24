@@ -7,7 +7,6 @@ namespace Doctrine\ODM\MongoDB\PersistentCollection;
 use Closure;
 use Doctrine\Common\Collections\Collection as BaseCollection;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Selectable;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\MongoDBException;
@@ -441,7 +440,7 @@ trait PersistentCollectionTrait
      * @param mixed $element The element to add.
      * @phpstan-param T $element
      */
-    public function add($element): void
+    public function add(mixed $element): void
     {
         $this->doAdd($element, false);
     }
@@ -774,10 +773,6 @@ trait PersistentCollectionTrait
     public function matching(Criteria $criteria): BaseCollection
     {
         $this->initialize();
-
-        if (! $this->coll instanceof Selectable) {
-            throw new LogicException('The backed collection must implement Selectable to use matching().');
-        }
 
         $coll = $this->coll->matching($criteria);
 
