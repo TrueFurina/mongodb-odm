@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\ODM\MongoDB\PersistentCollection;
 
-use Closure;
 use Doctrine\Common\Collections\Collection as BaseCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
@@ -14,8 +13,6 @@ use Doctrine\ODM\MongoDB\MongoDBException;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Utility\CollectionHelper;
 use LogicException;
-use ReturnTypeWillChange;
-use Traversable;
 
 use function array_combine;
 use function array_diff_key;
@@ -30,6 +27,10 @@ use function sprintf;
 /**
  * Trait with methods needed to implement PersistentCollectionInterface.
  *
+ * Collection/ReadableCollection/ArrayAccess interface methods live in
+ * PersistentCollectionCompatibility so they can be typed or untyped depending
+ * on which version of doctrine/collections is installed.
+ *
  * @phpstan-import-type Hints from UnitOfWork
  * @phpstan-import-type FieldMapping from ClassMetadata
  * @template TKey of array-key
@@ -37,6 +38,9 @@ use function sprintf;
  */
 trait PersistentCollectionTrait
 {
+    /** @use PersistentCollectionCompatibility<TKey, T> */
+    use PersistentCollectionCompatibility;
+
     /**
      * A snapshot of the collection at the moment it was fetched from the database.
      * This is used to create a diff of the collection at commit time.
@@ -309,210 +313,9 @@ trait PersistentCollectionTrait
         return $this->initialized;
     }
 
-    public function first()
+    public function unwrap()
     {
-        $this->initialize();
-
-        return $this->coll->first();
-    }
-
-    public function last()
-    {
-        $this->initialize();
-
-        return $this->coll->last();
-    }
-
-    public function remove($key)
-    {
-        return $this->doRemove($key, false);
-    }
-
-    public function removeElement($element)
-    {
-        $this->initialize();
-        $removed = $this->coll->removeElement($element);
-
-        if (! $removed) {
-            return $removed;
-        }
-
-        $this->changed();
-
-        return $removed;
-    }
-
-    public function containsKey($key)
-    {
-        $this->initialize();
-
-        return $this->coll->containsKey($key);
-    }
-
-    /** @template TMaybeContained */
-    public function contains($element)
-    {
-        $this->initialize();
-
-        return $this->coll->contains($element);
-    }
-
-    public function exists(Closure $p)
-    {
-        $this->initialize();
-
-        return $this->coll->exists($p);
-    }
-
-    /**
-     * @phpstan-return (TMaybeContained is T ? TKey|false : false)
-     *
-     * @template TMaybeContained
-     */
-    public function indexOf($element)
-    {
-        $this->initialize();
-
-        return $this->coll->indexOf($element);
-    }
-
-    public function get($key)
-    {
-        $this->initialize();
-
-        return $this->coll->get($key);
-    }
-
-    public function getKeys()
-    {
-        $this->initialize();
-
-        return $this->coll->getKeys();
-    }
-
-    public function getValues()
-    {
-        $this->initialize();
-
-        return $this->coll->getValues();
-    }
-
-    /** @return int */
-    #[ReturnTypeWillChange]
-    public function count()
-    {
-        // Workaround around not being able to directly count inverse collections anymore
-        $this->initialize();
-
-        return $this->coll->count();
-    }
-
-    public function set($key, $value)
-    {
-        $this->doSet($key, $value, false);
-    }
-
-    /**
-     * Adds an element at the end of the collection.
-     *
-     * @param mixed $element The element to add.
-     * @phpstan-param T $element
-     *
-     * @return true The return value is kept for BC reasons, but will be void in doctrine/mongodb-odm 3.0.
-     */
-    public function add($element)
-    {
-        return $this->doAdd($element, false);
-    }
-
-    public function isEmpty()
-    {
-        return $this->initialized ? $this->coll->isEmpty() : $this->count() === 0;
-    }
-
-    /**
-     * @return Traversable
-     * @phpstan-return Traversable<TKey, T>
-     */
-    #[ReturnTypeWillChange]
-    public function getIterator()
-    {
-        $this->initialize();
-
-        return $this->coll->getIterator();
-    }
-
-    public function map(Closure $func)
-    {
-        $this->initialize();
-
-        return $this->coll->map($func);
-    }
-
-    public function filter(Closure $p)
-    {
-        $this->initialize();
-
-        return $this->coll->filter($p);
-    }
-
-    public function forAll(Closure $p)
-    {
-        $this->initialize();
-
-        return $this->coll->forAll($p);
-    }
-
-    public function partition(Closure $p)
-    {
-        $this->initialize();
-
-        return $this->coll->partition($p);
-    }
-
-    public function toArray()
-    {
-        $this->initialize();
-
-        return $this->coll->toArray();
-    }
-
-    public function clear()
-    {
-        if ($this->initialized && $this->isEmpty()) {
-            return;
-        }
-
-        if ($this->isOrphanRemovalEnabled()) {
-            $this->initialize();
-            foreach ($this->coll as $element) {
-                $this->uow->scheduleOrphanRemoval($element);
-            }
-        }
-
-        $this->mongoData = [];
-        $this->coll->clear();
-
-        // Nothing to do for inverse-side collections
-        if (! $this->mapping['isOwningSide']) {
-            return;
-        }
-
-        // Nothing to do if the collection was initialized but contained no data
-        if ($this->initialized && empty($this->snapshot)) {
-            return;
-        }
-
-        $this->changed();
-        $this->uow->scheduleCollectionDeletion($this);
-        $this->takeSnapshot();
-    }
-
-    public function slice($offset, $length = null)
-    {
-        $this->initialize();
-
-        return $this->coll->slice($offset, $length);
+        return $this->coll;
     }
 
     /**
@@ -543,87 +346,6 @@ trait PersistentCollectionTrait
         return ['coll', 'initialized', 'mongoData', 'snapshot', 'isDirty', 'hints'];
     }
 
-    /* ArrayAccess implementation */
-
-    /**
-     * @param mixed $offset
-     *
-     * @return bool
-     */
-    #[ReturnTypeWillChange]
-    public function offsetExists($offset)
-    {
-        $this->initialize();
-
-        return $this->coll->offsetExists($offset);
-    }
-
-    /**
-     * @param mixed $offset
-     *
-     * @return mixed
-     * @phpstan-return T|null
-     */
-    #[ReturnTypeWillChange]
-    public function offsetGet($offset)
-    {
-        $this->initialize();
-
-        return $this->coll->offsetGet($offset);
-    }
-
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     *
-     * @return void
-     */
-    #[ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
-    {
-        if (! isset($offset)) {
-            $this->doAdd($value, true);
-
-            return;
-        }
-
-        $this->doSet($offset, $value, true);
-    }
-
-    /**
-     * @param mixed $offset
-     *
-     * @return void
-     */
-    #[ReturnTypeWillChange]
-    public function offsetUnset($offset)
-    {
-        $this->doRemove($offset, true);
-    }
-
-    public function key()
-    {
-        return $this->coll->key();
-    }
-
-    /**
-     * Gets the element of the collection at the current iterator position.
-     */
-    public function current()
-    {
-        return $this->coll->current();
-    }
-
-    public function next()
-    {
-        return $this->coll->next();
-    }
-
-    public function unwrap()
-    {
-        return $this->coll;
-    }
-
     /**
      * Cleanup internal state of cloned persistent collection.
      *
@@ -652,12 +374,9 @@ trait PersistentCollectionTrait
     /**
      * Actual logic for adding an element to the collection.
      *
-     * @param mixed $value
-     * @param bool  $arrayAccess
-     *
      * @return true
      */
-    private function doAdd($value, $arrayAccess)
+    private function doAdd(mixed $value, bool $arrayAccess): bool
     {
         /* Initialize the collection before calling add() so this append operation
          * uses the appropriate key. Otherwise, we risk overwriting original data
@@ -680,16 +399,13 @@ trait PersistentCollectionTrait
     /**
      * Actual logic for removing element by its key.
      *
-     * @param mixed $offset
-     *
-     * @return bool|T|null
      * @phpstan-return (
      *      $arrayAccess is false
      *      ? T|null
      *      : T|true|null
      * )
      */
-    private function doRemove($offset, bool $arrayAccess)
+    private function doRemove(mixed $offset, bool $arrayAccess): mixed
     {
         $this->initialize();
         if ($arrayAccess) {
@@ -710,11 +426,8 @@ trait PersistentCollectionTrait
 
     /**
      * Actual logic for setting an element in the collection.
-     *
-     * @param mixed $offset
-     * @param mixed $value
      */
-    private function doSet($offset, $value, bool $arrayAccess): void
+    private function doSet(mixed $offset, mixed $value, bool $arrayAccess): void
     {
         $arrayAccess ? $this->coll->offsetSet($offset, $value) : $this->coll->set($offset, $value);
 
@@ -752,30 +465,6 @@ trait PersistentCollectionTrait
     {
         return $this->owner && isset($this->dm) && ! empty($this->mapping['isOwningSide'])
             && $this->dm->getClassMetadata(get_class($this->owner))->isChangeTrackingNotify();
-    }
-
-    /**
-     * @phpstan-param Closure(TKey, T):bool $p
-     *
-     * @phpstan-return T|null
-     */
-    public function findFirst(Closure $p)
-    {
-        return $this->coll->findFirst($p);
-    }
-
-    /**
-     * @phpstan-param Closure(TReturn|TInitial|null, T):(TInitial|TReturn) $func
-     * @phpstan-param TInitial|null $initial
-     *
-     * @phpstan-return TReturn|TInitial|null
-     *
-     * @phpstan-template TReturn
-     * @phpstan-template TInitial
-     */
-    public function reduce(Closure $func, $initial = null)
-    {
-        return $this->coll->reduce($func, $initial);
     }
 
     /** @return BaseCollection<TKey, T> */
