@@ -101,7 +101,7 @@ class VectorSearchTest extends BaseTestCase
         }
     }
 
-    #[RequiresPhpExtension('mongodb', '>= 2.2')]
+    #[RequiresPhpExtension('mongodb', '>= 2.2.0')]
     public function testAtlasVectorSearchWithBinaryType(): void
     {
         $cm = $this->dm->getClassMetadata(VectorEmbedding::class);
@@ -113,7 +113,7 @@ class VectorSearchTest extends BaseTestCase
         new ReflectionProperty($cm, 'fieldMappings')->setValue($cm, $fieldMappings);
 
         // Change the collection name to avoid conflicts with asynchronous index building
-        $cm->collection .= '_binary_type';
+        new ReflectionProperty($cm, 'collection')->setValue($cm, $cm->collection . '_binary_type');
 
         $this->testAtlasVectorSearch();
 
