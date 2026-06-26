@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 use function get_debug_type;
 
-#[RequiresPhpExtension('mongodb', '>= 2.2')]
+#[RequiresPhpExtension('mongodb', '>= 2.2.0')]
 class VectorTypeTest extends TestCase
 {
     #[DataProvider('providePhpVectors')]

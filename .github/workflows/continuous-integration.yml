@@ -32,7 +32,7 @@ jobs:
         dependencies:
           - "highest"
         symfony-version:
-          - "7.4"
+          - "7.4.*"
         include:
           # Test against lowest dependencies
           - dependencies: "lowest"
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
         with:
           fetch-depth: 2
 
