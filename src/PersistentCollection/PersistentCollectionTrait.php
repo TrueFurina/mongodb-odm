@@ -699,10 +699,6 @@ trait PersistentCollectionTrait
             $removed = $this->coll->remove($offset);
         }
 
-        if (! $removed && ! $arrayAccess) {
-            return $removed;
-        }
-
         $this->changed();
 
         return $removed;
