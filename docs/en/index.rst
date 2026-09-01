@@ -21,9 +21,3 @@ Getting Started
 The best way to get started is with the :doc:`Setup <reference/introduction#setup>` section
 in the introduction tutorial. Use the sidebar to browse other tutorials and documentation
 for the Doctrine PHP MongoDB ODM.
-
-Useful reference pages
-----------------------
-
-- :doc:`Indexes <reference/indexes>` — how to define indexes on your mapped documents and create them
-- :doc:`Console Commands <reference/console-commands>` — ``odm:schema:create``, ``odm:schema:update`` and other command-line tools for schema and index management

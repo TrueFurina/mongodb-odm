@@ -283,13 +283,6 @@ database:
 
     db.BlogPost.ensureIndexes({ 'slug' : 1, 'comments.date': 1 })
 
-Also, for your convenience you can create the indexes for your mapped documents from the
-:doc:`console <console-commands>`:
-
-.. code-block:: console
-
-    $ php mongodb.php odm:schema:create --index
-
 .. note::
 
     If you are :ref:`mixing document types <embed_mixing_document_types>` for your
